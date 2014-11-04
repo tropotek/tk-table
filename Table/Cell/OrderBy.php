@@ -99,8 +99,8 @@ class OrderBy extends Iface
         
         $template = \Mod\Dom\Loader::load($html);
 
-        $template->appendJsUrl(\Tk\Url::create('/assets/tk-js/util.js'));
-        $template->appendJsUrl(\Tk\Url::create('/assets/tk-js/Url.js'));
+        $template->appendJsUrl(\Tk\Url::create('/assets/tk-jslib/util.js'));
+        $template->appendJsUrl(\Tk\Url::create('/assets/tk-jslib/Url.js'));
 
         $tid = $this->getTable()->getTableId();
         $id = $this->getTable()->getInstanceId();

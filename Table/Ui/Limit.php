@@ -56,7 +56,7 @@ class Limit extends \Mod\Renderer
         $select->setValue($this->limit);
         $select->setAttribute('name', $this->getObjectKey(\Tk\Db\Tool::REQ_LIMIT));
         
-        $template->appendJsUrl(\Tk\Url::create('/assets/tek-js/Url.js'));
+        $template->appendJsUrl(\Tk\Url::create('/assets/tk-jslib/Url.js'));
         $js = <<<JS
 jQuery(function($) {
 
@@ -73,9 +73,6 @@ jQuery(function($) {
 JS;
         $template->appendJs($js);
         
-        
-        
-        
     }
 
     /**
@@ -87,7 +84,6 @@ JS;
     {
         $xmlStr = '<?xml version="1.0"?>
 <div class="tk-limit" var="limitUl">
-  
     Show:
     <select class="no2 form-control input-sm" name="limit" var="select">
       <option value="0">-- ALL --</option>
