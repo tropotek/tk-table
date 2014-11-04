@@ -223,14 +223,14 @@ JS;
 
 
     <!-- Table Controls -->
-    <div class="ctrlBox">
-      <div class="col-xs-4">
+    <div class="row ctrlBox">
+      <div class="col-md-3">
         <div var="Results"></div>
       </div>
-      <div class="col-xs-4">
+      <div class="col-md-6">
         <div var="Pager"></div>
       </div>
-      <div class="col-xs-4">
+      <div class="col-md-3">
         <div var="Limit"></div>
       </div>
     </div>

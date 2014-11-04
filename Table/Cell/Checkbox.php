@@ -47,7 +47,7 @@ class Checkbox extends Iface
         $tdclass = 'm' . ucfirst(self::CB_NAME);
         $js = <<<JS
 // Enable a tr onclick event to toggle check box
-$(document).ready(function() {
+jQuery(function($) {
   $('.Table td.$tdclass input:checkbox').click(function(e){
 	if ($(this).attr('checked')) {
 	  $(this).removeAttr('checked');
