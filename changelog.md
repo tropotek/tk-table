@@ -1,5 +1,10 @@
 #CHANGELOG#
 
+Ver 1.2.5 [2014-12-09]:
+-------------------------------
+ - Added GOALS view action to student view
+
+
 Ver 1.2.4 [2014-12-04]:
 -------------------------------
  - Small update
