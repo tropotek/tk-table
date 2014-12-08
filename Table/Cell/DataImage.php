@@ -34,10 +34,10 @@ class DataImage extends Iface
      * Get the table data from an object if available
      *   Overide getTd() to add data to the cell.
      *
-     * @param \Tk\Object $obj
+     * @param \Tk\Object $placement
      * @return Dom_Template Alternativly you can return a plain HTML string
      */
-    public function getTd($obj)
+    public function getTd($placement)
     {
         $this->rowClass = array(); // reset row class list
         $str = '';
@@ -46,19 +46,19 @@ class DataImage extends Iface
         if ($url) {
             if (count($this->urlPropertyList)) {
                 foreach ($this->urlPropertyList as $prop) {
-                    $url->set($prop, $this->getPropertyValue($obj));
+                    $url->set($prop, $this->getPropertyValue($placement));
                 }
             } else {
-                $pos = strrpos(get_class($obj), '_');
-                $name = substr(get_class($obj), $pos + 1);
+                $pos = strrpos(get_class($placement), '_');
+                $name = substr(get_class($placement), $pos + 1);
                 $prop = strtolower($name[0]) . substr($name, 1) . 'Id';
-                $url->set($prop, $obj->getId());
+                $url->set($prop, $placement->getId());
             }
 
-            $url = Tk\Url::createDataUrl($this->getPropertyValue($obj));
+            $url = Tk\Url::createDataUrl($this->getPropertyValue($placement));
             $str = '<a href="' . htmlentities($url->toString()) . '"><img src="'.$url->toString().'" alt="" height="50" /></a>';
         } else {
-            $url = Tk\Url::createDataUrl($this->getPropertyValue($obj));
+            $url = Tk\Url::createDataUrl($this->getPropertyValue($placement));
             $str = '<a href="' . $url->toString() . '" class="lightbox"><img src="'.$url->toString().'" alt="" height="50" /></a>';
         }
         return $str;

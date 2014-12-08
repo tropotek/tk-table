@@ -19,13 +19,13 @@ class Url extends Iface
      * get the table data from an object if available
      *   Overide getTd() to add data to the cell.
      *
-     * @param Object $obj
+     * @param Object $placement
      * @return \Dom\Template Alternativly you can return a plain HTML string
      */
-    public function getTd($obj)
+    public function getTd($placement)
     {
         $this->rowClass = array(); // reset row class list
-        $url = $this->getPropertyValue($obj);
+        $url = $this->getPropertyValue($placement);
 
         return '<a href="' . $url . '" title="Visit Website" target="_blank">' . $url . '</a>';
     }

@@ -25,12 +25,12 @@ class Checkbox extends Iface
     /**
      * Get the table data
      *
-     * @param \Tk\Object $obj
+     * @param \Tk\Object $placement
      * @return string
      */
-    public function getTd($obj)
+    public function getTd($placement)
     {
-        $str = '<input type="checkbox" name="' . $this->getObjectKey(self::CB_NAME) . '[]" value="' . $obj->id . '" />';
+        $str = '<input type="checkbox" name="' . $this->getObjectKey(self::CB_NAME) . '[]" value="' . $placement->id . '" />';
         return $str;
     }
 

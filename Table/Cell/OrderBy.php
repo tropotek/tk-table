@@ -74,10 +74,10 @@ class OrderBy extends Iface
     /**
      * Get the table data from an object if available
      *
-     * @param Tk\Db\Object $obj
+     * @param Tk\Db\Object $placement
      * @return string
      */
-    public function getTd($obj)
+    public function getTd($placement)
     {
         static $i = 0;
 

@@ -19,10 +19,10 @@ class String extends \Table\Cell\Iface
      * get the table data from an object if available
      *   Overide getTd() to add data to the cell.
      *
-     * @param \Tk\Object $obj
+     * @param \Tk\Object $placement
      * @return \Dom\Template Alternativly you can return a plain HTML string
      */
-    public function getTd($obj)
+    public function getTd($placement)
     {
         $this->rowClass = array(); // reset row class list
         $str = '';
@@ -31,22 +31,22 @@ class String extends \Table\Cell\Iface
         if ($url) {
             if (count($this->urlPropertyList)) {
                 foreach ($this->urlPropertyList as $prop) {
-                    $url->set($prop, $this->getPropertyValue($obj));
+                    $url->set($prop, $this->getPropertyValue($placement));
                 }
             } else {
-                $class = get_class($obj);
+                $class = get_class($placement);
                 $pos = strrpos($class, '\\');
                 if (!$pos === false) {
-                    $name = substr(get_class($obj), $pos + 1);
+                    $name = substr(get_class($placement), $pos + 1);
                 } else {
                     $name = $class;
                 }
                 $prop = strtolower($name[0]) . substr($name, 1) . 'Id';
-                $url->set($prop, $obj->id);
+                $url->set($prop, $placement->id);
             }
-            $str = '<a href="' . htmlentities($url->toString()) . '">' . htmlentities($this->getPropertyValue($obj)) . '</a>';
+            $str = '<a href="' . htmlentities($url->toString()) . '">' . htmlentities($this->getPropertyValue($placement)) . '</a>';
         } else {
-            $str = htmlentities($this->getPropertyValue($obj));
+            $str = htmlentities($this->getPropertyValue($placement));
         }
         return $str;
     }

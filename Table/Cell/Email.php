@@ -18,13 +18,13 @@ class Email extends Iface
      * get the table data from an object if available
      *   Overide getTd() to add data to the cell.
      *
-     * @param Object $obj
+     * @param Object $placement
      * @return \Dom\Template Alternativly you can return a plain HTML string
      */
-    public function getTd($obj)
+    public function getTd($placement)
     {
         $this->rowClass = array(); // reset row class list
-        $email = $this->getPropertyValue($obj);
+        $email = $this->getPropertyValue($placement);
         return '<a href="mailto:' . $email . '" title="Compose an email to this address.">' . $email . '</a>';
     }
 
