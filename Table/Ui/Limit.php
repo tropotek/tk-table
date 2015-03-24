@@ -52,7 +52,7 @@ class Limit extends \Mod\Renderer
         $template = $this->getTemplate();
         $domform = $template->getForm();
         $select = $domform->getFormElement('limit');
-        
+
         $select->setValue($this->limit);
         $select->setAttribute('name', $this->getObjectKey(\Tk\Db\Tool::REQ_LIMIT));
         
