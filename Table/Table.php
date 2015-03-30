@@ -175,12 +175,11 @@ class Table extends \Tk\Object
      * @param int $defaultLimit
      * @return \Tk\Db\Tool
      */
-    public function getDbTool($defaultSort = '', $defaultLimit = null)
+    public function getDbTool($defaultSort = '', $defaultLimit = 50)
     {
         if (!$this->dbTool) {
-            $this->dbTool = \Table\Db\Tool::createFromRequest($this->getInstanceId(), $defaultSort, $defaultLimit);
+            return \Table\Db\Tool::createFromRequest($this->getInstanceId(), $defaultSort, $defaultLimit);
         }
-
         if ($defaultSort) {
             $this->dbTool->setOrderBy($defaultSort);
         }

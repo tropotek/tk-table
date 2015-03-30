@@ -329,10 +329,11 @@ XML;
         $template = $this->getTemplate();
         $idx = 0;
         /* @var $obj \Tk\Object */
-        foreach ($list as $obj) {
+        foreach ($list as  $i => $obj) {
             $repeatRow = $template->getRepeat('tr');
             $rowClassArr = $this->insertRow($obj, $repeatRow);
 
+            //tklog('TEST: ' . __LINE__ . ' - $i = ' . $i);
             $rowClass = 'r_' . $idx . ' ' . $repeatRow->getAttr('tr', 'class') . ' ';
             if (count($rowClassArr) > 0) {
                 $rowClass .= implode(' ', $rowClassArr);
