@@ -1,5 +1,10 @@
 #CHANGELOG#
 
+Ver 1.2.7 [2015-03-31]:
+-------------------------------
+ - Fixed table rendering issue with limit causing long page loads
+
+
 Ver 1.2.6 [2015-03-24]:
 -------------------------------
  - Fixed AdditionalInfo field in placement editor Added additionalInfo field to placementManager Added
