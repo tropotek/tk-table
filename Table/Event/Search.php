@@ -18,6 +18,7 @@ class Search extends \Form\Event\Button
      */
     protected $table = null;
 
+
     /**
      *
      *
