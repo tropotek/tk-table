@@ -1,5 +1,18 @@
 #CHANGELOG#
 
+Ver 1.2.7 [2015-03-31]:
+-------------------------------
+ - Fixed table rendering issue with limit causing long page loads
+
+
+Ver 1.2.6 [2015-03-24]:
+-------------------------------
+ - Fixed AdditionalInfo field in placement editor Added additionalInfo field to placementManager Added
+   title field to term for custom naming Added Goals Button to Edit placement Fixed Goals edit redirect
+   to placement edit page Added error to goals if no questions answered Added Placement Google Map to
+   Dashboard that shows all students from staffs courses
+
+
 Ver 1.2.5 [2014-12-09]:
 -------------------------------
  - Added GOALS view action to student view

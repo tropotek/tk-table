@@ -24,7 +24,7 @@ class Tool extends \Tk\Db\Tool
      * Create a listParams object from a request object
      *
      * @param int $instanceId This is used to create the unique request key
-     * @param string $orderBy The default orderby to use
+     * @param string $orderBy The default orderBy to use
      * @param int $limit
      * @return \Tk\Db\Tool
      */
@@ -32,7 +32,6 @@ class Tool extends \Tk\Db\Tool
     {
         $tool = new self($orderBy, $limit, 0);
         $tool->setInstanceId($instanceId);
-        //$tool->getSession()->delete($tool->getSessionHash());
         if ($tool->getSession()->exists($tool->getSessionHash())) {
             $tool = $tool->getSession()->get($tool->getSessionHash());
         }
