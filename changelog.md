@@ -1,5 +1,11 @@
 #CHANGELOG#
 
+Ver 1.2.8 [2015-04-13]:
+-------------------------------
+ - Merge branch 'master' of git://github.com/tropotek/tk-table
+ - Updated top menu and added filter to project lists
+
+
 Ver 1.2.7 [2015-03-31]:
 -------------------------------
  - Fixed table rendering issue with limit causing long page loads
