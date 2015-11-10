@@ -1,0 +1,171 @@
+<?php
+namespace Tk\Table\Action;
+
+use Tk\Table\Table;
+
+/**
+ * The interface for a table Action
+ *
+ *
+ * @author Michael Mifsud <info@tropotek.com>
+ * @link http://www.tropotek.com/
+ * @license Copyright 2015 Michael Mifsud
+ */
+abstract class Iface
+{
+    use \Tk\InstanceTrait;
+
+    /**
+     * This will be used for the event name using the instance ID
+     * @var string
+     */
+    protected $name = '';
+
+    /**
+     * @var string
+     */
+    protected $label = '';
+
+    /**
+     * @var array
+     */
+    protected $cssList = array();
+
+    /**
+     * @var Table
+     */
+    protected $table = null;
+
+
+
+    /**
+     * Create
+     *
+     * @param string $name The action event name
+     */
+    public function __construct($name)
+    {
+        $this->name = $name;
+        $this->label = ucfirst(preg_replace('/[A-Z]/', ' $0', $name));
+    }
+
+    /**
+     * @return mixed
+     */
+    abstract public function execute();
+
+
+    /**
+     * @return string|\Dom\Template
+     */
+    abstract public function getHtml();
+
+
+
+    /**
+     * Set the id to be the same as the table. This will be used by the
+     * cells for the event key
+     *
+     * @param Table $table
+     */
+    public function setTable($table)
+    {
+        $this->table = $table;
+    }
+
+    /**
+     * Get the parent table object
+     *
+     * @return Table
+     */
+    public function getTable()
+    {
+        return $this->table;
+    }
+
+    /**
+     * @return string
+     */
+    public function getName()
+    {
+        return $this->name;
+    }
+
+    /**
+     * @param string $name
+     */
+    public function setName($name)
+    {
+        $this->name = $name;
+    }
+
+    /**
+     * Get the cell label
+     *
+     * @return string
+     */
+    public function getLabel()
+    {
+        return $this->label;
+    }
+
+    /**
+     * Set the cell label
+     *
+     * @param string $str
+     * @return $this
+     */
+    public function setLabel($str)
+    {
+        $this->label = $str;
+        return $this;
+    }
+
+    /**
+     * Add a css class
+     *
+     * @param string $class
+     * @return $this
+     */
+    public function addCss($class)
+    {
+        $this->cssList[$class] = $class;
+        return $this;
+    }
+
+    /**
+     * remove a css class
+     *
+     * @param string $class
+     * @return $this
+     */
+    public function removeCss($class)
+    {
+        unset($this->cssList[$class]);
+        return $this;
+    }
+
+    /**
+     * Get the css class list
+     *
+     * @return array
+     */
+    public function getCssList()
+    {
+        return $this->cssList;
+    }
+
+    /**
+     * Set the css cell class list
+     * If no parameter sent the array is cleared.
+     *
+     * @param array $arr
+     * @return array
+     */
+    public function setCssList($arr = array())
+    {
+        $this->cssList = $arr;
+        return $this;
+    }
+
+}
