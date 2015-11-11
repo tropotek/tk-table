@@ -1,7 +1,7 @@
 <?php
 namespace Tk\Table\Cell;
 
-use Tk\Table\Table;
+use Tk\Table;
 use Tk\Url;
 
 /**

@@ -1,7 +1,9 @@
 <?php
-namespace Tk\Table;
+namespace Tk;
 
-use Tk\Form\Form;
+use Tk\Table\Action;
+use Tk\Table\Cell;
+use Tk\Form;
 use Tk\Form\Field;
 
 /**
@@ -76,8 +78,6 @@ class Table
         $this->setInstanceId($id);
         $this->params = $params;
 
-        // The premiss here is that all session and request objects can be accessed like an aray to make the
-        // Table as reusable as possible, to use your own make sure you implement the ArrayAccess interface
         if (!$request) {
             $request = &$_REQUEST;
         }
@@ -330,7 +330,7 @@ class Table
     /**
      * Get the cell list array
      *
-     * @return cell\Iface[]
+     * @return Cell\Iface[]
      */
     public function getCellList()
     {

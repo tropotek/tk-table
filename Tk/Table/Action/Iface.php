@@ -1,7 +1,7 @@
 <?php
 namespace Tk\Table\Action;
 
-use Tk\Table\Table;
+use Tk\Table;
 
 /**
  * The interface for a table Action

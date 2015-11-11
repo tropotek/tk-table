@@ -4,7 +4,7 @@ namespace Tk\Table\Renderer\Dom;
 use \Tk\Table\Cell;
 use \Tk\Table\Renderer\Iface;
 use \Tk\Form\Renderer\Dom\FieldFactory;
-use Tk\Form\Form;
+use Tk\Form;
 
 /**
  * Class Table
@@ -36,7 +36,7 @@ class Table extends Iface
     /**
      * Create a new Renderer.
      *
-     * @param \Tk\Table\Table $table
+     * @param \Tk\Table $table
      * @return Table
      */
     static function create($table = null)

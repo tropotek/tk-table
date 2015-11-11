@@ -1,7 +1,7 @@
 <?php
 namespace Tk\Table\Renderer\Dom\Ui;
 
-use Tk\Table\Table;
+use Tk\Table;
 
 /**
  * Class Iface

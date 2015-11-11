@@ -1,7 +1,7 @@
 <?php
 namespace Tk\Table\Renderer;
 
-use \Tk\Table\Table;
+use \Tk\Table;
 use \Tk\Table\Cell;
 
 /**
