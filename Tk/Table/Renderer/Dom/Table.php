@@ -59,8 +59,6 @@ class Table extends Iface
 
     public function doSearch($form)
     {
-        vd('doSearch: ');
-
         //  Save to session
         $this->getTable()->saveFilterSession();
 
@@ -69,8 +67,6 @@ class Table extends Iface
 
     public function doClear($form)
     {
-        vd('doClear: ');
-
         // Clear session
         $this->getTable()->clearFilterSession();
         $this->getTable()->resetOffsetSession();
