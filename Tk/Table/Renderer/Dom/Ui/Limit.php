@@ -48,7 +48,9 @@ class Limit extends Iface
         $template = $this->getTemplate();
         $domform = $template->getForm();
 
-
+        if (count($this->cssList)) {
+            $template->addClass('tk-limit', $this->cssList);
+        }
 
         $select = $domform->getFormElement('limit');
         foreach($this->limitList as $val) {
@@ -94,9 +96,6 @@ JS;
         $template->appendJs($js);
 
 
-        if (count($this->cssList)) {
-            $template->addClass('tk-limit', $this->cssList);
-        }
     }
 
     /**

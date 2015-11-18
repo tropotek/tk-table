@@ -99,6 +99,10 @@ class Pager extends Iface
     {
         $template = $this->getTemplate();
 
+        if (count($this->cssList)) {
+            $template->addClass('tk-pager', $this->cssList);
+        }
+
         if ($this->limit > -1 && $this->limit < $this->total) {
             $numPages = 0;
             $currentPage = 0;
@@ -168,10 +172,6 @@ class Pager extends Iface
                 $template->addClass('end', self::CSS_DISABLED);
                 $template->addClass('next', self::CSS_DISABLED);
             }
-        }
-
-        if (count($this->cssList)) {
-            $template->addClass('tk-pager', $this->cssList);
         }
     }
 

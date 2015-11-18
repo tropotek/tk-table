@@ -64,7 +64,23 @@ class Results extends Iface
     public function show()
     {
         $template = $this->getTemplate();
-        $template->insertText('from', $this->offset + 1);
+
+        if (count($this->cssList)) {
+            $template->addClass('tk-results', $this->cssList);
+        }
+
+        if (!$this->total) {
+            $template->insertText('tk-results', 'No Results Found.');
+            return;
+        }
+
+
+        $off = 0;
+        if ($this->total) {
+            $off = $this->offset+1;
+        }
+
+        $template->insertText('from', $off);
         $to = $this->offset + $this->limit;
         if ($to > $this->total) {
             $to = $this->total;
@@ -73,9 +89,6 @@ class Results extends Iface
         $template->insertText('total', $this->total);
 
 
-        if (count($this->cssList)) {
-            $template->addClass('tk-results', $this->cssList);
-        }
     }
 
     /**
