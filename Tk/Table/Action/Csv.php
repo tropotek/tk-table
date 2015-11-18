@@ -44,7 +44,13 @@ class Csv extends Iface
 
         // Headers for an download:
         ini_set('max_execution_time', 0);
-        $file = date('YmdHis').'-'.$this->getTable()->getId().'.csv';
+
+
+        //TODO: Choose what one is better
+        //$uri = \Tk\Url::create();
+        //$file = trim(basename($uri->getPath()), '.php') . '_' . date('Ymd') . '.csv';
+        $file = $this->getTable()->getId() . '_' . date('Ymd') . '.csv';
+
         if (isset($request['csv_name'])) {
             $file = preg_replace('/[^a-z0-9_\.-]/i', '_', basename(strip_tags(trim($request['csv_name']))));
         }
@@ -55,6 +61,8 @@ class Csv extends Iface
         $fullList = $list;
         if (isset($request[$this->checkboxName]) && is_array($request[$this->checkboxName])) {
             $fullList = array();
+
+        //TODO: Choose what one is better
             foreach($list as $obj) {
                 if (in_array($obj->getId(), $request[$this->checkboxName])) {
                     $fullList[] = $obj;

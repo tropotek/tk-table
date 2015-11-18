@@ -27,8 +27,6 @@ class Results extends Iface
     private $offset = 0;
 
 
-
-
     /**
      * Create the object instance
      *
@@ -43,7 +41,6 @@ class Results extends Iface
         $this->offset = intval($offset);
     }
 
-
     /**
      *
      * @param \Tk\Db\ArrayObject $list
@@ -53,9 +50,6 @@ class Results extends Iface
     {
         return new self($list->getFoundRows(), $list->getTool()->getLimit(), $list->getTool()->getOffset());
     }
-
-
-
 
     /**
      * show
@@ -74,7 +68,6 @@ class Results extends Iface
             return;
         }
 
-
         $off = 0;
         if ($this->total) {
             $off = $this->offset+1;
@@ -87,7 +80,6 @@ class Results extends Iface
         }
         $template->insertText('to', $to);
         $template->insertText('total', $this->total);
-
 
     }
 

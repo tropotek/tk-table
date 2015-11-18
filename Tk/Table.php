@@ -88,11 +88,9 @@ class Table
         }
         $this->session = &$session;
 
-
         $this->form = new Form($id.'Filter', $params, $request);
         $this->form->setAttr('action', \Tk\Url::create());
         $this->form->addCss('form-inline');
-
 
         //Clear the DB tool session. When testing only....
         //unset($this->session[$this->makeInstanceKey('dbTool')]);
@@ -336,7 +334,6 @@ class Table
     {
         return $this->cellList;
     }
-
 
     /**
      * Add an action to this table
