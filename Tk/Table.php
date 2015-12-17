@@ -106,7 +106,10 @@ class Table
         /** @var Action\Iface $action */
         foreach($this->getActionList() as $action) {
             if (!$action instanceof Action\Iface) continue;
-            $action->execute();
+            $action->init();
+            if ($action->hasFired()) {
+                $action->execute();   
+            }
         }
     }
 

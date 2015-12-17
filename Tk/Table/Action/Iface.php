@@ -36,8 +36,7 @@ abstract class Iface
      */
     protected $table = null;
 
-
-
+    
     /**
      * Create
      *
@@ -45,11 +44,19 @@ abstract class Iface
      */
     public function __construct($name)
     {
-        $this->name = $name;
-        $this->label = ucfirst(preg_replace('/[A-Z]/', ' $0', $name));
+        $this->setName($name);
+        $this->setLabel(ucfirst(preg_replace('/[A-Z]/', ' $0', $name)));
     }
 
     /**
+     * Use this to init any code. This will be run on every page load.
+     * 
+     */
+    public function init() {}
+
+    /**
+     * Execute the button event. This will only be called if the button name is in the request.
+     * 
      * @return mixed
      */
     abstract public function execute();
@@ -61,6 +68,16 @@ abstract class Iface
     abstract public function getHtml();
 
 
+    /**
+     * Has this button action been fired
+     *
+     * @return bool
+     */
+    public function hasFired()
+    {
+        $request = $this->getTable()->getRequest();
+        return !empty($request[$this->makeInstanceKey($this->getName())]);
+    }
 
     /**
      * Set the id to be the same as the table. This will be used by the
@@ -82,7 +99,7 @@ abstract class Iface
     {
         return $this->table;
     }
-
+    
     /**
      * @return string
      */
@@ -96,7 +113,7 @@ abstract class Iface
      */
     public function setName($name)
     {
-        $this->name = $name;
+        $this->name = preg_replace('/[^a-z0-9_-]/i', '_', $name);
     }
 
     /**

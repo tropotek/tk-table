@@ -10,18 +10,18 @@ namespace Tk\Table\Action;
  * @link http://www.tropotek.com/
  * @license Copyright 2015 Michael Mifsud
  */
-class Delete extends Iface
+class Delete extends Button
 {
 
     /**
      * @var string
      */
-    protected $icon = '';
+    protected $checkboxName = 'id';
 
     /**
-     * @var string
+     * @var array
      */
-    protected $checkboxName = 'id';
+    protected $excludeIdList = array();
 
 
     /**
@@ -33,9 +33,32 @@ class Delete extends Iface
      */
     public function __construct($name = 'delete', $checkboxName = 'id', $icon = 'glyphicon glyphicon-remove')
     {
-        parent::__construct($name);
-        $this->icon = $icon;
+        parent::__construct($name, $icon);
         $this->checkboxName = $checkboxName;
+    }
+
+    /**
+     * Create
+     * 
+     * @param string $name
+     * @param string $checkboxName
+     * @param string $icon
+     * @return Delete
+     */
+    static function getInstance($name = 'delete', $checkboxName = 'id', $icon = 'glyphicon glyphicon-remove')
+    {
+        return new self($name, $checkboxName, $icon);
+    }
+    
+
+    /**
+     * @param $array
+     * @return $this
+     */
+    public function setExcludeList($array)
+    {
+        $this->excludeIdList = $array;
+        return $this;
     }
 
     /**
@@ -44,7 +67,7 @@ class Delete extends Iface
     public function execute()
     {
         $request = $this->getTable()->getRequest();
-        if (empty($request[$this->makeInstanceKey($this->getName())]) || empty($request[$this->checkboxName])) {
+        if (empty($request[$this->checkboxName])) {
             return;
         }
         $selected = $request[$this->checkboxName];
@@ -54,7 +77,7 @@ class Delete extends Iface
         /** @var \Tk\Db\Model $obj */
         foreach($this->getTable()->getList() as $obj) {
             if (!$obj instanceof \Tk\Db\Model) continue;
-            if (in_array($obj->getId(), $selected)) {
+            if (in_array($obj->getId(), $selected) && !in_array($obj->getId(), $this->excludeIdList)) {
                 $obj->delete();
                 $i++;
             }
@@ -63,34 +86,19 @@ class Delete extends Iface
         \Tk\Url::create()->delete($this->makeInstanceKey($this->getName()))->redirect();
     }
 
+    
+    
     /**
      * @return string|\Dom\Template
      */
     public function getHtml()
     {
-        // TODO: Implement getHtml() method.
-        $xhtml = <<<XHTML
-<button type="submit" class="btn btn-xs disabled" title="Delete Selected Records." var="btn"><i var="icon" choice="icon"></i> </button>
-XHTML;
-        $template = \Dom\Loader::load($xhtml);
-
-        if ($this->icon) {
-            $template->addClass('icon', $this->icon);
-            $template->setChoice('icon');
-        }
-        $template->appendHtml('btn', $this->getLabel());
-
+        $template = parent::getHtml();
+        
+        $template->setAttr('var', 'title', 'Delete Selected Records');
+        $template->addClass('var', 'disabled');
+        
         $btnId = $this->makeInstanceKey($this->getName());
-        $template->setAttr('btn', 'id', 'fid-'.$btnId);
-        $template->setAttr('btn', 'name', $btnId);
-        $template->setAttr('btn', 'value', $btnId);
-
-
-        // Element css class names
-        foreach($this->getCssList() as $v) {
-            $template->addClass('btn', $v);
-        }
-
         $js = <<<JS
 jQuery(function($) {
 

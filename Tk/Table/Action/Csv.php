@@ -11,7 +11,7 @@ use \Tk\Table\Cell;
  * @link http://www.tropotek.com/
  * @license Copyright 2015 Michael Mifsud
  */
-class Csv extends Iface
+class Csv extends Button
 {
 
 
@@ -25,23 +25,34 @@ class Csv extends Iface
      *
      * @param string $name
      * @param string $checkboxName
+     * @param string $icon
      */
-    public function __construct($name = 'csv', $checkboxName = 'id')
+    public function __construct($name = 'csv', $checkboxName = 'id', $icon = 'glyphicon glyphicon-remove')
     {
-        parent::__construct($name);
+        parent::__construct($name, $icon);
         $this->checkboxName = $checkboxName;
     }
 
     /**
+     * Create
+     * 
+     * @param string $name
+     * @param string $checkboxName
+     * @param string $icon
+     * @return Csv
+     */
+    static function getInstance($name = 'csv', $checkboxName = 'id', $icon = 'glyphicon glyphicon-remove')
+    {
+        return new self($name, $checkboxName, $icon);
+    }
+    
+    
+    /**
      * @return mixed
      */
     public function execute()
-    {
+    {   
         $request = $this->getTable()->getRequest();
-        if (empty($request[$this->makeInstanceKey($this->getName())])) {
-            return;
-        }
-
         // Headers for an download:
         ini_set('max_execution_time', 0);
 
@@ -62,7 +73,7 @@ class Csv extends Iface
         if (isset($request[$this->checkboxName]) && is_array($request[$this->checkboxName])) {
             $fullList = array();
 
-        //TODO: Choose what one is better
+            //TODO: Choose what one is better
             foreach($list as $obj) {
                 if (in_array($obj->getId(), $request[$this->checkboxName])) {
                     $fullList[] = $obj;
@@ -118,32 +129,10 @@ class Csv extends Iface
      */
     public function getHtml()
     {
-        $xhtml = <<<XHTML
- <button type="submit" class="btn btn-xs" title="Export records as a CSV file." var="btn"><i class="glyphicon glyphicon-export"></i> </button>
-XHTML;
-        $template = \Dom\Loader::load($xhtml);
+        $template = parent::getHtml();
 
-
-        $template->appendHtml('btn', $this->getLabel());
-
-        $btnId = $this->makeInstanceKey($this->getName());
-        $template->setAttr('btn', 'id', 'fid-'.$btnId);
-        $template->setAttr('btn', 'name', $btnId);
-        $template->setAttr('btn', 'value', $btnId);
-
-        // Element css class names
-        foreach($this->getCssList() as $v) {
-            $template->addClass('btn', $v);
-        }
-
-        $js = <<<JS
-jQuery(function($) {
-  $('#fid-$btnId').on('click', function (e) {
-      return confirm('Are you sure you want to export the table records.');
-  });
-});
-JS;
-        //$template->appendJs($js);
+        $template->setAttr('var', 'title', 'Export records as a CSV file.');
+        $template->addClass('var', 'disabled');
 
         return $template;
     }
