@@ -141,8 +141,8 @@ class Table
     /**
      * Add a field to the filter form
      *
-     * @param Field\Iface $field
-     * @return Field\Iface
+     * @param \Tk\Form\Element $field
+     * @return \Tk\Form\Element
      */
     public function addFilter($field)
     {
@@ -157,7 +157,7 @@ class Table
     {
         static $x = false;
         if (!$x) { // execute form on first access
-            $this->form->loadFromString($this->getFilterSession());
+            $this->form->load($this->getFilterSession());
             $this->getFilterForm()->execute();
         }
         return $this->getFilterForm()->getValues();
@@ -183,7 +183,7 @@ class Table
      */
     public function saveFilterSession()
     {
-        $this->session[$this->form->getInstanceId()] = $this->form->getStringValues();
+        $this->session[$this->form->getInstanceId()] = $this->form->getValues();
         return $this;
     }
 

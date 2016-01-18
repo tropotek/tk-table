@@ -3,7 +3,8 @@ namespace Tk\Table\Renderer\Dom;
 
 use \Tk\Table\Cell;
 use \Tk\Table\Renderer\Iface;
-use \Tk\Form\Renderer\Dom\FieldFactory;
+use \Tk\Form\Field;
+use \Tk\Form\Event;
 use Tk\Form;
 
 /**
@@ -52,8 +53,8 @@ class Table extends Iface
     protected function initFilterForm()
     {
         // Add Filter button events
-        $this->getTable()->addFilter(FieldFactory::createButton('search', array($this, 'doSearch')));
-        $this->getTable()->addFilter(FieldFactory::createButton('clear', array($this, 'doClear')));
+        $this->getTable()->addFilter(new Event\Button('search', array($this, 'doSearch')));
+        $this->getTable()->addFilter(new Event\Button('clear', array($this, 'doClear')));
 
     }
 
@@ -62,7 +63,6 @@ class Table extends Iface
         //  Save to session
         $this->getTable()->saveFilterSession();
         $this->getTable()->resetOffsetSession();
-
         \Tk\Url::create()->redirect();
     }
 
@@ -71,8 +71,6 @@ class Table extends Iface
         // Clear session
         $this->getTable()->clearFilterSession();
         $this->getTable()->resetOffsetSession();
-        //$this->getTable()->getList()->getTool()->
-
         \Tk\Url::create()->redirect();
     }
 
@@ -91,7 +89,7 @@ class Table extends Iface
 
         // Render Form
         if (count($this->getTable()->getFilterForm()->getFieldList()) > 2) {
-            $fren = \Tk\Form\Renderer\Dom\Form::create($this->getTable()->getFilterForm())->show();
+            $fren = \Tk\Form\Renderer\Dom::create($this->getTable()->getFilterForm())->show();
             $template->insertTemplate('filters', $fren->getTemplate());
         }
 
