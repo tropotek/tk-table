@@ -42,12 +42,13 @@ class Date extends Text
     {
         $value = parent::getPropertyValue($obj, $property);
         if ($value instanceof \DateTime) {
-            return $value->format($this->format);
-//            if ($this->format == self::FORMAT_RELATIVE) {
-//                return $value->toRelativeString();        // TODO: copy this method from the TK2 lib
-//            } else {
-//                return $value->toString($this->format);
-//            }
+            //return $value->format($this->format);
+            if ($this->format == self::FORMAT_RELATIVE) {
+                return \Tk\Date::toRelativeString($value);
+                //return $value->toRelativeString();
+            } else {
+                return $value->toString($this->format);
+            }
         }
         return $value;
     }

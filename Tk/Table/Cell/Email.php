@@ -9,7 +9,7 @@ namespace Tk\Table\Cell;
  * @link http://www.tropotek.com/
  * @license Copyright 2015 Michael Mifsud
  */
-class Date extends Text
+class Email extends Text
 {
 
     /**
