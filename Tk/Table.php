@@ -88,7 +88,8 @@ class Table
         }
         $this->session = &$session;
 
-        $this->form = new Form($id.'Filter', $params, $request);
+        $this->form = new Form($id.'Filter', $request);
+        $this->form->setParams($params);
         $this->form->setAttr('action', \Tk\Url::create());
         $this->form->addCss('form-inline');
 
