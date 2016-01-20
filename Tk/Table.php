@@ -15,7 +15,7 @@ use Tk\Form\Field;
  */
 class Table
 {
-    use \Tk\InstanceTrait;
+    use \Tk\Traits\InstanceKey;
 
     const ORDER_NONE = '';
     const ORDER_ASC = 'ASC';

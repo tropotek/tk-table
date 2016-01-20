@@ -13,7 +13,7 @@ use Tk\Table;
  */
 abstract class Iface
 {
-    use \Tk\InstanceTrait;
+    use \Tk\Traits\InstanceKey;
 
     /**
      * This will be used for the event name using the instance ID

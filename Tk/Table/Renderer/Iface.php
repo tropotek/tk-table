@@ -13,7 +13,7 @@ use \Tk\Table\Cell;
  */
 abstract class Iface extends \Dom\Renderer\Renderer
 {
-    use \Tk\InstanceTrait;
+    use \Tk\Traits\InstanceKey;
 
     /**
      * @var Table

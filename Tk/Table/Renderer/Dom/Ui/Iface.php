@@ -12,7 +12,7 @@ use Tk\Table;
  */
 abstract class Iface extends \Dom\Renderer\Renderer
 {
-    use \Tk\InstanceTrait;
+    use \Tk\Traits\InstanceKey;
 
 
     const PARAM_LIMIT = 'limit';
