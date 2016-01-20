@@ -45,9 +45,8 @@ class Date extends Text
             //return $value->format($this->format);
             if ($this->format == self::FORMAT_RELATIVE) {
                 return \Tk\Date::toRelativeString($value);
-                //return $value->toRelativeString();
             } else {
-                return $value->toString($this->format);
+                return $value->format($this->format);
             }
         }
         return $value;
