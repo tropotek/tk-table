@@ -193,6 +193,9 @@ class Table extends Iface
         if ($this->getTable()->getList() instanceof \Tk\Db\ArrayObject) {
             $this->rowId = $this->getTable()->getList()->getTool()->getOffset()+1;
         }
+        
+        
+        if (!$this->getTable()->getList()) return;
         foreach($this->getTable()->getList() as $i => $obj) {
             $this->rowRepeat = $template->getRepeat('tr');
             $this->showRow($obj);

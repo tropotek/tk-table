@@ -79,7 +79,7 @@ class Csv extends Button
                     $fullList[] = $obj;
                 }
             }
-        } else if ($list->getFoundRows() > $list->count()) {
+        } else if ($list && $list->getFoundRows() > $list->count()) {
             $st = $list->getStatement();
             $sql = $st->queryString;
             if (preg_match('/ LIMIT /i', $sql)) {
@@ -107,15 +107,16 @@ class Csv extends Button
         }
 
         fputcsv($out, $arr);
-
-        foreach ($fullList as $obj) {
-            $arr = array();
-            /* @var $cell Cell\Iface */
-            foreach ($this->table->getCellList() as $cell) {
-                //if (in_array($cell->getProperty(), $this->ignore)) continue;
-                $arr[$cell->getLabel()] = $cell->getCellCsv($obj);
+        if ($fullList) {
+            foreach ($fullList as $obj) {
+                $arr = array();
+                /* @var $cell Cell\Iface */
+                foreach ($this->table->getCellList() as $cell) {
+                    //if (in_array($cell->getProperty(), $this->ignore)) continue;
+                    $arr[$cell->getLabel()] = $cell->getCellCsv($obj);
+                }
+                fputcsv($out, $arr);
             }
-            fputcsv($out, $arr);
         }
 
         fclose($out);
