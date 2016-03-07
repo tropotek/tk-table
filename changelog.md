@@ -1,5 +1,22 @@
 #CHANGELOG#
 
+Ver 2.0.0 [2016-03-08]:
+-------------------------------
+ - Adde Lti Authentication, still need finishing....
+ - Fixed Table Cell\Date
+ - LDAP and authentication tidy up
+ - Updated form calls to new form
+ - Creating a simpler form object.
+ - Finished basic user system.
+ - Updated form, relized it needs to be refactored, see readme
+ - Added postgress compatable queries to the \Tk\PDo object
+ - Fixed some DB queries
+ - Tiding up
+ - Seperating symfony from tk-framework adding to App
+ - Fixing DomTemplate documentation
+ - Added new V2 files to the table lib master branch
+
+
 Ver 1.2.8 [2015-04-13]:
 -------------------------------
  - Merge branch 'master' of git://github.com/tropotek/tk-table
