@@ -41,6 +41,10 @@ class Date extends Text
     public function getPropertyValue($obj, $property)
     {
         $value = parent::getPropertyValue($obj, $property);
+        if ($value && !$value instanceof \DateTime) {
+            $value = \Tk\Date::parse($value);
+        }
+        
         if ($value instanceof \DateTime) {
             //return $value->format($this->format);
             if ($this->format == self::FORMAT_RELATIVE) {
