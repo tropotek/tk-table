@@ -428,12 +428,12 @@ class Table
         if ($tool->updateFromArray($this->request)) {
             $this->session[$this->makeInstanceKey($key)] = $tool->toArray();
             \Tk\Url::create()
-                ->delete($this->makeInstanceKey(\Tk\Db\Mapper::PARAM_ORDER_BY))
-                ->delete($this->makeInstanceKey(\Tk\Db\Mapper::PARAM_LIMIT))
-                ->delete($this->makeInstanceKey(\Tk\Db\Mapper::PARAM_OFFSET))
-                ->delete($this->makeInstanceKey(\Tk\Db\Mapper::PARAM_GROUP_BY))
-                ->delete($this->makeInstanceKey(\Tk\Db\Mapper::PARAM_HAVING))
-                ->delete($this->makeInstanceKey(\Tk\Db\Mapper::PARAM_DISTINCT))
+                ->remove($this->makeInstanceKey(\Tk\Db\Mapper::PARAM_ORDER_BY))
+                ->remove($this->makeInstanceKey(\Tk\Db\Mapper::PARAM_LIMIT))
+                ->remove($this->makeInstanceKey(\Tk\Db\Mapper::PARAM_OFFSET))
+                ->remove($this->makeInstanceKey(\Tk\Db\Mapper::PARAM_GROUP_BY))
+                ->remove($this->makeInstanceKey(\Tk\Db\Mapper::PARAM_HAVING))
+                ->remove($this->makeInstanceKey(\Tk\Db\Mapper::PARAM_DISTINCT))
                 ->redirect();
         }
 

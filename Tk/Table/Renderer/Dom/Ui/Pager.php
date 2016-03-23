@@ -135,7 +135,7 @@ class Pager extends Iface
             }
 
             $pageUrl = $this->pageUrl;
-            $pageUrl->delete($this->makeInstanceKey(self::PARAM_OFFSET));
+            $pageUrl->remove($this->makeInstanceKey(self::PARAM_OFFSET));
             for ($i = $startPage; $i < $endPage; $i++) {
                 $repeat = $template->getRepeat('page');
                 $repeat->insertText('pageUrl', $i + 1);
