@@ -1,5 +1,12 @@
 #CHANGELOG#
 
+Ver 2.0.1 [2016-03-23]:
+-------------------------------
+ - Finally added tabs and fieldsets to Form renderer
+ - Fixed LTI classes and logic
+ - Fixed date timezone issues with timestamp use \Tk\Date::parse({timestamp})
+
+
 Ver 2.0.0 [2016-03-08]:
 -------------------------------
  - Adde Lti Authentication, still need finishing....
