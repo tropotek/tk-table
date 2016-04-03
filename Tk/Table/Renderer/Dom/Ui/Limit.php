@@ -111,7 +111,7 @@ JS;
     {
         $xhtml = <<<XHTML
 <div class="tk-limit" var="tk-limit">
-    <select class="no2 form-control input-sm" name="limit" var="select">
+    <select class="form-control input-sm" name="limit" var="select">
       <option value="0">-- ALL --</option>
     </select>
 </div>
