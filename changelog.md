@@ -1,5 +1,12 @@
 #CHANGELOG#
 
+Ver 2.0.2 [2016-04-14]:
+-------------------------------
+ - Merge branch 'master' of git://github.com/tropotek/tk-table
+ - General code format
+ - Fixed Limit exception and fails quietly now.
+
+
 Ver 2.0.1 [2016-03-23]:
 -------------------------------
  - Finally added tabs and fieldsets to Form renderer
