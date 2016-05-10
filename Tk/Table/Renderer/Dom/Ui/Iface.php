@@ -10,10 +10,8 @@ use Tk\Table;
  * @link http://www.tropotek.com/
  * @license Copyright 2015 Michael Mifsud
  */
-abstract class Iface extends \Dom\Renderer\Renderer
+abstract class Iface extends \Dom\Renderer\Renderer implements \Tk\InstanceKey
 {
-    use \Tk\Traits\InstanceKey;
-
 
     const PARAM_LIMIT = 'limit';
     const PARAM_OFFSET = 'offset';
@@ -26,6 +24,12 @@ abstract class Iface extends \Dom\Renderer\Renderer
      * @var array
      */
     protected $cssList = array();
+
+    /**
+     * Instance base id
+     * @var string
+     */
+    protected $iid = '';
 
 
 
@@ -42,5 +46,26 @@ abstract class Iface extends \Dom\Renderer\Renderer
 
 
 
+    /**
+     * Create request keys with prepended string
+     *
+     * returns: `{instanceId}_{$key}`
+     *
+     * @param $key
+     * @return string
+     */
+    public function makeInstanceKey($key)
+    {
+        return $this->iid . '_' . $key;
+    }
+
+    /**
+     * @param $str
+     */
+    public function setInstanceId($str)
+    {
+        $this->iid = $str;
+    }
+    
 
 }

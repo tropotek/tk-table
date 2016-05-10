@@ -22,8 +22,6 @@ class Limit extends Iface
     private $limitList = null;
 
 
-
-
     /**
      * Create
      *

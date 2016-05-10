@@ -83,7 +83,7 @@ class Delete extends Button
             }
         }
 
-        \Tk\Url::create()->remove($this->makeInstanceKey($this->getName()))->redirect();
+        \Tk\Url::create()->remove($this->getTable()->makeInstanceKey($this->getName()))->redirect();
     }
 
     
@@ -98,7 +98,7 @@ class Delete extends Button
         $template->setAttr('var', 'title', 'Delete Selected Records');
         $template->addClass('var', 'disabled');
         
-        $btnId = $this->makeInstanceKey($this->getName());
+        $btnId = $this->getTable()->makeInstanceKey($this->getName());
         $js = <<<JS
 jQuery(function($) {
 

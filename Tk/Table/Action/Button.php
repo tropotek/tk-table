@@ -78,7 +78,7 @@ XHTML;
         }
         $template->appendHtml('btn', $this->getLabel());
 
-        $btnId = $this->makeInstanceKey($this->getName());
+        $btnId = $this->getTable()->makeInstanceKey($this->getName());
         $template->setAttr('btn', 'id', 'fid-'.$btnId);
         $template->setAttr('btn', 'name', $btnId);
         $template->setAttr('btn', 'value', $btnId);

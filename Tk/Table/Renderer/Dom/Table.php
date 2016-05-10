@@ -75,6 +75,19 @@ class Table extends Iface
     }
 
     /**
+     * Get the default form renderer object
+     * 
+     * @return Form\Renderer\Dom
+     */
+    public function getFormRenderer()
+    {
+        static $ren = null;
+        if (!$ren)
+            $ren = new \Tk\Form\Renderer\Dom($this->getTable()->getFilterForm());
+        return $ren;
+    }
+
+    /**
      * Execute the renderer.
      * The returned object can be anything that you need to render
      * the output.
@@ -89,7 +102,7 @@ class Table extends Iface
 
         // Render Form
         if (count($this->getTable()->getFilterForm()->getFieldList()) > 2) {
-            $fren = \Tk\Form\Renderer\Dom::create($this->getTable()->getFilterForm())->show();
+            $fren = $this->getFormRenderer()->show();
             $template->insertTemplate('filters', $fren->getTemplate());
         }
 
@@ -106,13 +119,13 @@ class Table extends Iface
         if ($this->getTable()->getList() instanceof \Tk\Db\ArrayObject && $this->getTable()->getList()->getTool()) {
             // Results UI
             $results = Ui\Results::createFromDbArray($this->getTable()->getList());
-            $results->setInstanceId($this->getInstanceId());
+            $results->setInstanceId($this->getTable()->getId());
             $results->addCssClass('col-md-2');
             $this->appendFootRenderer($results);
 
             // Render Pager
             $pager = Ui\Pager::createFromDbArray($this->getTable()->getList());
-            $pager->setInstanceId($this->getInstanceId());
+            $pager->setInstanceId($this->getTable()->getId());
             $pager->addCssClass('col-md-8 text-center');
             $this->appendFootRenderer($pager);
 
@@ -122,7 +135,7 @@ class Table extends Iface
                 $limitList = $this->getTable()->getParam('limitList');
             }
             $limit = new Ui\Limit($this->getTable()->getList()->getTool()->getLimit(), $limitList);
-            $limit->setInstanceId($this->getInstanceId());
+            $limit->setInstanceId($this->getTable()->getId());
             $limit->addCssClass('col-md-2');
             $this->appendFootRenderer($limit);
         }

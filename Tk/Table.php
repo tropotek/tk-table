@@ -13,9 +13,8 @@ use Tk\Form\Field;
  * @link http://www.tropotek.com/
  * @license Copyright 2015 Michael Mifsud
  */
-class Table
+class Table implements \Tk\InstanceKey
 {
-    use \Tk\Traits\InstanceKey;
 
     const ORDER_NONE = '';
     const ORDER_ASC = 'ASC';
@@ -75,7 +74,6 @@ class Table
     public function __construct($id, $params = array(), $request = null, $session = null)
     {
         $this->id = $id;
-        $this->setInstanceId($id);
         $this->params = $params;
 
         if (!$request) {
@@ -89,7 +87,7 @@ class Table
         $this->session = &$session;
 
         $this->form = new Form($id.'Filter', $request);
-        $this->form->setParams($params);
+        $this->form->setParamList($params);
         $this->form->setAttr('action', \Tk\Url::create());
         $this->form->addCss('form-inline');
 
@@ -172,7 +170,7 @@ class Table
      */
     public function clearFilterSession()
     {
-        unset($this->session[$this->form->getInstanceId()]);
+        unset($this->session[$this->form->getId()]);
         return $this;
     }
 
@@ -184,7 +182,7 @@ class Table
      */
     public function saveFilterSession()
     {
-        $this->session[$this->form->getInstanceId()] = $this->form->getValues();
+        $this->session[$this->form->getId()] = $this->form->getValues();
         return $this;
     }
 
@@ -195,23 +193,10 @@ class Table
      */
     public function getFilterSession()
     {
-        if (isset($this->session[$this->form->getInstanceId()])) {
-            return $this->session[$this->form->getInstanceId()];
+        if (isset($this->session[$this->form->getId()])) {
+            return $this->session[$this->form->getId()];
         }
         return array();
-    }
-
-    /**
-     * Reset the db tool offset to 0
-     *
-     * @return $this
-     */
-    public function resetOffsetSession()
-    {
-        if (isset($this->session[$this->makeInstanceKey('dbTool')][$this->makeInstanceKey(\Tk\Db\Mapper::PARAM_OFFSET)])) {
-            $this->session[$this->makeInstanceKey('dbTool')][$this->makeInstanceKey(\Tk\Db\Mapper::PARAM_OFFSET)] = 0;
-        }
-        return $this;
     }
 
     /**
@@ -273,7 +258,7 @@ class Table
      *
      * @return array
      */
-    public function getParams()
+    public function getParamList()
     {
         return $this->params;
     }
@@ -282,7 +267,7 @@ class Table
      * @param array $params
      * @return $this
      */
-    public function setParams($params)
+    public function setParamList($params)
     {
         $this->params = $params;
         return $this;
@@ -348,7 +333,6 @@ class Table
     public function addAction($action)
     {
         $action->setTable($this);
-        $action->setInstanceId($this->getId());
         $this->actionList[] = $action;
         return $action;
     }
@@ -392,6 +376,26 @@ class Table
         }
         return '';
     }
+    
+    
+    
+
+    /**
+     * Reset the db tool offset to 0
+     *
+     * @return $this
+     * @todo: This method should be more closly associated to the DbTool object or in a helper
+     */
+    public function resetOffsetSession()
+    {
+//        if (isset($this->session[$this->makeInstanceKey('dbTool')][$this->makeInstanceKey(self::PARAM_OFFSET)])) {
+//            $this->session[$this->makeInstanceKey('dbTool')][$this->makeInstanceKey(self::PARAM_OFFSET)] = 0;
+//        }
+        if (isset($this->session[$this->makeInstanceKey('dbTool')][$this->makeInstanceKey('offset')])) {
+            $this->session[$this->makeInstanceKey('dbTool')][$this->makeInstanceKey('offset')] = 0;
+        }
+        return $this;
+    }
 
     /**
      * Get the property and order value from the Request or params
@@ -418,7 +422,7 @@ class Table
      */
     public function makeDbTool($defaultOrderBy = '', $defaultLimit = 25)
     {
-        $tool = \Tk\Db\Tool::create($defaultOrderBy, $defaultLimit)->setInstanceId($this->getInstanceId());
+        $tool = \Tk\Db\Tool::create($defaultOrderBy, $defaultLimit);
         $key = 'dbTool';
 
         if (isset($this->session[$this->makeInstanceKey($key)])) {
@@ -440,4 +444,16 @@ class Table
         return $tool;
     }
 
+    /**
+     * Create request keys with prepended string
+     *
+     * returns: `{instanceId}_{$key}`
+     *
+     * @param $key
+     * @return string
+     */
+    public function makeInstanceKey($key)
+    {
+        return $this->id . '_' . $key;
+    }
 }

@@ -13,7 +13,6 @@ use \Tk\Table\Cell;
  */
 abstract class Iface extends \Dom\Renderer\Renderer
 {
-    use \Tk\Traits\InstanceKey;
 
     /**
      * @var Table
@@ -53,7 +52,6 @@ abstract class Iface extends \Dom\Renderer\Renderer
         if (!$table instanceof Table) return false;
 
         $this->table = $table;
-        $this->setInstanceId($table->getId());
         $this->table->addParam('renderer', $this);
         $this->initFilterForm();
 
