@@ -23,7 +23,9 @@
     },
     "require":  {
         "php": ">=5.4.0",
-        "ttek/tk-framework": "~2.0"
+        "ttek/tk-framework": "~2.0",
+        "ttek/tk-database": "~1.0",
+        "ttek/tk-domtemplate": "~2.0"
     },
     "extra":  {
         "branch-alias":  {
