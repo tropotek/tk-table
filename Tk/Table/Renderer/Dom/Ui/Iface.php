@@ -29,7 +29,7 @@ abstract class Iface extends \Dom\Renderer\Renderer implements \Tk\InstanceKey
      * Instance base id
      * @var string
      */
-    protected $iid = '';
+    protected $instanceId = '';
 
 
 
@@ -56,7 +56,7 @@ abstract class Iface extends \Dom\Renderer\Renderer implements \Tk\InstanceKey
      */
     public function makeInstanceKey($key)
     {
-        return $this->iid . '_' . $key;
+        return $this->instanceId . '_' . $key;
     }
 
     /**
@@ -64,7 +64,7 @@ abstract class Iface extends \Dom\Renderer\Renderer implements \Tk\InstanceKey
      */
     public function setInstanceId($str)
     {
-        $this->iid = $str;
+        $this->instanceId = $str;
     }
     
 

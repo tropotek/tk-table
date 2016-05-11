@@ -52,7 +52,7 @@ abstract class Iface extends \Dom\Renderer\Renderer
         if (!$table instanceof Table) return false;
 
         $this->table = $table;
-        $this->table->addParam('renderer', $this);
+        $this->table->setParam('renderer', $this);
         $this->initFilterForm();
 
         return true;

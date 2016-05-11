@@ -39,7 +39,7 @@ class Table implements \Tk\InstanceKey
     /**
      * @var array
      */
-    protected $params = null;
+    protected $paramList = null;
 
     /**
      * @var array
@@ -74,7 +74,7 @@ class Table implements \Tk\InstanceKey
     public function __construct($id, $params = array(), $request = null, $session = null)
     {
         $this->id = $id;
-        $this->params = $params;
+        $this->paramList = $params;
 
         if (!$request) {
             $request = &$_REQUEST;
@@ -140,8 +140,8 @@ class Table implements \Tk\InstanceKey
     /**
      * Add a field to the filter form
      *
-     * @param \Tk\Form\Element $field
-     * @return \Tk\Form\Element
+     * @param \Tk\Form\Field\Iface $field
+     * @return \Tk\Form\Field\Iface
      */
     public function addFilter($field)
     {
@@ -237,8 +237,8 @@ class Table implements \Tk\InstanceKey
      */
     public function getParam($name)
     {
-        if (!empty($this->params[$name])) {
-            return $this->params[$name];
+        if (!empty($this->paramList[$name])) {
+            return $this->paramList[$name];
         }
     }
 
@@ -247,9 +247,9 @@ class Table implements \Tk\InstanceKey
      * @param mixed $value
      * @return $this
      */
-    public function addParam($name, $value)
+    public function setParam($name, $value)
     {
-        $this->params[$name] = $value;
+        $this->paramList[$name] = $value;
         return $this;
     }
 
@@ -260,7 +260,7 @@ class Table implements \Tk\InstanceKey
      */
     public function getParamList()
     {
-        return $this->params;
+        return $this->paramList;
     }
 
     /**
@@ -269,7 +269,7 @@ class Table implements \Tk\InstanceKey
      */
     public function setParamList($params)
     {
-        $this->params = $params;
+        $this->paramList = $params;
         return $this;
     }
 
@@ -454,6 +454,6 @@ class Table implements \Tk\InstanceKey
      */
     public function makeInstanceKey($key)
     {
-        return $this->id . '_' . $key;
+        return $this->getId() . '_' . $key;
     }
 }
