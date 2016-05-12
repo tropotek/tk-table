@@ -37,9 +37,9 @@ class Table implements \Tk\InstanceKey
     protected $cellList = array();
 
     /**
-     * @var array
+     * @var array|\ArrayAccess
      */
-    protected $paramList = null;
+    protected $paramList = array();
 
     /**
      * @var array
