@@ -13,7 +13,11 @@ use \Tk\Table\Cell;
  */
 class Csv extends Button
 {
-
+    
+    /**
+     * @var \Tk\Db\Pdo
+     */
+    protected $db = null;
 
     /**
      * @var string
@@ -23,13 +27,15 @@ class Csv extends Button
     /**
      * Create
      *
+     * @param \Tk\Db\Pdo $db
      * @param string $name
      * @param string $checkboxName
      * @param string $icon
      */
-    public function __construct($name = 'csv', $checkboxName = 'id', $icon = 'glyphicon glyphicon-remove')
+    public function __construct($db, $name = 'csv', $checkboxName = 'id', $icon = 'glyphicon glyphicon-remove')
     {
         parent::__construct($name, $icon);
+        $this->db = $db;
         $this->checkboxName = $checkboxName;
     }
 
@@ -86,7 +92,7 @@ class Csv extends Button
                 $sql = substr($sql, 0, strrpos($sql, 'LIMIT'));
             }
 
-            $stmt = \Tk\Config::getInstance()->getDb()->prepare($sql);
+            $stmt = $this->db->prepare($sql);
             $stmt->execute($st->getBindParams());
             $fullList = \Tk\Db\ArrayObject::createFromMapper($list->getMapper(), $stmt);
         }
