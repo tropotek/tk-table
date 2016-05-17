@@ -63,7 +63,7 @@ class Table extends Iface
         //  Save to session
         $this->getTable()->saveFilterSession();
         $this->getTable()->resetOffsetSession();
-        \Tk\Url::create()->redirect();
+        \Tk\Uri::create()->redirect();
     }
 
     public function doClear($form)
@@ -71,7 +71,7 @@ class Table extends Iface
         // Clear session
         $this->getTable()->clearFilterSession();
         $this->getTable()->resetOffsetSession();
-        \Tk\Url::create()->redirect();
+        \Tk\Uri::create()->redirect();
     }
 
     /**
@@ -109,7 +109,7 @@ class Table extends Iface
         // render outer table wrapper (IE: <table> tag stuff)
         $template->setAttr('table', 'id', $this->getTable()->getId());
         $template->setAttr('form', 'id', $this->getTable()->getId().'_form');
-        $template->setAttr('form', 'action', \Tk\Url::create());
+        $template->setAttr('form', 'action', \Tk\Uri::create());
         $template->setAttr('form', 'method', 'post');
 
         $this->showHeader();

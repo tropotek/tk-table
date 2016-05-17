@@ -32,7 +32,7 @@ class Pager extends Iface
     protected $maxPages = 10;
 
     /**
-     * @var \Tk\Url
+     * @var \Tk\Uri
      */
     protected $pageUrl = null;
 
@@ -51,7 +51,7 @@ class Pager extends Iface
         $this->limit = (int)$limit;
         $this->offset = (int)$offset;
 
-        $this->pageUrl = \Tk\Url::create();
+        $this->pageUrl = \Tk\Uri::create();
     }
 
 
@@ -81,10 +81,10 @@ class Pager extends Iface
     /**
      * Set the new page Url, all pager urls will be created from this url
      *
-     * @param \Tk\Url $url
+     * @param \Tk\Uri $url
      * @return $this
      */
-    public function setPageUrl(\Tk\Url $url)
+    public function setPageUrl(\Tk\Uri $url)
     {
         $this->pageUrl = $url;
         return $this;

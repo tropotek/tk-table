@@ -2,7 +2,7 @@
 namespace Tk\Table\Cell;
 
 use Tk\Table;
-use Tk\Url;
+use Tk\Uri;
 
 /**
  * The interface for a table Cell
@@ -144,7 +144,7 @@ abstract class Iface
      *
      * @param mixed $obj
      * @param string $property
-     * @return Url|null
+     * @return Uri|null
      */
     public function getCellUrl($obj, $property = 'id')
     {
@@ -152,7 +152,7 @@ abstract class Iface
             return null;
         }
 
-        $url = Url::create($this->getUrl());
+        $url = Uri::create($this->getUrl());
         $prop = $property;
         if ($property = 'id') {
             $class = get_class($obj);
@@ -171,7 +171,7 @@ abstract class Iface
     /**
      * Create an order by url for this cell.
      *
-     * @return Url|null
+     * @return Uri|null
      */
     public function getOrderUrl()
     {
@@ -184,7 +184,7 @@ abstract class Iface
         }
         $key = $this->getTable()->makeInstanceKey(\Tk\Db\Mapper::PARAM_ORDER_BY);
         $pre = $this->getOrderProperty() . ' ';
-        $url = Url::create();
+        $url = Uri::create();
         if ($order == Table::ORDER_ASC) {
             $url->set($key, $pre . Table::ORDER_DESC);
         } else if ($order == Table::ORDER_DESC) {
@@ -199,7 +199,7 @@ abstract class Iface
     /**
      * Set the default cell data url
      *
-     * @param Url $url
+     * @param Uri $url
      * @return $this
      */
     public function setUrl($url)
@@ -211,7 +211,7 @@ abstract class Iface
     /**
      * Get the default data URL
      *
-     * @return Url
+     * @return Uri
      */
     public function getUrl()
     {

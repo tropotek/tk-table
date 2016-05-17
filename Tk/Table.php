@@ -88,7 +88,7 @@ class Table implements \Tk\InstanceKey
 
         $this->form = new Form($id.'Filter', $request);
         $this->form->setParamList($params);
-        $this->form->setAttr('action', \Tk\Url::create());
+        $this->form->setAttr('action', \Tk\Uri::create());
         $this->form->addCss('form-inline');
 
         //Clear the DB tool session. When testing only....
@@ -431,7 +431,7 @@ class Table implements \Tk\InstanceKey
 
         if ($tool->updateFromArray($this->request)) {
             $this->session[$this->makeInstanceKey($key)] = $tool->toArray();
-            \Tk\Url::create()
+            \Tk\Uri::create()
                 ->remove($this->makeInstanceKey(\Tk\Db\Mapper::PARAM_ORDER_BY))
                 ->remove($this->makeInstanceKey(\Tk\Db\Mapper::PARAM_LIMIT))
                 ->remove($this->makeInstanceKey(\Tk\Db\Mapper::PARAM_OFFSET))

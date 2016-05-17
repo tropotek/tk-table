@@ -83,7 +83,7 @@ class Delete extends Button
             }
         }
 
-        \Tk\Url::create()->remove($this->getTable()->makeInstanceKey($this->getName()))->redirect();
+        \Tk\Uri::create()->remove($this->getTable()->makeInstanceKey($this->getName()))->redirect();
     }
 
     

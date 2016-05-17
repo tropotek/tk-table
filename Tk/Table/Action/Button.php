@@ -19,7 +19,7 @@ class Button extends Iface
     protected $icon = '';
 
     /**
-     * @var string|\Tk\Url
+     * @var string|\Tk\Uri
      */
     protected $url = null;
 
@@ -29,14 +29,14 @@ class Button extends Iface
      *
      * @param string $name
      * @param string $icon
-     * @param string|\Tk\Url $url
+     * @param string|\Tk\Uri $url
      */
     public function __construct($name, $icon, $url = null)
     {
         parent::__construct($name);
         $this->icon = $icon;
         if ($url)
-            $this->url = \Tk\Url::create($url);
+            $this->url = \Tk\Uri::create($url);
     }
 
     /**
@@ -44,7 +44,7 @@ class Button extends Iface
      * 
      * @param string $name
      * @param string $icon
-     * @param string|\Tk\Url $url
+     * @param string|\Tk\Uri $url
      * @return Button
      */
     static function getInstance($name, $icon, $url = null)
@@ -57,7 +57,7 @@ class Button extends Iface
      */
     public function execute()
     {
-        if ($this->url instanceof \Tk\Url)
+        if ($this->url instanceof \Tk\Uri)
             $this->url->redirect();
     }
 
