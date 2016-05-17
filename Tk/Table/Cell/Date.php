@@ -42,7 +42,7 @@ class Date extends Text
     {
         $value = parent::getPropertyValue($obj, $property);
         if ($value && !$value instanceof \DateTime) {
-            $value = \Tk\Date::parse($value);
+            $value = \Tk\Date::create($value);
         }
         
         if ($value instanceof \DateTime) {
