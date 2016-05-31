@@ -74,9 +74,9 @@ class Delete extends Button
         if (!is_array($selected)) return;
         $i = 0;
 
-        /** @var \Tk\Db\Model $obj */
+        /** @var \Tk\Db\Map\Model $obj */
         foreach($this->getTable()->getList() as $obj) {
-            if (!$obj instanceof \Tk\Db\Model) continue;
+            if (!$obj instanceof \Tk\Db\Map\Model) continue;
             if (in_array($obj->getId(), $selected) && !in_array($obj->getId(), $this->excludeIdList)) {
                 $obj->delete();
                 $i++;

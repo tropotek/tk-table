@@ -116,7 +116,7 @@ class Table extends Iface
 
         $this->showBody();
 
-        if ($this->getTable()->getList() instanceof \Tk\Db\ArrayObject && $this->getTable()->getList()->getTool()) {
+        if ($this->getTable()->getList() instanceof \Tk\Db\Map\ArrayObject && $this->getTable()->getList()->getTool()) {
             // Results UI
             $results = Ui\Results::createFromDbArray($this->getTable()->getList());
             $results->setInstanceId($this->getTable()->getId());
@@ -203,7 +203,7 @@ class Table extends Iface
         $template = $this->getTemplate();
         $this->rowClassArr = array();
         $this->rowId = 1;
-        if ($this->getTable()->getList() instanceof \Tk\Db\ArrayObject) {
+        if ($this->getTable()->getList() instanceof \Tk\Db\Map\ArrayObject) {
             $this->rowId = $this->getTable()->getList()->getTool()->getOffset()+1;
         }
         

@@ -5,6 +5,9 @@ use Tk\Table\Action;
 use Tk\Table\Cell;
 use Tk\Form;
 use Tk\Form\Field;
+use Tk\Db\Map\Mapper;
+use Tk\Db\Map\Tool;
+use Tk\Db\Map\ArrayObject;
 
 /**
  * Class Table
@@ -16,6 +19,7 @@ use Tk\Form\Field;
 class Table implements \Tk\InstanceKey
 {
 
+    const PARAM_ORDER_BY = 'orderBy';
     const ORDER_NONE = '';
     const ORDER_ASC = 'ASC';
     const ORDER_DESC = 'DESC';
@@ -67,6 +71,7 @@ class Table implements \Tk\InstanceKey
      * Create a table object
      *
      * @param string $id
+     * 
      * @param array $params
      * @param array|\ArrayAccess $request
      * @param array|\ArrayAccess $session
@@ -88,7 +93,6 @@ class Table implements \Tk\InstanceKey
 
         $this->form = new Form($id.'Filter', $request);
         $this->form->setParamList($params);
-        $this->form->setAttr('action', \Tk\Uri::create());
         $this->form->addCss('form-inline');
 
         //Clear the DB tool session. When testing only....
@@ -129,80 +133,9 @@ class Table implements \Tk\InstanceKey
     }
 
     /**
-     *
-     * @return Form
-     */
-    public function getFilterForm()
-    {
-        return $this->form;
-    }
-
-    /**
-     * Add a field to the filter form
-     *
-     * @param \Tk\Form\Field\Iface $field
-     * @return \Tk\Form\Field\Iface
-     */
-    public function addFilter($field)
-    {
-        return $this->getFilterForm()->addField($field);
-    }
-
-    /**
-     * getFilterValues
-     *
-     */
-    public function getFilterValues()
-    {
-        static $x = false;
-        if (!$x) { // execute form on first access
-            $this->form->load($this->getFilterSession());
-            $this->getFilterForm()->execute();
-        }
-        return $this->getFilterForm()->getValues();
-    }
-
-    /**
-     * Clear the filter form session data.
-     * This should be called from teh clear filter event usually
-     *
-     * @return $this
-     */
-    public function clearFilterSession()
-    {
-        unset($this->session[$this->form->getId()]);
-        return $this;
-    }
-
-    /**
-     * Save the filter form session data
-     * This should be called from the search filter event
-     *
-     * @return $this
-     */
-    public function saveFilterSession()
-    {
-        $this->session[$this->form->getId()] = $this->form->getValues();
-        return $this;
-    }
-
-    /**
-     * Return the session array for the filter form
-     *
-     * @return array|mixed
-     */
-    public function getFilterSession()
-    {
-        if (isset($this->session[$this->form->getId()])) {
-            return $this->session[$this->form->getId()];
-        }
-        return array();
-    }
-
-    /**
      * Get the data list array
      *
-     * @return array|\Tk\Db\ArrayObject
+     * @return array
      */
     public function getList()
     {
@@ -210,7 +143,7 @@ class Table implements \Tk\InstanceKey
     }
 
     /**
-     * @param array|\Tk\Db\ArrayObject $list
+     * @param array $list
      * @return $this
      */
     public function setList($list)
@@ -347,6 +280,93 @@ class Table implements \Tk\InstanceKey
         return $this->actionList;
     }
 
+    
+    
+    
+    
+    
+    
+
+    /**
+     *
+     * @return Form
+     */
+    public function getFilterForm()
+    {
+        return $this->form;
+    }
+
+    /**
+     * Add a field to the filter form
+     *
+     * @param \Tk\Form\Field\Iface $field
+     * @return \Tk\Form\Field\Iface
+     */
+    public function addFilter($field)
+    {
+        return $this->getFilterForm()->addField($field);
+    }
+
+    /**
+     * getFilterValues
+     *
+     */
+    public function getFilterValues()
+    {
+        static $x = false;
+        if (!$x) { // execute form on first access
+            $this->form->load($this->getFilterSession());
+            $this->getFilterForm()->execute();
+        }
+        return $this->getFilterForm()->getValues();
+    }
+
+    /**
+     * Clear the filter form session data.
+     * This should be called from the clear filter event usually
+     *
+     * @return $this
+     */
+    public function clearFilterSession()
+    {
+        unset($this->session[$this->form->getId()]);
+        return $this;
+    }
+
+    /**
+     * Save the filter form session data
+     * This should be called from the search filter event
+     *
+     * @return $this
+     */
+    public function saveFilterSession()
+    {
+        $this->session[$this->form->getId()] = $this->form->getValues();
+        return $this;
+    }
+
+    /**
+     * Return the session array for the filter form
+     *
+     * @return array|mixed
+     */
+    public function getFilterSession()
+    {
+        if (isset($this->session[$this->form->getId()])) {
+            return $this->session[$this->form->getId()];
+        }
+        return array();
+    }
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
     /**
      * Get the active order By value
      *
@@ -377,14 +397,26 @@ class Table implements \Tk\InstanceKey
         return '';
     }
     
+    /**
+     * Get the property and order value from the Request or params
+     *
+     * EG: from "lastName DESC" TO array('lastName', 'DESC');
+     *
+     * @return array
+     */
+    private function getOrderStatus()
+    {
+        if ($this->getList() instanceof ArrayObject) {
+            return explode(' ', $this->getList()->getTool()->getOrderBy());
+        }
+        return array();
+    }
     
-    
-
     /**
      * Reset the db tool offset to 0
      *
      * @return $this
-     * @todo: This method should be more closly associated to the DbTool object or in a helper
+     * @todo: This method should be more closely associated to the DbTool object or in a helper
      */
     public function resetOffsetSession()
     {
@@ -398,31 +430,16 @@ class Table implements \Tk\InstanceKey
     }
 
     /**
-     * Get the property and order value from the Request or params
-     *
-     * EG: from "lastName DESC" TO array('lastName', 'DESC');
-     *
-     * @return array
-     */
-    private function getOrderStatus()
-    {
-        if ($this->getList() instanceof \Tk\Db\ArrayObject) {
-            return explode(' ', $this->getList()->getTool()->getOrderBy());
-        }
-        return array();
-    }
-
-    /**
      * Create a DbTool from the request using the table ID and
      * default parameters...
      *
      * @param string $defaultOrderBy
      * @param int $defaultLimit
-     * @return \Tk\Db\Tool
+     * @return Tool
      */
     public function makeDbTool($defaultOrderBy = '', $defaultLimit = 25)
     {
-        $tool = \Tk\Db\Tool::create($defaultOrderBy, $defaultLimit);
+        $tool = Tool::create($defaultOrderBy, $defaultLimit);
         $key = 'dbTool';
 
         if (isset($this->session[$this->makeInstanceKey($key)])) {
@@ -432,12 +449,12 @@ class Table implements \Tk\InstanceKey
         if ($tool->updateFromArray($this->request)) {
             $this->session[$this->makeInstanceKey($key)] = $tool->toArray();
             \Tk\Uri::create()
-                ->delete($this->makeInstanceKey(\Tk\Db\Mapper::PARAM_ORDER_BY))
-                ->delete($this->makeInstanceKey(\Tk\Db\Mapper::PARAM_LIMIT))
-                ->delete($this->makeInstanceKey(\Tk\Db\Mapper::PARAM_OFFSET))
-                ->delete($this->makeInstanceKey(\Tk\Db\Mapper::PARAM_GROUP_BY))
-                ->delete($this->makeInstanceKey(\Tk\Db\Mapper::PARAM_HAVING))
-                ->delete($this->makeInstanceKey(\Tk\Db\Mapper::PARAM_DISTINCT))
+                ->delete($this->makeInstanceKey(Mapper::PARAM_ORDER_BY))
+                ->delete($this->makeInstanceKey(Mapper::PARAM_LIMIT))
+                ->delete($this->makeInstanceKey(Mapper::PARAM_OFFSET))
+                ->delete($this->makeInstanceKey(Mapper::PARAM_GROUP_BY))
+                ->delete($this->makeInstanceKey(Mapper::PARAM_HAVING))
+                ->delete($this->makeInstanceKey(Mapper::PARAM_DISTINCT))
                 ->redirect();
         }
 
@@ -456,4 +473,7 @@ class Table implements \Tk\InstanceKey
     {
         return $this->getId() . '_' . $key;
     }
+    
+    
+    
 }

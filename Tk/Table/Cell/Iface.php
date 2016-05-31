@@ -182,7 +182,7 @@ abstract class Iface
         if ($this->getOrderProperty() == $this->getTable()->getOrderProperty()) {
             $order = $this->getTable()->getOrder();
         }
-        $key = $this->getTable()->makeInstanceKey(\Tk\Db\Mapper::PARAM_ORDER_BY);
+        $key = $this->getTable()->makeInstanceKey(Table::PARAM_ORDER_BY);
         $pre = $this->getOrderProperty() . ' ';
         $url = Uri::create();
         if ($order == Table::ORDER_ASC) {

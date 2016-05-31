@@ -89,7 +89,7 @@ class Csv extends Button
 
             $stmt = $this->db->prepare($sql);
             $stmt->execute($st->getBindParams());
-            $fullList = \Tk\Db\ArrayObject::createFromMapper($list->getMapper(), $stmt);
+            $fullList = \Tk\Db\Map\ArrayObject::createFromMapper($list->getMapper(), $stmt);
         }
 
 
