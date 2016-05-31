@@ -32,8 +32,7 @@ abstract class Iface extends \Dom\Renderer\Renderer implements \Tk\InstanceKey
     protected $instanceId = '';
 
 
-
-
+    
     /**
      * Set the css classes to append to the root node
      *
@@ -43,8 +42,7 @@ abstract class Iface extends \Dom\Renderer\Renderer implements \Tk\InstanceKey
     {
         $this->cssList[$css] = $css;
     }
-
-
+    
 
     /**
      * Create request keys with prepended string

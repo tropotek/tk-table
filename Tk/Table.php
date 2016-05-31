@@ -6,7 +6,7 @@ use Tk\Table\Cell;
 use Tk\Form;
 use Tk\Form\Field;
 use Tk\Db\Map\Mapper;
-use Tk\Db\Map\Tool;
+use Tk\Db\Tool;
 use Tk\Db\Map\ArrayObject;
 
 /**
@@ -449,12 +449,12 @@ class Table implements \Tk\InstanceKey
         if ($tool->updateFromArray($this->request)) {
             $this->session[$this->makeInstanceKey($key)] = $tool->toArray();
             \Tk\Uri::create()
-                ->delete($this->makeInstanceKey(Mapper::PARAM_ORDER_BY))
-                ->delete($this->makeInstanceKey(Mapper::PARAM_LIMIT))
-                ->delete($this->makeInstanceKey(Mapper::PARAM_OFFSET))
-                ->delete($this->makeInstanceKey(Mapper::PARAM_GROUP_BY))
-                ->delete($this->makeInstanceKey(Mapper::PARAM_HAVING))
-                ->delete($this->makeInstanceKey(Mapper::PARAM_DISTINCT))
+                ->delete($this->makeInstanceKey(Tool::PARAM_ORDER_BY))
+                ->delete($this->makeInstanceKey(Tool::PARAM_LIMIT))
+                ->delete($this->makeInstanceKey(Tool::PARAM_OFFSET))
+                ->delete($this->makeInstanceKey(Tool::PARAM_GROUP_BY))
+                ->delete($this->makeInstanceKey(Tool::PARAM_HAVING))
+                ->delete($this->makeInstanceKey(Tool::PARAM_DISTINCT))
                 ->redirect();
         }
 
