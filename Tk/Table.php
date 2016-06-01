@@ -143,7 +143,7 @@ class Table implements \Tk\InstanceKey
     }
 
     /**
-     * @param array $list
+     * @param array|\ArrayAccess|\Iterator $list
      * @return $this
      */
     public function setList($list)
