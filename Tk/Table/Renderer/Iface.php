@@ -10,8 +10,9 @@ use \Tk\Table\Cell;
  * @author Michael Mifsud <info@tropotek.com>
  * @link http://www.tropotek.com/
  * @license Copyright 2015 Michael Mifsud
+ * @todo Major coupling issue here with the Table and Dom libs, need to remove that dependency 
  */
-abstract class Iface extends \Dom\Renderer\Renderer
+abstract class Iface extends \Dom\Renderer\Renderer implements \Dom\Renderer\DisplayInterface
 {
 
     /**
