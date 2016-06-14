@@ -116,7 +116,7 @@ class Table extends Iface
 
         $this->showBody();
 
-        if ($this->getTable()->getList() instanceof \Tk\Db\Map\ArrayObject && $this->getTable()->getList()->getTool()) {
+        if (count($this->getTable()->getList()) && $this->getTable()->getList() instanceof \Tk\Db\Map\ArrayObject && $this->getTable()->getList()->getTool()) {
             // Results UI
             $results = Ui\Results::createFromDbArray($this->getTable()->getList());
             $results->setInstanceId($this->getTable()->getId());
@@ -273,7 +273,7 @@ class Table extends Iface
             if ($renderer instanceof \Dom\Renderer\DisplayInterface) {
                 $renderer->show();
             }
-            if ($renderer instanceof \Dom\Renderer\DisplayInterface) {
+            if ($renderer instanceof \Dom\Renderer\RendererInterface) {
                 $template->appendTemplate('foot', $renderer->getTemplate());
             } else if ($renderer instanceof \Dom\Template) {
                 $template->appendTemplate('foot', $renderer);

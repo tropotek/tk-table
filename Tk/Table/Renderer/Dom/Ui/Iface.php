@@ -10,7 +10,7 @@ use Tk\Table;
  * @link http://www.tropotek.com/
  * @license Copyright 2015 Michael Mifsud
  */
-abstract class Iface extends \Dom\Renderer\Renderer implements \Tk\InstanceKey
+abstract class Iface extends \Dom\Renderer\Renderer implements \Tk\InstanceKey, \Dom\Renderer\DisplayInterface
 {
 
     const PARAM_LIMIT = 'limit';
