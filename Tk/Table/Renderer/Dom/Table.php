@@ -267,11 +267,13 @@ class Table extends Iface
     protected function showFooter()
     {
         $template = $this->getTemplate();
-
         // Render any footer widgets
         foreach($this->getFooterRenderList() as $renderer) {
-            if ($renderer instanceof \Dom\Renderer\Iface) {
+            // TODO: should this reside here
+            if ($renderer instanceof \Dom\Renderer\DisplayInterface) {
                 $renderer->show();
+            }
+            if ($renderer instanceof \Dom\Renderer\DisplayInterface) {
                 $template->appendTemplate('foot', $renderer->getTemplate());
             } else if ($renderer instanceof \Dom\Template) {
                 $template->appendTemplate('foot', $renderer);
