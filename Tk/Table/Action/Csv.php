@@ -32,7 +32,7 @@ class Csv extends Button
      * @param string $checkboxName
      * @param string $icon
      */
-    public function __construct($db, $name = 'csv', $checkboxName = 'id', $icon = 'glyphicon glyphicon-remove')
+    public function __construct($db, $name = 'csv', $checkboxName = 'id', $icon = 'glyphicon glyphicon-list-alt')
     {
         parent::__construct($name, $icon);
         $this->db = $db;
@@ -47,7 +47,7 @@ class Csv extends Button
      * @param string $icon
      * @return Csv
      */
-    static function getInstance($name = 'csv', $checkboxName = 'id', $icon = 'glyphicon glyphicon-remove')
+    static function getInstance($name = 'csv', $checkboxName = 'id', $icon = 'glyphicon glyphicon-list-alt')
     {
         return new self($name, $checkboxName, $icon);
     }
