@@ -440,6 +440,7 @@ class Table implements \Tk\InstanceKey
     public function makeDbTool($defaultOrderBy = '', $defaultLimit = 25)
     {
         $tool = Tool::create($defaultOrderBy, $defaultLimit);
+        $tool->setInstanceId($this->getId());
         $key = 'dbTool';
 
         if (isset($this->session[$this->makeInstanceKey($key)])) {
