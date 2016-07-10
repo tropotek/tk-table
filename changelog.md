@@ -1,5 +1,20 @@
 #CHANGELOG#
 
+Ver 2.0.3 [2016-07-10]:
+-------------------------------
+ - Added History, Search pages
+ - Added Link management
+ - Added Lock management
+ - Finished user login, register
+ - Started Wiki pages and routing
+ - Updated RendererInterface and seperated teh show() to DisplayInterface
+ - Finalised base template site
+ - Fixed calles to new DB objects
+ - Fixed Url to Uri class names and methods
+ - Started to implement PSR7 interfaces, this will break most things using the URL
+ - Updated code, added an update.md with info for the updated codes...
+
+
 Ver 2.0.2 [2016-04-14]:
 -------------------------------
  - Merge branch 'master' of git://github.com/tropotek/tk-table
