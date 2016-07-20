@@ -54,7 +54,7 @@ abstract class Iface
     protected $orderProperty = null;
 
     /**
-     * @var string
+     * @var string|Uri
      */
     protected $url = null;
 
@@ -62,6 +62,13 @@ abstract class Iface
      * @var Table
      */
     protected $table = null;
+
+    /**
+     * The max numbers of characters to display
+     *      0 = no limit
+     * @var int
+     */
+    protected $charLimit = 0;
 
 
     /**
@@ -101,6 +108,17 @@ abstract class Iface
         return $this->getPropertyValue($obj, $this->getProperty());
     }
 
+    /**
+     * Use 0 to disable character limit
+     *
+     * @param $i
+     * @return $this
+     */
+    public function setCharacterLimit($i)
+    {
+        $this->charLimit = (int)$i;
+        return $this;
+    }
 
     /**
      * Get the property value from the object
@@ -115,28 +133,34 @@ abstract class Iface
      */
     public function getPropertyValue($obj, $property)
     {
+        $value = '';
         if (is_array($obj) && isset($obj[$property])) {
-            return $obj[$property];
+            $value = $obj[$property];
+        } else {
+            // Try to return property
+            if (property_exists($obj, $property)) {
+                $value = $obj->{$property};
+            } else {
+                // Get property by method if accessor exists
+                $method = 'get' . ucfirst($property);
+                if (!method_exists($obj, $method)) {
+                    $method = 'is' . ucfirst($property);
+                }
+                if (!method_exists($obj, $method)) {
+                    $method = 'has' . ucfirst($property);
+                }
+                if (!method_exists($obj, $method)) {
+                    $method = '';
+                }
+                if ($method) {
+                    $value = $obj->$method();
+                }
+            }
         }
-        // Try to return property
-        if (property_exists($obj, $property)) {
-            return $obj->{$property};
+        if ($this->charLimit) {
+            $value = substr($value, 0, $this->charLimit);
         }
-        // Get property by method if accessor exists
-        $method = 'get' . ucfirst($property);
-        if (!method_exists($obj, $method)) {
-            $method = 'is' . ucfirst($property);
-        }
-        if (!method_exists($obj, $method)) {
-            $method = 'has' . ucfirst($property);
-        }
-        if (!method_exists($obj, $method)) {
-            $method = '';
-        }
-        if ($method) {
-            return $obj->$method();
-        }
-        return '--';
+        return $value;
     }
 
     /**
@@ -211,7 +235,7 @@ abstract class Iface
     /**
      * Get the default data URL
      *
-     * @return Uri
+     * @return Uri|string
      */
     public function getUrl()
     {
@@ -356,7 +380,7 @@ abstract class Iface
      * If no parameter sent the array is cleared.
      *
      * @param array $arr
-     * @return array
+     * @return $this
      */
     public function setRowCssList($arr = array())
     {
@@ -403,7 +427,7 @@ abstract class Iface
      * If no parameter sent the array is cleared.
      *
      * @param array $arr
-     * @return array
+     * @return $this
      */
     public function setCellCssList($arr = array())
     {
