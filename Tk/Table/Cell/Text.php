@@ -12,7 +12,6 @@ namespace Tk\Table\Cell;
 class Text extends Iface
 {
 
-
     /**
      *
      * @return string
@@ -41,4 +40,5 @@ class Text extends Iface
         }
         return $str;
     }
+
 }

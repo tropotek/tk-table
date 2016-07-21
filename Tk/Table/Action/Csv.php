@@ -92,7 +92,6 @@ class Csv extends Button
             $fullList = \Tk\Db\Map\ArrayObject::createFromMapper($list->getMapper(), $stmt);
         }
 
-
         // Output the CSV data
         $out = fopen('php://output', 'w');
 
@@ -123,8 +122,6 @@ class Csv extends Button
         fclose($out);
         exit;
     }
-
-
 
     /**
      * @return string|\Dom\Template
