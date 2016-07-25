@@ -47,32 +47,6 @@ class Table extends Iface
         return $obj;
     }
 
-    /**
-     *
-     */
-    protected function initFilterForm()
-    {
-        // Add Filter button events
-        $this->getTable()->addFilter(new Event\Button('search', array($this, 'doSearch')));
-        $this->getTable()->addFilter(new Event\Button('clear', array($this, 'doClear')));
-
-    }
-
-    public function doSearch($form)
-    {
-        //  Save to session
-        $this->getTable()->saveFilterSession();
-        $this->getTable()->resetOffsetSession();
-        \Tk\Uri::create()->redirect();
-    }
-
-    public function doClear($form)
-    {
-        // Clear session
-        $this->getTable()->clearFilterSession();
-        $this->getTable()->resetOffsetSession();
-        \Tk\Uri::create()->redirect();
-    }
 
     /**
      * Get the default form renderer object

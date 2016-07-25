@@ -175,7 +175,7 @@ abstract class Iface
      * If no parameter sent the array is cleared.
      *
      * @param array $arr
-     * @return array
+     * @return $this
      */
     public function setCssList($arr = array())
     {

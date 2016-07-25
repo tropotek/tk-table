@@ -3,11 +3,8 @@ namespace Tk;
 
 use Tk\Table\Action;
 use Tk\Table\Cell;
-use Tk\Form;
-use Tk\Form\Field;
-use Tk\Db\Map\Mapper;
 use Tk\Db\Tool;
-use Tk\Db\Map\ArrayObject;
+use \Tk\Form\Event;
 
 /**
  * Class Table
@@ -111,12 +108,38 @@ class Table implements \Tk\InstanceKey
             if (!$action instanceof Action\Iface) continue;
             $action->init();
             if ($action->hasFired()) {
-                $action->execute();   
+                $action->execute();
             }
         }
     }
 
-    /**
+
+    protected function initFilterForm()
+    {
+        // Add Filter button events
+        $this->addFilter(new Event\Button($this->makeInstanceKey('search'), array($this, 'doSearch')))->setAttr('value', $this->makeInstanceKey('search'))->setLabel('Search');
+        $this->addFilter(new Event\Button($this->makeInstanceKey('clear'), array($this, 'doClear')))->setAttr('value', $this->makeInstanceKey('clear'))->setLabel('Clear');
+
+    }
+
+    public function doSearch($form)
+    {
+        //  Save to session
+        $this->saveFilterSession();
+        $this->resetOffsetSession();
+        \Tk\Uri::create()->redirect();
+    }
+
+    public function doClear($form)
+    {
+        // Clear session
+        $this->clearFilterSession();
+        $this->resetOffsetSession();
+        \Tk\Uri::create()->redirect();
+    }
+
+
+        /**
      * @return array|\ArrayAccess
      */
     public function &getRequest()
@@ -280,13 +303,6 @@ class Table implements \Tk\InstanceKey
         return $this->actionList;
     }
 
-    
-    
-    
-    
-    
-    
-
     /**
      *
      * @return Form
@@ -304,6 +320,10 @@ class Table implements \Tk\InstanceKey
      */
     public function addFilter($field)
     {
+        if (!$field instanceof \Tk\Form\Event\Iface && !count($this->getFilterForm()->getFieldList())) {
+            $this->initFilterForm();
+        }
+        //$field->setName($this->makeInstanceKey($field->getName()));
         return $this->getFilterForm()->addField($field);
     }
 
@@ -358,14 +378,7 @@ class Table implements \Tk\InstanceKey
         return array();
     }
     
-    
-    
-    
-    
-    
-    
-    
-    
+
     
     /**
      * Get the active order By value
@@ -406,7 +419,7 @@ class Table implements \Tk\InstanceKey
      */
     private function getOrderStatus()
     {
-        if ($this->getList() instanceof ArrayObject) {
+        if ($this->getList() instanceof \Tk\Db\Map\ArrayObject) {
             return explode(' ', $this->getList()->getTool()->getOrderBy());
         }
         return array();

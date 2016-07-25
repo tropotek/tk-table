@@ -54,7 +54,7 @@ abstract class Iface extends \Dom\Renderer\Renderer implements \Dom\Renderer\Dis
 
         $this->table = $table;
         $this->table->setParam('renderer', $this);
-        $this->initFilterForm();
+        //$this->initFilterForm();
 
         return true;
     }
@@ -120,7 +120,7 @@ abstract class Iface extends \Dom\Renderer\Renderer implements \Dom\Renderer\Dis
      *
      * @return mixed
      */
-    abstract protected function initFilterForm();
+    //abstract protected function initFilterForm();
 
     /**
      * Render the table header
