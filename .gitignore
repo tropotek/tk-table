@@ -5,4 +5,5 @@
 *.swp
 *bak*
 _*
+*.iml
 composer.lock
