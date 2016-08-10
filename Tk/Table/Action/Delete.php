@@ -49,7 +49,6 @@ class Delete extends Button
     {
         return new self($name, $checkboxName, $icon);
     }
-    
 
     /**
      * @param $array
@@ -86,8 +85,6 @@ class Delete extends Button
         \Tk\Uri::create()->delete($this->getTable()->makeInstanceKey($this->getName()))->redirect();
     }
 
-    
-    
     /**
      * @return string|\Dom\Template
      */
