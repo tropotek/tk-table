@@ -90,7 +90,7 @@ class Table implements \Tk\InstanceKey
 
         $this->form = new Form($id.'Filter', $request);
         $this->form->setParamList($params);
-        $this->form->addCss('form-inline');
+        $this->form->addCssClass('form-inline');
 
         //Clear the DB tool session. When testing only....
         //unset($this->session[$this->makeInstanceKey('dbTool')]);
