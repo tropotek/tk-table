@@ -80,7 +80,7 @@ class Csv extends Button
                     $fullList[] = $obj;
                 }
             }
-        } else if ($list && $list->getFoundRows() > $list->count()) {
+        } else if ($list && is_object($list) && $list->getFoundRows() > $list->count()) {
             $st = $list->getStatement();
             $sql = $st->queryString;
             if (preg_match('/ LIMIT /i', $sql)) {
