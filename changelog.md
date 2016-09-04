@@ -1,5 +1,24 @@
 #CHANGELOG#
 
+Ver 2.0.4 [2016-09-05]:
+-------------------------------
+ - Fixed the event list manager
+ - Fixed table array handling
+ - Added Html Cell rendderer for the Table lib
+ - Adde new event dispatcher event parsing so we can see what events are available throughout the
+   system getAvailableEvents()
+ - Added Multi Selct to select field and added javascript plugin for dual select.
+ - Added course enrollment system
+ - Modified user management in administration
+ - Added new tk mail lib
+ - Implemented lib into project
+ - Fixed table filter form issues
+ - Checkbox broken still fixing it!
+ - Updated Form File field and javascript plugin
+ - Updated Edit Institution page
+ - Change php version check to gt php5.0.0
+
+
 Ver 2.0.3 [2016-07-10]:
 -------------------------------
  - Added History, Search pages
