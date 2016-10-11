@@ -138,7 +138,7 @@ class Table extends Iface
             if ($html instanceof \Dom\Template) {
                 $template->appendTemplate('actions', $html);
             } else {
-                $template->appendHTML('actions', $html);
+                $template->appendHtml('actions', $html);
             }
         }
 
@@ -161,8 +161,9 @@ class Table extends Iface
             if ($data instanceof \Dom\Template) {
                 $repeat->insertTemplate('th', $data);
             } else {
-                $repeat->insertHTML('th', $data);
+                $repeat->insertHtml('th', $data);
             }
+            $repeat->addClass('th', trim(implode(' ', $cell->getCellCssList())) );
             $repeat->appendRepeat();
         }
     }
@@ -228,7 +229,7 @@ class Table extends Iface
         if ($data instanceof \Dom\Template) {
             $this->cellRepeat->insertTemplate('td', $data);
         } else {
-            $this->cellRepeat->insertHTML('td', $data);
+            $this->cellRepeat->insertHtml('td', $data);
         }
     }
 
