@@ -207,8 +207,9 @@ class Table extends Iface
             $this->showCell($cell, $obj);
             $rowClassArr = array_merge($rowClassArr, $cell->getRowCssList());
             $this->cellRepeat->appendRepeat();
+            $cell->reset();
         }
-        $this->rowRepeat->addClass('td', trim(implode(' ', $rowClassArr)) );
+        $this->rowRepeat->addClass('tr', trim(implode(' ', $rowClassArr)) );
     }
 
     /**
@@ -286,8 +287,8 @@ class Table extends Iface
           </tr>
         </tbody>
       </table>
-      <div choice="foot" var="foot"></div>
-
+      
+      <div class="tk-foot" choice="foot" var="foot"></div>
   </form>
 </div>
 HTML;
