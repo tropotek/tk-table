@@ -14,6 +14,10 @@ use \Tk\Table\Cell;
  */
 abstract class Iface extends \Dom\Renderer\Renderer implements \Dom\Renderer\DisplayInterface
 {
+    /**
+     * @var bool
+     */
+    private $footerEnabled = true;
 
     /**
      * @var Table
@@ -54,7 +58,6 @@ abstract class Iface extends \Dom\Renderer\Renderer implements \Dom\Renderer\Dis
 
         $this->table = $table;
         $this->table->setParam('renderer', $this);
-        //$this->initFilterForm();
 
         return true;
     }
@@ -100,7 +103,7 @@ abstract class Iface extends \Dom\Renderer\Renderer implements \Dom\Renderer\Dis
 
     /**
      * Return the current row being rendered.
-     * tThis value should take any offest into account.
+     * This value should take any offset into account.
      *
      * @return int
      */
@@ -109,7 +112,23 @@ abstract class Iface extends \Dom\Renderer\Renderer implements \Dom\Renderer\Dis
         return $this->rowId;
     }
 
+    /**
+     * @return boolean
+     */
+    public function isFooterEnabled()
+    {
+        return $this->footerEnabled;
+    }
 
+    /**
+     * @param boolean $footerEnabled
+     * @return $this
+     */
+    public function setFooterEnabled($footerEnabled)
+    {
+        $this->footerEnabled = $footerEnabled;
+        return $this;
+    }
 
     /**
      * init the filter form.

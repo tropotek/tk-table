@@ -103,17 +103,40 @@ abstract class Iface
      */
     abstract public function getCellHtml($obj);
 
+
+
+    // ---------------------- persistant properties ----------------------
+    // TODO: Should we handle this better in the overall deign???
+    // -------------------------------------------------------------------
+
     /**
-     * Reset any persistent fields that need to be non-persistant.
+     * @var array
+     */
+    protected $store = array();
+
+    /**
+     * Reset any persistent fields to the state of the last store() call.
      * For things like css classes, attributes, etc...
      * As some fields can be changed on a per-row basis within the cells themselves
      *
      */
     public function reset()
     {
-        $this->setCellCssList(array());
-        $this->setRowCssList(array());
+        $this->setCellCssList($this->store['cellCssList']);
+        $this->setRowCssList($this->store['rowCssList']);
     }
+
+    /**
+     * Save the state of the cell's persistant fields
+     * Call this if you wat temporary values to be stored persistantly
+     */
+    public function store()
+    {
+        $this->store['cellCssList'] = $this->cellCssList;
+        $this->store['rowCssList'] = $this->rowCssList;
+    }
+
+    // -------------------------------------------------------------------
 
     /**
      * @param mixed $obj

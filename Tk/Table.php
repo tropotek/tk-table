@@ -12,6 +12,9 @@ use \Tk\Form\Event;
  * @author Michael Mifsud <info@tropotek.com>
  * @link http://www.tropotek.com/
  * @license Copyright 2015 Michael Mifsud
+ * TODO: Thinking of moving the filter form and actions out to their own objects so we
+ * TODO: can remove the responsibility from the Table ????
+ * TODO: Then I think we can remove the need for a session and request from the Table Object ?? ;-)
  */
 class Table implements \Tk\InstanceKey
 {
@@ -20,7 +23,6 @@ class Table implements \Tk\InstanceKey
     const ORDER_NONE = '';
     const ORDER_ASC = 'ASC';
     const ORDER_DESC = 'DESC';
-
 
     /**
      * @var string
@@ -92,9 +94,6 @@ class Table implements \Tk\InstanceKey
         $this->form->setParamList($params);
         $this->form->addCssClass('form-inline');
 
-        //Clear the DB tool session. When testing only....
-        //unset($this->session[$this->makeInstanceKey('dbTool')]);
-
     }
 
     /**
@@ -117,16 +116,15 @@ class Table implements \Tk\InstanceKey
     protected function initFilterForm()
     {
         // Add Filter button events
-        $this->addFilter(new Event\Button($this->makeInstanceKey('search'), array($this, 'doSearch')))->setAttr('value', $this->makeInstanceKey('search'))->setLabel('Search');
+        $this->addFilter(new Event\Button($this->makeInstanceKey('search'), array($this, 'doSearch')))->setAttr('value', $this->makeInstanceKey('search'))->addCssClass('btn-primary')->setLabel('Search');
         $this->addFilter(new Event\Button($this->makeInstanceKey('clear'), array($this, 'doClear')))->setAttr('value', $this->makeInstanceKey('clear'))->setLabel('Clear');
-
     }
 
     public function doSearch($form)
     {
         //  Save to session
         $this->saveFilterSession();
-        $this->resetOffsetSession();
+        $this->resetSessionOffset();
         \Tk\Uri::create()->redirect();
     }
 
@@ -134,7 +132,7 @@ class Table implements \Tk\InstanceKey
     {
         // Clear session
         $this->clearFilterSession();
-        $this->resetOffsetSession();
+        $this->resetSessionOffset();
         \Tk\Uri::create()->redirect();
     }
 
@@ -189,13 +187,14 @@ class Table implements \Tk\InstanceKey
      * Get a parameter from the array
      *
      * @param $name
-     * @return bool
+     * @return string|mixed
      */
     public function getParam($name)
     {
         if (!empty($this->paramList[$name])) {
             return $this->paramList[$name];
         }
+        return '';
     }
 
     /**
@@ -323,7 +322,6 @@ class Table implements \Tk\InstanceKey
         if (!$field instanceof \Tk\Form\Event\Iface && !count($this->getFilterForm()->getFieldList())) {
             $this->initFilterForm();
         }
-        //$field->setName($this->makeInstanceKey($field->getName()));
         return $this->getFilterForm()->addField($field);
     }
 
@@ -424,20 +422,29 @@ class Table implements \Tk\InstanceKey
         }
         return array();
     }
-    
+
     /**
      * Reset the db tool offset to 0
      *
      * @return $this
-     * @todo: This method should be more closely associated to the DbTool object or in a helper
      */
-    public function resetOffsetSession()
+    public function resetSessionOffset()
     {
-//        if (isset($this->session[$this->makeInstanceKey('dbTool')][$this->makeInstanceKey(self::PARAM_OFFSET)])) {
-//            $this->session[$this->makeInstanceKey('dbTool')][$this->makeInstanceKey(self::PARAM_OFFSET)] = 0;
-//        }
-        if (isset($this->session[$this->makeInstanceKey('dbTool')][$this->makeInstanceKey('offset')])) {
-            $this->session[$this->makeInstanceKey('dbTool')][$this->makeInstanceKey('offset')] = 0;
+        if (isset($this->session[$this->makeInstanceKey('dbTool')][$this->makeInstanceKey(Tool::PARAM_OFFSET)])) {
+            $this->session[$this->makeInstanceKey('dbTool')][$this->makeInstanceKey(Tool::PARAM_OFFSET)] = 0;
+        }
+        return $this;
+    }
+
+    /**
+     * Reset the db tool offset to 0
+     *
+     * @return $this
+     */
+    public function resetSessionTool()
+    {
+        if (isset($this->session[$this->makeInstanceKey('dbTool')])) {
+            $this->session[$this->makeInstanceKey('dbTool')] = 0;
         }
         return $this;
     }
@@ -449,6 +456,7 @@ class Table implements \Tk\InstanceKey
      * @param string $defaultOrderBy
      * @param int $defaultLimit
      * @return Tool
+     * TODO: we could put this into the pagers area of responsibility if we wish to reduce the Table objects complexity
      */
     public function makeDbTool($defaultOrderBy = '', $defaultLimit = 25)
     {

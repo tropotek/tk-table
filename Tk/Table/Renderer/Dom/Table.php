@@ -33,7 +33,6 @@ class Table extends Iface
     protected $rowClassArr = array();
 
 
-
     /**
      * Create a new Renderer.
      *
@@ -90,7 +89,7 @@ class Table extends Iface
 
         $this->showBody();
 
-        if (count($this->getTable()->getList()) && $this->getTable()->getList() instanceof \Tk\Db\Map\ArrayObject && $this->getTable()->getList()->getTool()) {
+        if ($this->isFooterEnabled() && count($this->getTable()->getList()) && $this->getTable()->getList() instanceof \Tk\Db\Map\ArrayObject && $this->getTable()->getList()->getTool()) {
             // Results UI
             $results = Ui\Results::createFromDbArray($this->getTable()->getList());
             $results->setInstanceId($this->getTable()->getId());
@@ -203,6 +202,7 @@ class Table extends Iface
         $rowClassArr = array();
         /** @var \Tk\Table\Cell\Iface $cell */
         foreach($this->getTable()->getCellList() as $i => $cell) {
+            $cell->store();
             $this->cellRepeat = $this->rowRepeat->getRepeat('td');
             $this->showCell($cell, $obj);
             $rowClassArr = array_merge($rowClassArr, $cell->getRowCssList());

@@ -18,7 +18,7 @@ class Text extends Iface
      */
     public function getCellHeader()
     {
-        $str = $this->getLabel();
+        $str = str_replace(array('id', 'Id'), '', $this->getLabel());
         $url = $this->getOrderUrl();
         if ($url) {
             $str = sprintf('<a href="%s" class="noblock" title="Click to order by: %s">%s</a>', htmlentities($url->toString()), $this->getOrderProperty(), $this->getLabel());
@@ -34,9 +34,10 @@ class Text extends Iface
     {
         $propValue = $this->getPropertyValue($obj, $this->getProperty());
         $str = htmlentities($propValue);
+        $label = str_replace(array('id', 'Id'), '', $this->getLabel());
         $url = $this->getCellUrl($obj);
         if ($url) {
-            $str = sprintf('<a href="%s" title="%s">%s</a>', htmlentities($url->toString()), htmlentities($this->getLabel()), htmlentities($propValue));
+            $str = sprintf('<a href="%s" title="%s">%s</a>', htmlentities($url->toString()), htmlentities($label), htmlentities($propValue));
         }
         return $str;
     }
