@@ -125,7 +125,7 @@ class Table implements \Tk\InstanceKey
         //  Save to session
         $this->saveFilterSession();
         $this->resetSessionOffset();
-        \Tk\Uri::create()->redirect();
+        $this->getUri($form)->redirect();
     }
 
     public function doClear($form)
@@ -133,11 +133,26 @@ class Table implements \Tk\InstanceKey
         // Clear session
         $this->clearFilterSession();
         $this->resetSessionOffset();
-        \Tk\Uri::create()->redirect();
+        $this->getUri($form)->redirect();
     }
 
+    /**
+     * @param Form $form
+     * @return Uri
+     */
+    protected function getUri($form = null)
+    {
+        $uri = \Tk\Uri::create();
+        if ($form) {
+            /** @var \Tk\Form\Field\Iface $field */
+            foreach ($form->getFieldList() as $field) {
+                $uri->remove($field->getName());
+            }
+        }
+        return $uri;
+    }
 
-        /**
+    /**
      * @return array|\ArrayAccess
      */
     public function &getRequest()
@@ -471,12 +486,12 @@ class Table implements \Tk\InstanceKey
         if ($tool->updateFromArray($this->request)) {
             $this->session[$this->makeInstanceKey($key)] = $tool->toArray();
             \Tk\Uri::create()
-                ->delete($this->makeInstanceKey(Tool::PARAM_ORDER_BY))
-                ->delete($this->makeInstanceKey(Tool::PARAM_LIMIT))
-                ->delete($this->makeInstanceKey(Tool::PARAM_OFFSET))
-                ->delete($this->makeInstanceKey(Tool::PARAM_GROUP_BY))
-                ->delete($this->makeInstanceKey(Tool::PARAM_HAVING))
-                ->delete($this->makeInstanceKey(Tool::PARAM_DISTINCT))
+                ->remove($this->makeInstanceKey(Tool::PARAM_ORDER_BY))
+                ->remove($this->makeInstanceKey(Tool::PARAM_LIMIT))
+                ->remove($this->makeInstanceKey(Tool::PARAM_OFFSET))
+                ->remove($this->makeInstanceKey(Tool::PARAM_GROUP_BY))
+                ->remove($this->makeInstanceKey(Tool::PARAM_HAVING))
+                ->remove($this->makeInstanceKey(Tool::PARAM_DISTINCT))
                 ->redirect();
         }
 
