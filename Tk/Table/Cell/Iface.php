@@ -27,14 +27,19 @@ abstract class Iface
     protected $showLabel = false;
 
     /**
-     * This is the row object's property name to access
-     * it could be a getter starting with is, get, has or a public property
+     * This is the row object's property name
      * @var string
      */
     protected $property = '';
 
     /**
-     * All classes appended to this tableData cell
+     * All attributes appended to this tableData cell elewment
+     * @var array
+     */
+    protected $cellAttrList = array();
+
+    /**
+     * All classes appended to this tableData cell element
      * @var array
      */
     protected $cellCssList = array();
@@ -67,13 +72,6 @@ abstract class Iface
      * @var Table
      */
     protected $table = null;
-
-    /**
-     * The max numbers of characters to display
-     *      0 = no limit
-     * @var int
-     */
-    protected $charLimit = 0;
 
 
     /**
@@ -148,18 +146,6 @@ abstract class Iface
     }
 
     /**
-     * Use 0 to disable character limit
-     *
-     * @param $i
-     * @return $this
-     */
-    public function setCharacterLimit($i)
-    {
-        $this->charLimit = (int)$i;
-        return $this;
-    }
-
-    /**
      * Get the property value from the object
      * This should be the clean property data with no HTML or rendering attached,
      * unless the rendering code is part of the value as it will be called for
@@ -172,7 +158,8 @@ abstract class Iface
      */
     public function getPropertyValue($obj, $property)
     {
-        return $this->getObjectPropertyValue($obj, $property);
+        $value = $this->getObjectPropertyValue($obj, $property);
+        return $value;
     }
 
     /**
@@ -211,9 +198,6 @@ abstract class Iface
                     $value = $obj->$method();
                 }
             }
-        }
-        if ($this->charLimit) {
-            $value = substr($value, 0, $this->charLimit);
         }
         return $value;
     }
@@ -529,6 +513,56 @@ abstract class Iface
     public function setCellCssList($arr = array())
     {
         $this->cellCssList = $arr;
+        return $this;
+    }
+
+
+
+    /**
+     * Add a cell element attribute
+     *
+     * @param string $name
+     * @param string $value
+     * @return $this
+     */
+    public function addCellAttribute($name, $value)
+    {
+        $this->cellAttrList[$name] = $value;
+        return $this;
+    }
+
+    /**
+     * remove a css element attribute
+     *
+     * @param string $name
+     * @return $this
+     */
+    public function removeCellAttribute($name)
+    {
+        unset($this->cellAttrList[$name]);
+        return $this;
+    }
+
+    /**
+     * Get the element attribute list
+     *
+     * @return array
+     */
+    public function getCellAttributeList()
+    {
+        return $this->cellAttrList;
+    }
+
+    /**
+     * Set the element attribute list
+     * If no parameter sent the array is cleared.
+     *
+     * @param array $arr
+     * @return $this
+     */
+    public function setCellAttributeList($arr = array())
+    {
+        $this->cellAttrList = $arr;
         return $this;
     }
 

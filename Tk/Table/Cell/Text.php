@@ -13,6 +13,25 @@ class Text extends Iface
 {
 
     /**
+     * The max numbers of characters to display
+     *      0 = no limit
+     * @var int
+     */
+    protected $charLimit = 0;
+
+    /**
+     * Use 0 to disable character limit
+     *
+     * @param $i
+     * @return $this
+     */
+    public function setCharacterLimit($i)
+    {
+        $this->charLimit = (int)$i;
+        return $this;
+    }
+
+    /**
      *
      * @return string
      */
@@ -32,12 +51,15 @@ class Text extends Iface
      */
     public function getCellHtml($obj)
     {
-        $propValue = $this->getPropertyValue($obj, $this->getProperty());
+        $value = $propValue = $this->getPropertyValue($obj, $this->getProperty());
+        if ($this->charLimit && strlen($propValue) > $this->charLimit) {
+            $propValue = substr($propValue, 0, $this->charLimit-3).'...';
+        }
+        $this->addCellAttribute('title', $value);
         $str = htmlentities($propValue);
-        $label = str_replace(array('id', 'Id'), '', $this->getLabel());
         $url = $this->getCellUrl($obj);
         if ($url) {
-            $str = sprintf('<a href="%s" title="%s">%s</a>', htmlentities($url->toString()), htmlentities($label), htmlentities($propValue));
+            $str = sprintf('<a href="%s" title="%s">%s</a>', htmlentities($url->toString()), htmlentities($value), htmlentities($propValue));
         }
         return $str;
     }

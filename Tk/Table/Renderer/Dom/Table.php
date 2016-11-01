@@ -227,6 +227,9 @@ class Table extends Iface
         }
         $this->cellRepeat->addClass('td', 'm' . ucfirst($cell->getProperty()));
         $this->cellRepeat->addClass('td', trim(implode(' ', $cell->getCellCssList())) );
+        foreach ($cell->getCellAttributeList() as $name => $value) {
+            $this->cellRepeat->setAttr('td', $name, $value);
+        }
         if ($data instanceof \Dom\Template) {
             $this->cellRepeat->insertTemplate('td', $data);
         } else {
