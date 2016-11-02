@@ -78,6 +78,10 @@ class Table extends Iface
 
         // render outer table wrapper (IE: <table> tag stuff)
         $template->setAttr('table', 'id', $this->getTable()->getId());
+        foreach($this->getTable()->getCssClassList() as $css) {
+            $template->addClass('tk-table', $css);
+        }
+
         $template->setAttr('form', 'id', $this->getTable()->getId().'_form');
         $template->setAttr('form', 'action', \Tk\Uri::create());
         $template->setAttr('form', 'method', 'post');

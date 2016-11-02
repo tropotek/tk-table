@@ -45,6 +45,12 @@ class Table implements \Tk\InstanceKey
     protected $paramList = array();
 
     /**
+     * All classes appended to this table
+     * @var array
+     */
+    protected $cssList = array();
+
+    /**
      * @var array
      */
     protected $list = null;
@@ -546,7 +552,54 @@ class Table implements \Tk\InstanceKey
     {
         return $this->getId() . '_' . $key;
     }
-    
-    
+
+
+
+    /**
+     * Add a cell css class
+     *
+     * @param string $class
+     * @return $this
+     */
+    public function addCssClass($class)
+    {
+        $this->cssList[$class] = $class;
+        return $this;
+    }
+
+    /**
+     * remove a css class
+     *
+     * @param string $class
+     * @return $this
+     */
+    public function removeCssClass($class)
+    {
+        unset($this->cssList[$class]);
+        return $this;
+    }
+
+    /**
+     * Get the css class list
+     *
+     * @return array
+     */
+    public function getCssClassList()
+    {
+        return $this->cssList;
+    }
+
+    /**
+     * Set the css cell class list
+     * If no parameter sent the array is cleared.
+     *
+     * @param array $arr
+     * @return $this
+     */
+    public function setCssClassList($arr = array())
+    {
+        $this->cssList = $arr;
+        return $this;
+    }
     
 }

@@ -40,6 +40,7 @@ class OrderBy extends Text
      */
     public function setTable($table)
     {
+        $table->addCssClass('tk-sortable');
         $table->setFixedOrderBy('orderBy');
         return parent::setTable($table);
     }
