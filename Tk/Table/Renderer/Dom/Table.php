@@ -173,9 +173,9 @@ class Table extends Iface
     {
         $template = $this->getTemplate();
         $this->rowClassArr = array();
-        $this->rowId = 1;
+        $this->rowId = 0;
         if ($this->getTable()->getList() instanceof \Tk\Db\Map\ArrayObject) {
-            $this->rowId = $this->getTable()->getList()->getTool()->getOffset()+1;
+            $this->rowId = $this->getTable()->getList()->getTool()->getOffset();
         }
         
         
@@ -224,7 +224,7 @@ class Table extends Iface
             $this->cellRepeat->setAttr('td', $name, $value);
         }
 
-        $data = $cell->getCellHtml($obj);
+        $data = $cell->getCellHtml($obj, $this->rowId);
         if ($data === null) {
             $data = '&#160;';
         }

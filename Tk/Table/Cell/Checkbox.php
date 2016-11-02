@@ -78,9 +78,10 @@ JS;
 
     /**
      * @param mixed $obj
+     * @param int|null $rowIdx The current row being rendered (0-n) If null no rowIdx available.
      * @return string
      */
-    public function getCellHtml($obj)
+    public function getCellHtml($obj, $rowIdx = null)
     {
         $prop = substr($this->getProperty(), 3);
         $propValue = $this->getPropertyValue($obj, $this->getProperty());

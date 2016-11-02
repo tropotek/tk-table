@@ -64,6 +64,11 @@ class Table implements \Tk\InstanceKey
      */
     protected $session = null;
 
+    /**
+     * @var string
+     */
+    protected $fixedOrderBy = null;
+
 
 
     /**
@@ -399,9 +404,25 @@ class Table implements \Tk\InstanceKey
         }
         return array();
     }
-    
 
-    
+    /**
+     * @return string
+     */
+    public function getFixedOrderBy()
+    {
+        return $this->fixedOrderBy;
+    }
+
+    /**
+     * @param string $fixedOrderBy
+     * @return $this
+     */
+    public function setFixedOrderBy($fixedOrderBy)
+    {
+        $this->fixedOrderBy = $fixedOrderBy;
+        return $this;
+    }
+
     /**
      * Get the active order By value
      *
@@ -412,7 +433,7 @@ class Table implements \Tk\InstanceKey
     public function getOrder()
     {
         $ord = $this->getOrderStatus();
-        if (count($ord)) {
+        if (count($ord) > 2) {
             return trim($ord[1]);
         }
         return self::ORDER_NONE;
@@ -494,8 +515,12 @@ class Table implements \Tk\InstanceKey
         if (isset($this->session[$this->makeInstanceKey($key)])) {
             $tool->updateFromArray($this->session[$this->makeInstanceKey($key)]);
         }
+        $isRequest = $tool->updateFromArray($this->request);
+        if ($this->getFixedOrderBy() !== null) {
+            $tool->setOrderBy($this->getFixedOrderBy());
+        }
 
-        if ($tool->updateFromArray($this->request)) {
+        if ($isRequest) {
             $this->session[$this->makeInstanceKey($key)] = $tool->toArray();
             \Tk\Uri::create()
                 ->remove($this->makeInstanceKey(Tool::PARAM_ORDER_BY))
@@ -506,7 +531,6 @@ class Table implements \Tk\InstanceKey
                 ->remove($this->makeInstanceKey(Tool::PARAM_DISTINCT))
                 ->redirect();
         }
-
         return $tool;
     }
 

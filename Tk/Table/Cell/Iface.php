@@ -95,16 +95,27 @@ abstract class Iface
         $this->setOrderProperty($property);
     }
 
+
     /**
+     * Return the cell header HTML string
      * @return string
      */
-    abstract public function getCellHeader();
+    public function getCellHeader()
+    {
+        $str = str_replace(array('id', 'Id'), '', $this->getLabel());
+        $url = $this->getOrderUrl();
+        if ($url && $this->getTable()->getFixedOrderBy() === null) {
+            $str = sprintf('<a href="%s" class="noblock" title="Click to order by: %s">%s</a>', htmlentities($url->toString()), $this->getOrderProperty(), $this->getLabel());
+        }
+        return $str;
+    }
 
     /**
      * @param mixed $obj
+     * @param int|null $rowIdx The current row being rendered (0-n) If null no rowIdx available.
      * @return string
      */
-    abstract public function getCellHtml($obj);
+    abstract public function getCellHtml($obj, $rowIdx = null);
 
     /**
      * Called when the Table::execute is called
@@ -338,6 +349,7 @@ abstract class Iface
     public function setTable($table)
     {
         $this->table = $table;
+        // $this->init();
         return $this;
     }
 

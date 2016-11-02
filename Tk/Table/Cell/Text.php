@@ -32,36 +32,11 @@ class Text extends Iface
     }
 
     /**
-     *
-     * @return string
-     */
-    public function getCellHeader()
-    {
-        // TODO: Not happy with this here?????
-//        if ($this->getTable()->getList() instanceof \Tk\Db\Map\ArrayObject) {
-//            /** @var \Tk\Db\Map\Mapper $mapper */
-//            $mapper = $this->getTable()->getList()->getMapper();
-//            if ($mapper instanceof \Ts\Db\Mapper) {
-//                $mapProperty = $mapper->getDbMap()->getProperty($this->getOrderProperty());
-//                if ($mapProperty) {
-//                    $this->setOrderProperty($mapProperty->getColumnName());
-//                }
-//            }
-//        }
-
-        $str = str_replace(array('id', 'Id'), '', $this->getLabel());
-        $url = $this->getOrderUrl();
-        if ($url) {
-            $str = sprintf('<a href="%s" class="noblock" title="Click to order by: %s">%s</a>', htmlentities($url->toString()), $this->getOrderProperty(), $this->getLabel());
-        }
-        return $str;
-    }
-
-    /**
      * @param mixed $obj
+     * @param int|null $rowIdx The current row being rendered (0-n) If null no rowIdx available.
      * @return string
      */
-    public function getCellHtml($obj)
+    public function getCellHtml($obj, $rowIdx = null)
     {
         $value = $propValue = $this->getPropertyValue($obj, $this->getProperty());
         if ($this->charLimit && strlen($propValue) > $this->charLimit) {
