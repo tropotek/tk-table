@@ -33,16 +33,16 @@ class OrderBy extends Text
     }
 
     /**
+     * Set table fixed order by (otherwise changing the sort order does not make any sense)
+     *
      * @param \Tk\Table $table
      * @return Iface
      */
     public function setTable($table)
     {
-        // Set table fixed order by (otherwise changing the sort order does not make any sense)
         $table->setFixedOrderBy('orderBy');
         return parent::setTable($table);
     }
-
 
     /**
      *
@@ -57,6 +57,42 @@ class OrderBy extends Text
         if ($obj) {
             $this->className = get_class($obj);
         }
+        /** @var \Tk\Request $request */
+        $request = $this->getTable()->getRequest();
+        if (isset($request[$this->getTable()->makeInstanceKey('doOrderId')])) {
+            $this->doOrder($request);
+        }
+    }
+
+    public function doOrder($request)
+    {
+        $orderStr = $request[$this->getTable()->makeInstanceKey('doOrderId')];
+        if (!preg_match('/([0-9]+)\-([0-9]+)/', $orderStr, $regs)) {
+            throw new \Tk\Table\Exception('Invalid order change parameters');
+        }
+        $mapperClass = $this->className . 'Map';
+        /** @var \Ts\Db\Mapper $mapper */
+        $mapper = $mapperClass::create();
+
+        // TODO: This may be a bit un-secure to leave here....
+        if ($regs[1] == 0 || $regs[2] == 0) {
+            $this->resetOrder($mapper);
+        }
+
+        if (!$mapper instanceof \Ts\Db\Mapper) {
+            throw new \Tk\Table\Exception('Model objects must extend \Ts\Db\Mapper');
+        }
+        $fromObj = $mapper->find($regs[1]);
+        $toObj = $mapper->find($regs[2]);
+
+        if (!$fromObj || !$toObj) {
+            throw new \Tk\Table\Exception('Order change object not found');
+        }
+
+        $this->orderSwap($mapper, $fromObj, $toObj);
+
+        \Tk\Uri::create()->remove($this->getTable()->makeInstanceKey('doOrderId'))->redirect();
+
     }
 
     /**
@@ -89,12 +125,12 @@ class OrderBy extends Text
         $upObj = $this->getListItem($rowIdx-1);
         $dnObj = $this->getListItem($rowIdx+1);
         if ($upObj) {
-            vd('upObj', $upObj->id);
             $upUrl = \Tk\Uri::create()->set($this->getTable()->makeInstanceKey('doOrderId'), $obj->id.'-'.$upObj->id);
             $template->setAttr('upUrl', 'href', $upUrl);
         }
         if ($dnObj) {
-            vd('dnObj', $dnObj->id);
+            $upUrl = \Tk\Uri::create()->set($this->getTable()->makeInstanceKey('doOrderId'), $obj->id.'-'.$dnObj->id);
+            $template->setAttr('dnUrl', 'href', $upUrl);
         }
 
 
@@ -109,6 +145,51 @@ class OrderBy extends Text
         return $template;
     }
 
+    /**
+     * Swap the order of 2 records
+     *
+     * @param \Ts\Db\Mapper $mapper
+     * @param \Tk\Db\Map\Model $fromObj
+     * @param \Tk\Db\Map\Model $toObj
+     * @return int
+     */
+    public function orderSwap($mapper, $fromObj, $toObj)
+    {
+        $property = $mapper->getDbMap()->getProperty($this->getOrderProperty());
+        if (!$property) {
+            return 0;
+        }
+        $pk = $mapper->getPrimaryKey();
+        $query = sprintf('UPDATE %s SET %s = %s WHERE %s = %d',
+            $mapper->getDb()->quoteParameter($mapper->getTable()),
+            $mapper->getDb()->quoteParameter($property->getColumnName()), $mapper->getDb()->quote($toObj->{$property->getPropertyName()}),
+            $mapper->getDb()->quoteParameter($pk), (int)$fromObj->$pk);
+        $mapper->getDb()->exec($query);
+        $query = sprintf('UPDATE %s SET %s = %s WHERE %s = %d', $mapper->getDb()->quoteParameter($mapper->getTable()),
+            $mapper->getDb()->quoteParameter($property->getColumnName()), $mapper->getDb()->quote($fromObj->{$property->getPropertyName()}),
+            $mapper->getDb()->quoteParameter($pk), (int)$toObj->$pk);
+        $mapper->getDb()->exec($query);
+        return 2;
+    }
+
+    /**
+     * Reset the order values to id values.
+     *
+     * @param \Ts\Db\Mapper $mapper
+     * @return \Tk\Db\PDOStatement|null
+     */
+    public function resetOrder($mapper)
+    {
+        $property = $mapper->getDbMap()->getProperty($this->getOrderProperty());
+        if (!$property) {
+            return null;
+        }
+        $pk = $mapper->getPrimaryKey();
+        $query = sprintf('UPDATE %s SET %s = %s', $mapper->getDb()->quoteParameter($mapper->getTable()),
+            $mapper->getDb()->quoteParameter($property->getColumnName()), $mapper->getDb()->quoteParameter($pk));
+        vd($query);
+        return $mapper->getDb()->exec($query);
+    }
 
 
     /**
