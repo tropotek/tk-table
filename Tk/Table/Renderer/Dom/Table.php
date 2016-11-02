@@ -187,6 +187,7 @@ class Table extends Iface
         foreach($this->getTable()->getList() as $i => $obj) {
             $this->rowRepeat = $template->getRepeat('tr');
             $this->showRow($obj);
+            $this->rowRepeat->setAttr('tr', 'data-rowid', $this->rowId);
             $this->rowRepeat->appendRepeat();
             $this->rowId++;
         }
@@ -222,13 +223,13 @@ class Table extends Iface
      */
     protected function showCell(Cell\Iface $cell, $obj)
     {
+        $data = $cell->getCellHtml($obj, $this->rowId);
+
         $this->cellRepeat->addClass('td', 'm' . ucfirst($cell->getProperty()));
         $this->cellRepeat->addClass('td', trim(implode(' ', $cell->getCellCssList())) );
         foreach ($cell->getCellAttributeList() as $name => $value) {
             $this->cellRepeat->setAttr('td', $name, $value);
         }
-
-        $data = $cell->getCellHtml($obj, $this->rowId);
         if ($data === null) {
             $data = '&#160;';
         }

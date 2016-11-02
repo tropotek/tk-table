@@ -60,14 +60,24 @@ class OrderBy extends Text
         }
         /** @var \Tk\Request $request */
         $request = $this->getTable()->getRequest();
-        if (isset($request[$this->getTable()->makeInstanceKey('doOrderId')])) {
-            $this->doOrder($request);
+        if (isset($request[$this->getTable()->makeInstanceKey('orderSwp')])) {
+            if (isset($request['newOrder'])) {
+                $this->doOrderUpdate($request);
+            } else {
+                $this->doOrderSwap($request);
+            }
         }
     }
 
-    public function doOrder($request)
+    /**
+     * Swap 2 object orderBy locations
+     *
+     * @param $request
+     * @throws \Tk\Table\Exception
+     */
+    public function doOrderSwap($request)
     {
-        $orderStr = $request[$this->getTable()->makeInstanceKey('doOrderId')];
+        $orderStr = $request[$this->getTable()->makeInstanceKey('orderSwp')];
         if (!preg_match('/([0-9]+)\-([0-9]+)/', $orderStr, $regs)) {
             throw new \Tk\Table\Exception('Invalid order change parameters');
         }
@@ -75,16 +85,19 @@ class OrderBy extends Text
         /** @var \Ts\Db\Mapper $mapper */
         $mapper = $mapperClass::create();
 
-        // TODO: This may be a bit un-secure to leave here....
-        if ($regs[1] == 0 || $regs[2] == 0) {
-            $this->resetOrder($mapper);
-        }
-
         if (!$mapper instanceof \Ts\Db\Mapper) {
             throw new \Tk\Table\Exception('Model objects must extend \Ts\Db\Mapper');
         }
         $fromObj = $mapper->find($regs[1]);
         $toObj = $mapper->find($regs[2]);
+
+        // Probably not the best way to do this, might be fine for Debug tho
+        if (\Tk\Config::getInstance()->isDebug()) {
+            if (!$fromObj->{$this->getOrderProperty()} || !$toObj->{$this->getOrderProperty()}) {
+                $this->resetOrder($mapper);
+                \Tk\Uri::create()->redirect();
+            }
+        }
 
         if (!$fromObj || !$toObj) {
             throw new \Tk\Table\Exception('Order change object not found');
@@ -92,8 +105,25 @@ class OrderBy extends Text
 
         $this->orderSwap($mapper, $fromObj, $toObj);
 
-        \Tk\Uri::create()->remove($this->getTable()->makeInstanceKey('doOrderId'))->redirect();
+        \Tk\Uri::create()->remove($this->getTable()->makeInstanceKey('orderSwp'))->redirect();
+    }
 
+    /**
+     * Swap 2 object orderBy locations
+     *
+     * @param $request
+     * @throws \Tk\Table\Exception
+     */
+    public function doOrderUpdate($request)
+    {
+        $mapperClass = $this->className . 'Map';
+        /** @var \Ts\Db\Mapper $mapper */
+        $mapper = $mapperClass::create();
+
+        $orderArr = $request['newOrder'];
+        $this->orderUpdate($mapper, $orderArr);
+
+        \Tk\Uri::create()->remove($this->getTable()->makeInstanceKey('orderSwp'))->remove('newOrder')->redirect();
     }
 
     /**
@@ -120,17 +150,19 @@ class OrderBy extends Text
     public function getCellHtml($obj, $rowIdx = null)
     {
         $template = $this->__makeTemplate();
-        $value = $this->getPropertyValue($obj, $this->getProperty());
+        $this->addCellAttribute('data-objectid', $obj->id);
+        $this->addCellCss('tk-orderBy');
+//        $value = $this->getPropertyValue($obj, $this->getProperty());
         //vd($value);
 
         $upObj = $this->getListItem($rowIdx-1);
         $dnObj = $this->getListItem($rowIdx+1);
         if ($upObj) {
-            $upUrl = \Tk\Uri::create()->set($this->getTable()->makeInstanceKey('doOrderId'), $obj->id.'-'.$upObj->id);
+            $upUrl = \Tk\Uri::create()->set($this->getTable()->makeInstanceKey('orderSwp'), $obj->id.'-'.$upObj->id);
             $template->setAttr('upUrl', 'href', $upUrl);
         }
         if ($dnObj) {
-            $upUrl = \Tk\Uri::create()->set($this->getTable()->makeInstanceKey('doOrderId'), $obj->id.'-'.$dnObj->id);
+            $upUrl = \Tk\Uri::create()->set($this->getTable()->makeInstanceKey('orderSwp'), $obj->id.'-'.$dnObj->id);
             $template->setAttr('dnUrl', 'href', $upUrl);
         }
 
@@ -163,14 +195,48 @@ class OrderBy extends Text
         $pk = $mapper->getPrimaryKey();
         $query = sprintf('UPDATE %s SET %s = %s WHERE %s = %d',
             $mapper->getDb()->quoteParameter($mapper->getTable()),
-            $mapper->getDb()->quoteParameter($property->getColumnName()), $mapper->getDb()->quote($toObj->{$property->getPropertyName()}),
+            $mapper->getDb()->quoteParameter($property->getColumnName()), (int)$toObj->{$property->getPropertyName()},
             $mapper->getDb()->quoteParameter($pk), (int)$fromObj->$pk);
         $mapper->getDb()->exec($query);
-        $query = sprintf('UPDATE %s SET %s = %s WHERE %s = %d', $mapper->getDb()->quoteParameter($mapper->getTable()),
-            $mapper->getDb()->quoteParameter($property->getColumnName()), $mapper->getDb()->quote($fromObj->{$property->getPropertyName()}),
+        $query = sprintf('UPDATE %s SET %s = %s WHERE %s = %d',
+            $mapper->getDb()->quoteParameter($mapper->getTable()),
+            $mapper->getDb()->quoteParameter($property->getColumnName()), (int)$fromObj->{$property->getPropertyName()},
             $mapper->getDb()->quoteParameter($pk), (int)$toObj->$pk);
         $mapper->getDb()->exec($query);
         return 2;
+    }
+
+    /**
+     * update all object in the array
+     * array(
+     *   [newPos] => [obj->id]
+     *   0 => 0,
+     *   1 => 1,
+     *   2 => 4,
+     *   3 => 2,
+     *   4 => 3,
+     *   5 => 5
+     * );
+     *
+     * @param \Ts\Db\Mapper $mapper
+     * @param array $updateArray
+     * @return int
+     * @throws \Tk\Table\Exception
+     */
+    public function orderUpdate($mapper, $updateArray)
+    {
+        $property = $mapper->getDbMap()->getProperty($this->getOrderProperty());
+        if (!$property) {
+            throw new \Tk\Table\Exception('OrderBy Property Not Found');
+        }
+        $pk = $mapper->getPrimaryKey();
+        foreach ($updateArray as $order => $id) {
+            $query = sprintf('UPDATE %s SET %s = %s WHERE %s = %d',
+                $mapper->getDb()->quoteParameter($mapper->getTable()),
+                $mapper->getDb()->quoteParameter($property->getColumnName()), (int)$order,
+                $mapper->getDb()->quoteParameter($pk), (int)$id);
+            $mapper->getDb()->exec($query);
+        }
     }
 
     /**
@@ -188,7 +254,6 @@ class OrderBy extends Text
         $pk = $mapper->getPrimaryKey();
         $query = sprintf('UPDATE %s SET %s = %s', $mapper->getDb()->quoteParameter($mapper->getTable()),
             $mapper->getDb()->quoteParameter($property->getColumnName()), $mapper->getDb()->quoteParameter($pk));
-        vd($query);
         return $mapper->getDb()->exec($query);
     }
 
