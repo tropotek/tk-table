@@ -3,8 +3,6 @@ namespace Tk\Table\Renderer\Dom;
 
 use \Tk\Table\Cell;
 use \Tk\Table\Renderer\Iface;
-use \Tk\Form\Field;
-use \Tk\Form\Event;
 use Tk\Form;
 
 /**
@@ -70,8 +68,7 @@ class Table extends Iface
     public function show()
     {
         $template = $this->getTemplate();
-        $this->getTable()->execute();
-
+        //$this->getTable()->execute();
 
         // Render Form
         if (count($this->getTable()->getFilterForm()->getFieldList()) > 2) {
@@ -202,12 +199,12 @@ class Table extends Iface
         $rowClassArr = array();
         /** @var \Tk\Table\Cell\Iface $cell */
         foreach($this->getTable()->getCellList() as $i => $cell) {
-            $cell->store();
+            $cell->storeProperties();
             $this->cellRepeat = $this->rowRepeat->getRepeat('td');
             $this->showCell($cell, $obj);
             $rowClassArr = array_merge($rowClassArr, $cell->getRowCssList());
             $this->cellRepeat->appendRepeat();
-            $cell->reset();
+            $cell->resetProperties();
         }
         $this->rowRepeat->addClass('tr', trim(implode(' ', $rowClassArr)) );
     }
@@ -221,14 +218,15 @@ class Table extends Iface
      */
     protected function showCell(Cell\Iface $cell, $obj)
     {
-        $data = $cell->getCellHtml($obj);
-        if ($data === null) {
-            $data = '&#160;';
-        }
         $this->cellRepeat->addClass('td', 'm' . ucfirst($cell->getProperty()));
         $this->cellRepeat->addClass('td', trim(implode(' ', $cell->getCellCssList())) );
         foreach ($cell->getCellAttributeList() as $name => $value) {
             $this->cellRepeat->setAttr('td', $name, $value);
+        }
+
+        $data = $cell->getCellHtml($obj);
+        if ($data === null) {
+            $data = '&#160;';
         }
         if ($data instanceof \Dom\Template) {
             $this->cellRepeat->insertTemplate('td', $data);

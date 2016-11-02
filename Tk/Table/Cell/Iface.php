@@ -73,6 +73,11 @@ abstract class Iface
      */
     protected $table = null;
 
+    /**
+     * @var array
+     */
+    protected $store = array();
+
 
     /**
      * Create
@@ -101,36 +106,39 @@ abstract class Iface
      */
     abstract public function getCellHtml($obj);
 
-
-
-    // ---------------------- persistant properties ----------------------
-    // TODO: Should we handle this better in the overall deign???
-    // -------------------------------------------------------------------
-
     /**
-     * @var array
+     * Called when the Table::execute is called
      */
-    protected $store = array();
+    public function execute() { }
+
 
     /**
      * Reset any persistent fields to the state of the last store() call.
-     * For things like css classes, attributes, etc...
-     * As some fields can be changed on a per-row basis within the cells themselves
      *
+     * We use this method so a cell can modify its own (and row) properties and
+     * they will be reset to their initial state on each row render.
+     *
+     * @note: Add new properties as required.
      */
-    public function reset()
+    public function resetProperties()
     {
         $this->setCellCssList($this->store['cellCssList']);
+        $this->setCellAttributeList($this->store['cellAttrList']);
         $this->setRowCssList($this->store['rowCssList']);
     }
 
     /**
-     * Save the state of the cell's persistant fields
-     * Call this if you wat temporary values to be stored persistantly
+     * Save the state of the cell's persistent fields
+     *
+     * We use this method so a cell can modify its own (and row) properties and
+     * they will be reset to their initial state on each row render.
+     *
+     * @note: Add new properties as required.
      */
-    public function store()
+    public function storeProperties()
     {
         $this->store['cellCssList'] = $this->cellCssList;
+        $this->store['cellAttrList'] = $this->cellAttrList;
         $this->store['rowCssList'] = $this->rowCssList;
     }
 
@@ -151,7 +159,6 @@ abstract class Iface
      * unless the rendering code is part of the value as it will be called for
      * outputting to other files like XML or CSV.
      *
-     *
      * @param object $obj
      * @param string $property
      * @return mixed
@@ -167,7 +174,6 @@ abstract class Iface
      * This should be the clean property data with no HTML or rendering attached,
      * unless the rendering code is part of the value as it will be called for
      * outputting to other files like XML or CSV.
-     *
      *
      * @param object $obj
      * @param string $property
@@ -267,8 +273,9 @@ abstract class Iface
     /**
      * Set the default cell data url
      *
+     *
      * @param Uri $url
-     * @param string $urlProperty TODO: Should this be set to null and all objects forced to set this. Leave now untill we are sure.
+     * @param string $urlProperty
      * @return $this
      */
     public function setUrl($url, $urlProperty = 'id')
@@ -515,8 +522,6 @@ abstract class Iface
         $this->cellCssList = $arr;
         return $this;
     }
-
-
 
     /**
      * Add a cell element attribute

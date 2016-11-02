@@ -98,17 +98,25 @@ class Table implements \Tk\InstanceKey
 
     /**
      * Execute the table
+     * Generally called in the renderer`s show() method
      *
      */
     public function execute()
     {
-        /** @var Action\Iface $action */
-        foreach($this->getActionList() as $action) {
-            if (!$action instanceof Action\Iface) continue;
-            $action->init();
-            if ($action->hasFired()) {
-                $action->execute();
+        static $run = false;
+        if (!$run) {
+            /** @var Cell\Iface $cell */
+            foreach ($this->getCellList() as $cell) {
+                $cell->execute();
             }
+            /** @var Action\Iface $action */
+            foreach ($this->getActionList() as $action) {
+                $action->init();
+                if ($action->hasTriggered()) {
+                    $action->execute();
+                }
+            }
+            $run = true;
         }
     }
 
@@ -185,6 +193,7 @@ class Table implements \Tk\InstanceKey
     public function setList($list)
     {
         $this->list = $list;
+        $this->execute();
         return $this;
     }
 
@@ -432,8 +441,11 @@ class Table implements \Tk\InstanceKey
      */
     private function getOrderStatus()
     {
+//        if (preg_match('/(\S+) (ASC|DESC)$/i', $this->makeDbTool()->getOrderBy(), $regs)){
+//            return array(trim($regs[1]), $regs[2]);
+//        }
         if ($this->getList() instanceof \Tk\Db\Map\ArrayObject) {
-            return explode(' ', $this->getList()->getTool()->getOrderBy());
+            return explode(' ', $this->makeDbTool()->getOrderBy());
         }
         return array();
     }
@@ -471,7 +483,7 @@ class Table implements \Tk\InstanceKey
      * @param string $defaultOrderBy
      * @param int $defaultLimit
      * @return Tool
-     * TODO: we could put this into the pagers area of responsibility if we wish to reduce the Table objects complexity
+     * TODO: we could put this into the pager`s area of responsibility if we wish to reduce the Table objects complexity
      */
     public function makeDbTool($defaultOrderBy = '', $defaultLimit = 25)
     {

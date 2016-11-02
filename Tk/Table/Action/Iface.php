@@ -71,7 +71,7 @@ abstract class Iface
      *
      * @return bool
      */
-    public function hasFired()
+    public function hasTriggered()
     {
         $request = $this->getTable()->getRequest();
         return !empty($request[$this->getTable()->makeInstanceKey($this->getName())]);

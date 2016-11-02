@@ -37,6 +37,18 @@ class Text extends Iface
      */
     public function getCellHeader()
     {
+        // TODO: Not happy with this here?????
+//        if ($this->getTable()->getList() instanceof \Tk\Db\Map\ArrayObject) {
+//            /** @var \Tk\Db\Map\Mapper $mapper */
+//            $mapper = $this->getTable()->getList()->getMapper();
+//            if ($mapper instanceof \Ts\Db\Mapper) {
+//                $mapProperty = $mapper->getDbMap()->getProperty($this->getOrderProperty());
+//                if ($mapProperty) {
+//                    $this->setOrderProperty($mapProperty->getColumnName());
+//                }
+//            }
+//        }
+
         $str = str_replace(array('id', 'Id'), '', $this->getLabel());
         $url = $this->getOrderUrl();
         if ($url) {
