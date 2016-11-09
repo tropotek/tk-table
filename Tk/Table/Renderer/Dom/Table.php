@@ -280,22 +280,25 @@ class Table extends Iface
 
   <form var="form">
       <div class="tk-actions" var="actions"></div>
-
-      <table border="0" cellpadding="0" cellspacing="0" class="table table-striped table-bordered table-hover" var="table">
-        <thead var="head">
-          <tr>
-            <th var="th" repeat="th"></th>
-          </tr>
-        </thead>
-        <tbody var="body">
-          <tr var="tr" repeat="tr">
-            <td var="td" repeat="td">&#160;</td>
-          </tr>
-        </tbody>
-      </table>
+      
+      <div class="tk-table-wrap">
+        <table border="0" cellpadding="0" cellspacing="0" class="table table-striped table-bordered table-hover" var="table">
+          <thead var="head">
+            <tr>
+              <th var="th" repeat="th"></th>
+            </tr>
+          </thead>
+          <tbody var="body">
+            <tr var="tr" repeat="tr">
+              <td var="td" repeat="td">&#160;</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
       
       <div class="tk-foot" choice="foot" var="foot"></div>
   </form>
+  
 </div>
 HTML;
 
