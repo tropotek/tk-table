@@ -271,6 +271,8 @@ class OrderBy extends Text
     <a href="javascript:;" title="Move Order Up" rel="nofollow" class="btn btn-default btn-xs" var="upUrl"><i class="fa fa-caret-up" var="upIcon"></i></a>
     <a href="javascript:;" title="Move Order Down" rel="nofollow" class="btn btn-default btn-xs" var="dnUrl"><i class="fa fa-caret-down" var="dnIcon"></i></a>
   </div>
+    
+    <a href="javascript:;" title="Click And Drag" rel="nofollow" class="drag"><i class="fa fa-ellipsis-v"></i></a>
 </div>
 HTML;
         return \Dom\Loader::load($html);
