@@ -1,5 +1,18 @@
 #CHANGELOG#
 
+Ver 2.0.5 [2016-11-11]:
+-------------------------------
+ - Minor Code Updates
+ - 252s-dev.vet.unimelb.edu.au
+ - Added OrderBy sortable javascript
+ - Added orderBy table cell...
+ - Started new comment rating sections
+ - Started updating the Youtube queue
+ - Added remote file handlers
+ - Finished the Project Listing
+ - Started added UI controllers for LTI pages
+
+
 Ver 2.0.4 [2016-09-05]:
 -------------------------------
  - Fixed the event list manager
