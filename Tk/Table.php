@@ -521,12 +521,13 @@ class Table implements \Tk\InstanceKey
         if (isset($this->session[$this->makeInstanceKey($key)])) {
             $tool->updateFromArray($this->session[$this->makeInstanceKey($key)]);
         }
-        $isRequest = $tool->updateFromArray($this->request);
+        //$isRequest = $tool->updateFromArray($this->request);
+        $isRequest = $tool->updateFromArray(\Tk\Uri::create()->all());  // Use GET params only
         if ($this->getFixedOrderBy() !== null) {
             $tool->setOrderBy($this->getFixedOrderBy());
         }
 
-        if ($isRequest) {
+        if ($isRequest) {   // note, should only fire on GET requests.
             $this->session[$this->makeInstanceKey($key)] = $tool->toArray();
             \Tk\Uri::create()
                 ->remove($this->makeInstanceKey(Tool::PARAM_ORDER_BY))
@@ -552,7 +553,6 @@ class Table implements \Tk\InstanceKey
     {
         return $this->getId() . '_' . $key;
     }
-
 
 
     /**

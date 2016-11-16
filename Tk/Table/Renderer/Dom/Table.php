@@ -274,14 +274,14 @@ class Table extends Iface
     public function __makeTemplate()
     {
         $xhtml = <<<HTML
-<div class="tk-table table-responsive" var="tk-table">
+<div class="tk-table" var="tk-table">
 
   <div class="tk-filters" var="filters"></div>
 
   <form var="form">
       <div class="tk-actions" var="actions"></div>
       
-      <div class="tk-table-wrap">
+      <div class="tk-table-wrap table-responsive">
         <table border="0" cellpadding="0" cellspacing="0" class="table table-striped table-bordered table-hover" var="table">
           <thead var="head">
             <tr>

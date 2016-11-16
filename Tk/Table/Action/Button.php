@@ -47,9 +47,9 @@ class Button extends Iface
      * @param string|\Tk\Uri $url
      * @return Button
      */
-    static function getInstance($name, $icon, $url = null)
+    static function create($name, $icon, $url = null)
     {
-        return new self($name, $icon, $url);
+        return new static($name, $icon, $url);
     }
     
     /**
@@ -66,23 +66,18 @@ class Button extends Iface
      */
     public function getHtml()
     {
-        // TODO: Implement getHtml() method.
-        $xhtml = <<<XHTML
-<button type="submit" class="btn btn-default btn-xs" var="btn"><i var="icon" choice="icon"></i> </button>
-XHTML;
-        $template = \Dom\Loader::load($xhtml);
-
+        $template = $this->getTemplate();
         if ($this->icon) {
             $template->addClass('icon', $this->icon);
             $template->setChoice('icon');
         }
-        $template->appendHtml('btn', $this->getLabel());
+        $template->appendHtml('btnTitle', $this->getLabel());
 
         $btnId = $this->getTable()->makeInstanceKey($this->getName());
-        $template->setAttr('btn', 'id', 'fid-'.$btnId);
+        //$template->setAttr('btn', 'id', 'fid-'.$btnId);
+        $template->setAttr('btn', 'id', $btnId);
         $template->setAttr('btn', 'name', $btnId);
         $template->setAttr('btn', 'value', $btnId);
-
 
         // Element css class names
         foreach($this->getCssList() as $v) {
@@ -90,6 +85,34 @@ XHTML;
         }
 
         return $template;
+    }
+
+    /**
+     * @return string
+     */
+    public function getIcon()
+    {
+        return $this->icon;
+    }
+
+    /**
+     * @param string $icon
+     */
+    public function setIcon($icon)
+    {
+        $this->icon = $icon;
+    }
+
+    /**
+     *
+     * @return \Dom\Template
+     */
+    public function getTemplate()
+    {
+        $xhtml = <<<XHTML
+<button type="submit" class="btn btn-default btn-xs" var="btn"><i var="icon" choice="icon"></i><span var="btnTitle"></span></button>
+XHTML;
+        return \Dom\Loader::load($xhtml);
     }
 
 

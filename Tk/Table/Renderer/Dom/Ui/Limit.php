@@ -60,7 +60,9 @@ class Limit extends Iface
         }
 
         $select->setValue($this->limit);
-        $select->setAttribute('name', $this->makeInstanceKey(self::PARAM_LIMIT));
+        //$select->setAttribute('name', $this->makeInstanceKey(self::PARAM_LIMIT));
+        $select->setAttribute('name', '');
+        $select->setAttribute('data-name', $this->makeInstanceKey(self::PARAM_LIMIT));
 
         $js = <<<JS
 jQuery(function($) {
@@ -90,7 +92,7 @@ jQuery(function($) {
                 return false;
             }
         }
-        window.location.href = setUrlParam(window.location.href, $(this).attr('name'), $(this).val());
+        window.location.href = setUrlParam(window.location.href, $(this).data('name'), $(this).val());
     });
 
 });
@@ -109,7 +111,7 @@ JS;
     {
         $xhtml = <<<XHTML
 <div class="tk-limit" var="tk-limit">
-    <select class="form-control input-sm" name="limit" var="select">
+    <select class="form-control input-sm" id="limit" var="select">
       <option value="0">-- ALL --</option>
     </select>
 </div>

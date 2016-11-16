@@ -48,7 +48,7 @@ class Csv extends Button
      * @param string $icon
      * @return Csv
      */
-    static function getInstance($db, $name = 'csv', $checkboxName = 'id', $icon = 'glyphicon glyphicon-list-alt')
+    static function create($db, $name = 'csv', $checkboxName = 'id', $icon = 'glyphicon glyphicon-list-alt')
     {
         return new self($db, $name, $checkboxName, $icon);
     }

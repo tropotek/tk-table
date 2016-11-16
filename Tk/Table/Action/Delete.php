@@ -45,9 +45,9 @@ class Delete extends Button
      * @param string $icon
      * @return Delete
      */
-    static function getInstance($name = 'delete', $checkboxName = 'id', $icon = 'glyphicon glyphicon-remove')
+    static function create($name = 'delete', $checkboxName = 'id', $icon = 'glyphicon glyphicon-remove')
     {
-        return new self($name, $checkboxName, $icon);
+        return new static($name, $checkboxName, $icon);
     }
 
     /**
@@ -93,9 +93,9 @@ jQuery(function($) {
 
     var tid = '{$this->getTable()->getId()}';
     var cbName = '{$this->checkboxName}';
-    var btnId = '$btnId';
+    var btnId = '#$btnId';
 
-    $('#fid-'+btnId).on('click', function (e) {
+    $(btnId).on('click', function (e) {
         var selected = $('#'+tid+' input[name^=\''+cbName+'\']:checked');
         if (!selected.length) return false;
         if (!confirm('Are you sure you want to delete the ' + selected.length + ' selected records?')) {
@@ -105,16 +105,16 @@ jQuery(function($) {
     function initCb(e) {
         if (e && e.target.name == 'cb_'+cbName+'_all') {
             if ($(e.target).prop('checked')) {
-                $('#fid-'+btnId).removeClass('disabled');
+                $(btnId).removeClass('disabled');
             } else {
-                $('#fid-'+btnId).addClass('disabled');
+                $(btnId).addClass('disabled');
             }
             return true;
         }
         if ($('#'+tid+' input[name^=\''+cbName+'\']:checked').length) {
-            $('#fid-'+btnId).removeClass('disabled');
+            $(btnId).removeClass('disabled');
         } else {
-            $('#fid-'+btnId).addClass('disabled');
+            $(btnId).addClass('disabled');
         }
     }
 
@@ -125,7 +125,6 @@ jQuery(function($) {
 JS;
         return $js;
     }
-
 
     /**
      * @return string|\Dom\Template
