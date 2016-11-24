@@ -116,11 +116,11 @@ class Table implements \Tk\InstanceKey
     {
         static $run = false;
         if (!$run) {
-            /** @var Cell\Iface $cell */
+            /* @var Cell\Iface $cell */
             foreach ($this->getCellList() as $cell) {
                 $cell->execute();
             }
-            /** @var Action\Iface $action */
+            /* @var Action\Iface $action */
             foreach ($this->getActionList() as $action) {
                 $action->init();
                 if ($action->hasTriggered()) {
@@ -163,7 +163,7 @@ class Table implements \Tk\InstanceKey
     {
         $uri = \Tk\Uri::create();
         if ($form) {
-            /** @var \Tk\Form\Field\Iface $field */
+            /* @var \Tk\Form\Field\Iface $field */
             foreach ($form->getFieldList() as $field) {
                 $uri->remove($field->getName());
             }

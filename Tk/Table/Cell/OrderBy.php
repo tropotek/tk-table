@@ -58,7 +58,7 @@ class OrderBy extends Text
         if ($obj) {
             $this->className = get_class($obj);
         }
-        /** @var \Tk\Request $request */
+        /* @var \Tk\Request $request */
         $request = $this->getTable()->getRequest();
         if (isset($request[$this->getTable()->makeInstanceKey('orderSwp')])) {
             if (isset($request['newOrder'])) {
@@ -82,7 +82,7 @@ class OrderBy extends Text
             throw new \Tk\Table\Exception('Invalid order change parameters');
         }
         $mapperClass = $this->className . 'Map';
-        /** @var \Ts\Db\Mapper $mapper */
+        /* @var \Ts\Db\Mapper $mapper */
         $mapper = $mapperClass::create();
 
         if (!$mapper instanceof \Ts\Db\Mapper) {
@@ -117,7 +117,7 @@ class OrderBy extends Text
     public function doOrderUpdate($request)
     {
         $mapperClass = $this->className . 'Map';
-        /** @var \Ts\Db\Mapper $mapper */
+        /* @var \Ts\Db\Mapper $mapper */
         $mapper = $mapperClass::create();
 
         $orderArr = $request['newOrder'];

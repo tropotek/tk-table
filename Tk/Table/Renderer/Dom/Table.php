@@ -131,7 +131,7 @@ class Table extends Iface
 
         //  Show Actions
 
-        /** @var \Tk\Table\Action\Iface $action */
+        /* @var \Tk\Table\Action\Iface $action */
         foreach($this->getTable()->getActionList() as $action) {
             if (!$action instanceof \Tk\Table\Action\Iface) continue;
             $html = $action->getHtml();
@@ -142,7 +142,7 @@ class Table extends Iface
             }
         }
 
-        /** @var \Tk\Table\Cell\Iface $cell */
+        /* @var \Tk\Table\Cell\Iface $cell */
         foreach($this->getTable()->getCellList() as $cell) {
             $repeat = $template->getRepeat('th');
             if (!$repeat) continue;
@@ -202,7 +202,7 @@ class Table extends Iface
     protected function showRow($obj)
     {
         $rowClassArr = array();
-        /** @var \Tk\Table\Cell\Iface $cell */
+        /* @var \Tk\Table\Cell\Iface $cell */
         foreach($this->getTable()->getCellList() as $i => $cell) {
             $cell->storeProperties();
             $this->cellRepeat = $this->rowRepeat->getRepeat('td');
