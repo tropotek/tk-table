@@ -146,7 +146,6 @@ class Table extends Iface
         foreach($this->getTable()->getCellList() as $cell) {
             $repeat = $template->getRepeat('th');
             if (!$repeat) continue;
-
             if ($this->getTable()->getOrderProperty() == $cell->getOrderProperty()) {
                 if ($this->getTable()->getOrder() == \Tk\Table::ORDER_DESC) {
                     $repeat->addClass('th', 'orderDesc');

@@ -439,7 +439,7 @@ class Table implements \Tk\InstanceKey
     public function getOrder()
     {
         $ord = $this->getOrderStatus();
-        if (count($ord) > 2) {
+        if (count($ord) >= 2) {
             return trim($ord[1]);
         }
         return self::ORDER_NONE;
@@ -468,7 +468,7 @@ class Table implements \Tk\InstanceKey
      */
     private function getOrderStatus()
     {
-//        if (preg_match('/(\S+) (ASC|DESC)$/i', $this->makeDbTool()->getOrderBy(), $regs)){
+//        if (preg_match('/(\S+) (ASC|DESC)$/i', $this->makeDbTool()->getOrderBy(), $regs)) {
 //            return array(trim($regs[1]), $regs[2]);
 //        }
         if ($this->getList() instanceof \Tk\Db\Map\ArrayObject) {

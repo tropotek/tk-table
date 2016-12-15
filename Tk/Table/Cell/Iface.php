@@ -263,10 +263,12 @@ abstract class Iface
         if (!$this->getOrderProperty()) {
             return null;
         }
+        
         $order = '';
         if ($this->getOrderProperty() == $this->getTable()->getOrderProperty()) {
             $order = $this->getTable()->getOrder();
         }
+        
         $key = $this->getTable()->makeInstanceKey(Table::PARAM_ORDER_BY);
         $pre = $this->getOrderProperty() . ' ';
         $url = Uri::create();
