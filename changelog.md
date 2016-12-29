@@ -1,5 +1,13 @@
 #CHANGELOG#
 
+Ver 2.0.6 [2016-12-30]:
+-------------------------------
+ - Upgraded to use new lib cass names
+ - Fixed Orphaned sort bug
+ - Minor Code Updates
+ - 252s-dev.vet.unimelb.edu.au
+
+
 Ver 2.0.5 [2016-11-11]:
 -------------------------------
  - Minor Code Updates
