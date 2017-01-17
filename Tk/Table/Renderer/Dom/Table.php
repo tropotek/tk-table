@@ -162,7 +162,10 @@ class Table extends Iface
             } else {
                 $repeat->insertHtml('th', $data);
             }
+            $cell->addCellCss($cell->getProperty());
             $repeat->addClass('th', trim(implode(' ', $cell->getCellCssList())) );
+            $repeat->setAttr('th', 'data-label', $cell->getLabel());
+            $repeat->setAttr('th', 'data-prop', $cell->getProperty());
             $repeat->appendRepeat();
         }
     }
