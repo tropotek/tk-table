@@ -93,6 +93,14 @@ jQuery(function ($) {
     buttonId : '$btnId'
   });
   
+  
+  // Allow Bootstrap dropdown menus to have forms/checkboxes inside, 
+  // and when clicking on a dropdown item, the menu doesn't disappear.
+  $(document).on('click', '.dropdown-menu.checkbox-menu', function(e) {
+    e.stopPropagation();
+  });
+  
+  
 });
 JS;
         $template->appendJs($js);
