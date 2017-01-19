@@ -1,5 +1,13 @@
 #CHANGELOG#
 
+Ver 2.0.7 [2017-01-20]:
+-------------------------------
+ - Minor Code Updates
+ - 252s-dev.vet.unimelb.edu.au
+ - Added the column select javascript
+ - Finalising Table column select action
+
+
 Ver 2.0.6 [2016-12-30]:
 -------------------------------
  - Upgraded to use new lib cass names
