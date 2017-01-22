@@ -15,6 +15,12 @@ class ColumnSelect extends Button
 {
 
 
+    protected $disabledSelectors = array();
+
+    protected $defaultSelectors = array();
+
+
+
     /**
      * Create
      *
@@ -41,37 +47,57 @@ class ColumnSelect extends Button
     }
 
 
-    public function makeInstanceKey()
+    /**
+     * Setup the disabled columns using their property name
+     *
+     * EG:
+     *   array('cb_id', 'name');
+     *
+     * @param $arr
+     * @return $this
+     */
+    public function setDisabledSelectors($arr)
     {
-        if (!$this->getTable()) throw new \Tk\Exception('Cannot make ID without table');
-        return $this->getTable()->makeInstanceKey($this->getName());
+        $this->disabledSelectors = $arr;
+        return $this;
     }
 
-    protected function load()
-    {
-        vd('column select load');
-    }
-
-    protected function save()
-    {
-        vd('column select save');
-
-    }
 
     /**
-     * @return mixed
+     * Setup the default shown columns using their property name
+     *
+     * EG:
+     *   array('cb_id', 'name', 'username', 'email', 'role', 'active', 'created');
+     *
+     * @param $arr
+     * @return $this
      */
-    public function execute()
-    {   
-        $request = $this->getTable()->getRequest();
-
-        // save when onChange event fired
-
-        $this->save();
-
-        vd('column select execute');
-
+    public function setDefaultSelectors($arr)
+    {
+        $this->defaultSelectors = $arr;
+        return $this;
     }
+
+
+    /**
+     * Use this method to convert a property array to an array
+     * of column numbers fo the column select plugin
+     *
+     * @param $arr
+     * @return array
+     */
+    private function propsToCols($arr) {
+        $nums = array();
+        /** @var \Tk\Table\Cell\Iface $cell */
+        foreach ($this->getTable()->getCellList() as $i => $cell) {
+            if (in_array($cell->getProperty(), $arr)) {
+                $nums[] = $i;
+            }
+        }
+        return $nums;
+    }
+
+
 
     /**
      * @return string|\Dom\Template
@@ -79,27 +105,25 @@ class ColumnSelect extends Button
     public function getHtml()
     {
         $template = parent::getHtml();
+
         $btnId = $this->getTable()->makeInstanceKey($this->getName());
         $tableId = $this->getTable()->getId();
 
         $template->appendJsUrl(\Tk\Uri::create('/vendor/ttek/tk-table/js/js.cookie.js'));
         $template->appendJsUrl(\Tk\Uri::create('/vendor/ttek/tk-table/js/jquery.columnSelect.js'));
 
+        $disablesStr = implode(', ', $this->propsToCols($this->disabledSelectors));
+        $defaultStr =  implode(', ', $this->propsToCols($this->defaultSelectors));
 
         $js = <<<JS
 jQuery(function ($) {
     
   $('#$tableId').columnSelect({
-    buttonId : '$btnId'
+    buttonId : '$btnId',
+    disabled : [$disablesStr],
+    disabledHidden : false,
+    defaultSelected : [$defaultStr]
   });
-  
-  
-  // Allow Bootstrap dropdown menus to have forms/checkboxes inside, 
-  // and when clicking on a dropdown item, the menu doesn't disappear.
-  $(document).on('click', '.dropdown-menu.checkbox-menu', function(e) {
-    e.stopPropagation();
-  });
-  
   
 });
 JS;

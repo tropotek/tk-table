@@ -1,3 +1,7 @@
+/*
+ * Copyright (c) 2017 Tropotek (www.tropotek.com)
+ */
+
 /**
  * Created by mifsudm on 18/01/17.
  */
@@ -5,14 +9,19 @@
 if (typeof (String.prototype.hashCode) == 'undefined') {
 
   String.prototype.hashCode = function () {
-    var hash = 0;
-    if (this.length == 0) return hash;
-    for (var i = 0; i < this.length; i++) {
-       var char = this.charCodeAt(i);
-      hash = ((hash << 5) - hash) + char;
-      hash = hash & hash; // Convert to 32bit integer
+    var a = 1, c = 0, h, o;
+    var s = this;
+    if (s) {
+      a = 0;
+      /*jshint plusplus:false bitwise:false*/
+      for (h = s.length - 1; h >= 0; h--) {
+        o = s.charCodeAt(h);
+        a = (a<<6&268435455) + o + (o<<14);
+        c = a & 266338304;
+        a = c!==0?a^c>>21:a;
+      }
     }
-    return Math.abs(hash);
+    return String(a);
   }
 
 }
@@ -35,7 +44,7 @@ if (typeof (String.prototype.hashCode) == 'undefined') {
  *
  *     // get the value of a property
  *     $('#element').data('columnSelect').settings.foo;
- *   
+ *
  *   });
  * </code>
  */
@@ -55,6 +64,10 @@ if (typeof (String.prototype.hashCode) == 'undefined') {
     var defaults = {
       buttonId : '',
       selectors: null,
+      disabled : null,
+      disabledColor: '#999',
+      disabledHidden: false,
+      defaultSelected : null,
       hash: '',
 
       // Should return a jquery list containing checkbox inputs to trigger the columns.
@@ -67,17 +80,18 @@ if (typeof (String.prototype.hashCode) == 'undefined') {
         }
 
         //button.detach();
-        var btnGroup = $('<div class="btn-group"></div>');
+        var btnGroup = $('<div class="btn-group tk-column-select"></div>');
         btnGroup.insertBefore(button);
         button.removeAttr('type');
         button.addClass('dropdown-toggle').attr('data-toggle', 'dropdown');
-        button.append('<span class="caret"></span>');
+        button.append(' <span class="caret"></span>');
         button.detach();
         btnGroup.append(button);
-        // attach list ot it
-        var ul = $('<ul class="dropdown-menu checkbox-menu columnSelect"></ul>');
 
+        // List templates
+        var ul = $('<ul class="dropdown-menu checkbox-menu columnSelect"></ul>');
         var tpl = $('<li><label for="" class="small"><input type="checkbox" id="" value="_fieldName"/> <span>Field Name</span></label></li>');
+
         topRow.each(function (i) {
           var row = tpl.clone();
           var label = 'Column ' + i;
@@ -92,34 +106,51 @@ if (typeof (String.prototype.hashCode) == 'undefined') {
           row.find('input').prop('checked', true);
           row.find('label').attr('for', row.find('input').attr('id'));
 
+          if (isArray(plugin.settings.disabled) && $.inArray(i+'', plugin.settings.disabled) != -1) {
+            row.addClass('disabled');
+            row.find('label').css('color', plugin.settings.disabledColor);
+            row.find('input').attr('readonly', 'readonly');
+            if (plugin.settings.disabledHidden) {
+              row.hide();
+            }
+          }
           ul.append(row);
         });
-
         btnGroup.append(ul);
+
+        // Allow Bootstrap dropdown menus to have forms/checkboxes inside,
+        // and when clicking on a dropdown item, the menu doesn't disappear.
+        ul.on('click', function(e) {
+          e.stopPropagation();
+        });
 
         return ul.find('input');
       },
 
       // called when a user selects an item in the column list
-      onChange: function () {
-        console.log('onChange');
-
-      },
+      onChange: function () { },
 
       onSaveState: function () {
-        console.log('onSaveState');
         var hasCookies = (typeof(Cookies) != 'undefined');
         if (!hasCookies) return;
-        var json = JSON.stringify(plugin.settings.selectors.serializeArray());
+        var data = [];
+        plugin.settings.selectors.each(function (i) {
+          if ($(this).attr('data-cs-checked') == '1') {
+            data[data.length] = {name: $(this).attr('name'), value: $(this).attr('data-cs-coll')};
+          }
+        });
+        var json = JSON.stringify(data);
         Cookies.set(plugin.settings.hash, json);
       },
+
+
       onRestoreState: function() {
-        console.log('onRestoreState');
         var hasCookies = (typeof(Cookies) != 'undefined');
         if (!hasCookies) return;
 
 //reset cookies
 //Cookies.remove(plugin.settings.hash);
+
 
         var state = Cookies.get(plugin.settings.hash);
 
@@ -127,12 +158,19 @@ if (typeof (String.prototype.hashCode) == 'undefined') {
         // How do we setup default hidden cols, maybe via the settings or a data attr in the headers?????
         var selected = plugin.range(0, plugin.settings.selectors.length-1);
 
+        if (isArray(plugin.settings.defaultSelected) && plugin.settings.defaultSelected.length > 0) {
+          selected = plugin.settings.defaultSelected;
+        }
+
         if (state) {
-          selected = [];
-          state = JSON.parse(state);
-          $.each(state, function (i, o) {
-            selected[selected.length] = o.value;
-          });
+          try {
+            var sel = [];
+            state = JSON.parse(state);
+            $.each(state, function (i, o) {
+              sel[sel.length] = o.value;
+            });
+            selected = sel;
+          } catch(e) { console.warn(e); }
         }
 
         plugin.settings.selectors.each(function(i) {
@@ -148,7 +186,7 @@ if (typeof (String.prototype.hashCode) == 'undefined') {
 
     };
 
-    // to avoid confusions, use "plugin" to reference the 
+    // to avoid confusions, use "plugin" to reference the
     // current instance of the object
     var plugin = this;
 
@@ -158,7 +196,7 @@ if (typeof (String.prototype.hashCode) == 'undefined') {
     // this will hold the merged default, and user-provided options
     // plugin's properties will be available through this object like:
     // plugin.settings.propertyName from inside the plugin or
-    // element.data('columnSelect').settings.propertyName from outside the plugin, 
+    // element.data('columnSelect').settings.propertyName from outside the plugin,
     // where "element" is the element the plugin is attached to;
     plugin.settings = {};
 
@@ -167,10 +205,20 @@ if (typeof (String.prototype.hashCode) == 'undefined') {
     // the "constructor" method that gets called when the object is created
     plugin.init = function() {
 
-      // the plugin's final properties are the merged default and 
+      // the plugin's final properties are the merged default and
       // user-provided options (if any)
       plugin.settings = $.extend({}, defaults, options);
 
+      if (isArray(plugin.settings.defaultSelected)) {
+        $.each(plugin.settings.defaultSelected, function (i, o) {
+          plugin.settings.defaultSelected[i] = plugin.settings.defaultSelected[i] + '';
+        });
+      }
+      if (isArray(plugin.settings.disabled)) {
+        $.each(plugin.settings.disabled, function (i, o) {
+          plugin.settings.disabled[i] = plugin.settings.disabled[i] + '';
+        });
+      }
 
       // get the main table element in the block
       if (element.nodeName == 'TABLE') {
@@ -184,6 +232,7 @@ if (typeof (String.prototype.hashCode) == 'undefined') {
       }
 
       if (plugin.settings.hash == '') {
+        //plugin.settings.hash = document.location.pathname.replace(/[^a-z0-9_-]/g, '_').hashCode() + table.attr('id');
         plugin.settings.hash = document.location.pathname.hashCode() + table.attr('id');
       }
 
@@ -206,10 +255,15 @@ if (typeof (String.prototype.hashCode) == 'undefined') {
         return;
       }
 
+      // Setup an internal check value for each selector item
       plugin.settings.selectors.each(function(i) {
         $(this).attr('data-cs-coll', i);
       });
+
       plugin.settings.selectors.on('click', function (e) {
+        if (plugin.settings.disabled != null && $.inArray($(this).attr('data-cs-coll'), plugin.settings.disabled) != -1) {
+          e.stopPropagation();return false;
+        }
 
         var state = 0;
         if (!$(this).attr('data-cs-checked') || $(this).attr('data-cs-checked') == '' || $(this).attr('data-cs-checked') == '1') {
@@ -219,11 +273,11 @@ if (typeof (String.prototype.hashCode) == 'undefined') {
         }
         $(this).attr('data-cs-checked', state);
 
+        plugin.settings.onChange.call(this);
         refresh();
-
         plugin.settings.onSaveState.call(this);
-      });
 
+      });
 
       plugin.settings.onRestoreState.call(this);
 
@@ -235,24 +289,22 @@ if (typeof (String.prototype.hashCode) == 'undefined') {
     // these methods can be called only from inside the plugin like:
     // methodName(arg1, arg2, ... argn)
 
-    // a private method. for demonstration purposes only - remove it!
     var refresh = function() {
-
       // code goes here
-      console.log('refresh');
       plugin.settings.selectors.each(function(i) {
-        //$(this).attr('data-cs-coll', i);
         var nth = parseInt($(this).attr('data-cs-coll'))+1;
         var cells = table.find('tr th:nth-child('+nth+'), tr td:nth-child('+nth+')');
-
         if (!$(this).attr('data-cs-checked') || $(this).attr('data-cs-checked') == '' || $(this).attr('data-cs-checked') == '1') {
           cells.show();
         } else {
           cells.hide();
         }
-
       });
+    };
 
+
+    var isArray = function(obj) {
+      return !!obj && Array === obj.constructor;
     };
 
     // public methods
@@ -262,9 +314,9 @@ if (typeof (String.prototype.hashCode) == 'undefined') {
     // the plugin, where "element" is the element the plugin is attached to;
 
     // a public method. for demonstration purposes only - remove it!
-    plugin.public_method = function() {
-
-    };
+    // plugin.public_method = function() {
+    //
+    // };
 
     //
     plugin.range = function(start, end) {
