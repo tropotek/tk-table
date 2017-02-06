@@ -196,9 +196,10 @@ abstract class Iface
         if (is_array($obj) && isset($obj[$property])) {
             $value = $obj[$property];
         } else {
-            // Try to return property
-            if (property_exists($obj, $property)) {
-                $value = $obj->{$property};
+            //if ($reflection->getProperty($property))
+            $prop = new \ReflectionProperty($obj,'name');
+            if ($prop->isPublic()) {
+                $value = $prop->getValue();
             } else {
                 // Get property by method if accessor exists
                 $method = 'get' . ucfirst($property);
