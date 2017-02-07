@@ -196,10 +196,18 @@ abstract class Iface
         if (is_array($obj) && isset($obj[$property])) {
             $value = $obj[$property];
         } else {
-            //if ($reflection->getProperty($property))
-            $prop = new \ReflectionProperty($obj,'name');
-            if ($prop->isPublic()) {
-                $value = $prop->getValue();
+
+            // Protected properties seem to cause an error ???
+//            $prop = new \ReflectionProperty($obj,'name');
+//            if ($prop->isPublic()) {
+//                $value = $prop->getValue();
+//            }
+
+//            if (!empty($obj->{$property})) {
+//                vd($obj->{$property});
+//            }
+            if (property_exists($obj, $property)) {
+                $value = $obj->{$property};
             } else {
                 // Get property by method if accessor exists
                 $method = 'get' . ucfirst($property);
