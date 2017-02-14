@@ -48,8 +48,11 @@ class Csv extends Button
      * @param string $icon
      * @return Csv
      */
-    static function create($db, $name = 'csv', $checkboxName = 'id', $icon = 'glyphicon glyphicon-list-alt')
+    static function create($name = 'csv', $checkboxName = 'id', $icon = 'glyphicon glyphicon-list-alt', $db = null)
     {
+        if ($db === null)
+            $db = \Tk\Config::getInstance()->getDb();
+
         return new self($db, $name, $checkboxName, $icon);
     }
     
