@@ -100,7 +100,7 @@ class Pager extends Iface
         $template = $this->getTemplate();
 
         if (count($this->cssList)) {
-            $template->addClass('tk-pager', $this->cssList);
+            $template->addCss('tk-pager', $this->cssList);
         }
 
         if ($this->limit > -1 && $this->limit < $this->total) {
@@ -143,7 +143,7 @@ class Pager extends Iface
                 $pageUrl->set($this->makeInstanceKey(self::PARAM_OFFSET), $i * $this->limit);
                 $repeat->setAttr('pageUrl', 'href', $pageUrl->toString());
                 if ($i == $currentPage) {
-                    $repeat->addClass('page', self::CSS_SELECTED);
+                    $repeat->addCss('page', self::CSS_SELECTED);
                     $repeat->setAttr('pageUrl', 'title', 'Current Page ' . ($i + 1));
                 }
                 $repeat->appendRepeat();
@@ -157,8 +157,8 @@ class Pager extends Iface
                 $template->setAttr('startUrl', 'href', $pageUrl->toString());
                 $template->setAttr('startUrl', 'title', 'Start Page');
             } else {
-                $template->addClass('start', self::CSS_DISABLED);
-                $template->addClass('back', self::CSS_DISABLED);
+                $template->addCss('start', self::CSS_DISABLED);
+                $template->addCss('back', self::CSS_DISABLED);
             }
 
             if ($this->offset < ($this->total - $this->limit)) {
@@ -169,8 +169,8 @@ class Pager extends Iface
                 $template->setAttr('endUrl', 'href', $pageUrl->toString());
                 $template->setAttr('endUrl', 'title', 'Last Page');
             } else {
-                $template->addClass('end', self::CSS_DISABLED);
-                $template->addClass('next', self::CSS_DISABLED);
+                $template->addCss('end', self::CSS_DISABLED);
+                $template->addCss('next', self::CSS_DISABLED);
             }
         }
     }

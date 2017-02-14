@@ -85,16 +85,31 @@ class Delete extends Button
         \Tk\Uri::create()->remove($this->getTable()->makeInstanceKey($this->getName()))->redirect();
     }
 
+    /**
+     * @return string|\Dom\Template
+     */
+    public function getHtml()
+    {
+
+        $this->setAttr('title', 'Delete Selected Records');
+        $this->setAttr('disabled');
+
+        $template = parent::getHtml();
+
+        $template->appendJs($this->getJs());
+        return $template;
+    }
+
+
     protected function getJs()
     {
         $btnId = $this->getTable()->makeInstanceKey($this->getName());
         $js = <<<JS
 jQuery(function($) {
-
     var tid = '{$this->getTable()->getId()}';
     var cbName = '{$this->checkboxName}';
     var btnId = '#$btnId';
-
+    
     $(btnId).on('click', function (e) {
         var selected = $('#'+tid+' input[name^=\''+cbName+'\']:checked');
         if (!selected.length) return false;
@@ -102,44 +117,28 @@ jQuery(function($) {
             return false;
         }
     });
+    
     function initCb(e) {
-        if (e && e.target.name == 'cb_'+cbName+'_all') {
+        if (e && e.target.name == cbName+'_all') {
             if ($(e.target).prop('checked')) {
-                $(btnId).removeClass('disabled');
+                $(btnId).removeAttr('disabled');
             } else {
-                $(btnId).addClass('disabled');
+                $(btnId).attr('disabled', 'disabled');
             }
             return true;
         }
         if ($('#'+tid+' input[name^=\''+cbName+'\']:checked').length) {
-            $(btnId).removeClass('disabled');
+            $(btnId).removeAttr('disabled');
         } else {
-            $(btnId).addClass('disabled');
+            $(btnId).attr('disabled', 'disabled');
         }
     }
-
+    
     $('#'+tid+' input[name^=\''+cbName+'\'], #'+tid+' input[name^=\'cb_'+cbName+'_all\']').on('change', initCb);
     initCb();
-
 });
 JS;
         return $js;
     }
-
-    /**
-     * @return string|\Dom\Template
-     */
-    public function getHtml()
-    {
-        $template = parent::getHtml();
-        
-        $template->setAttr('var', 'title', 'Delete Selected Records');
-        $template->addClass('var', 'disabled');
-
-        $template->appendJs($this->getJs());
-
-        return $template;
-    }
-
 
 }

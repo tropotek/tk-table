@@ -60,7 +60,7 @@ class Results extends Iface
         $template = $this->getTemplate();
 
         if (count($this->cssList)) {
-            $template->addClass('tk-results', $this->cssList);
+            $template->addCss('tk-results', $this->cssList);
         }
 
         if (!$this->total) {

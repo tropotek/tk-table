@@ -30,6 +30,11 @@ abstract class Iface
     protected $cssList = array();
 
     /**
+     * @var array
+     */
+    protected $attrList = array();
+
+    /**
      * @var Table
      */
     protected $table = null;
@@ -180,6 +185,58 @@ abstract class Iface
     public function setCssList($arr = array())
     {
         $this->cssList = $arr;
+        return $this;
+    }
+
+
+
+    /**
+     * Set an attribute
+     *
+     * @param string $name
+     * @param string $value
+     * @return $this
+     */
+    public function setAttr($name, $value = null)
+    {
+        if ($value === null)
+            $value = $name;
+        $this->attrList[$name] = $value;
+        return $this;
+    }
+
+    /**
+     * remove an attribute
+     *
+     * @param string $name
+     * @return $this
+     */
+    public function removeAttr($name)
+    {
+        unset($this->attrList[$name]);
+        return $this;
+    }
+
+    /**
+     * Get the attributes list
+     *
+     * @return array
+     */
+    public function getAttrList()
+    {
+        return $this->attrList;
+    }
+
+    /**
+     * Set the attributes list
+     * If no parameter sent the array is cleared.
+     *
+     * @param array $arr
+     * @return $this
+     */
+    public function setAttrList($arr = array())
+    {
+        $this->attrList = $arr;
         return $this;
     }
 

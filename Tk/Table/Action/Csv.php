@@ -132,10 +132,9 @@ class Csv extends Button
      */
     public function getHtml()
     {
-        $template = parent::getHtml();
+        $this->setAttr('title', 'Export records as a CSV file.');
 
-        $template->setAttr('var', 'title', 'Export records as a CSV file.');
-        $template->addClass('var', 'disabled');
+        $template = parent::getHtml();
 
         return $template;
     }

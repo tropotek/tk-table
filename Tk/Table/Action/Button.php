@@ -66,22 +66,26 @@ class Button extends Iface
      */
     public function getHtml()
     {
+        $btnId = $this->getTable()->makeInstanceKey($this->getName());
+        $this->setAttr('id', $btnId);
+        $this->setAttr('name', $btnId);
+        $this->setAttr('value', $btnId);
+
         $template = $this->getTemplate();
         if ($this->icon) {
-            $template->addClass('icon', $this->icon);
+            $template->addCss('icon', $this->icon);
             $template->setChoice('icon');
         }
         $template->appendHtml('btnTitle', $this->getLabel());
 
-        $btnId = $this->getTable()->makeInstanceKey($this->getName());
-        //$template->setAttr('btn', 'id', 'fid-'.$btnId);
-        $template->setAttr('btn', 'id', $btnId);
-        $template->setAttr('btn', 'name', $btnId);
-        $template->setAttr('btn', 'value', $btnId);
-
-        // Element css class names
+        // Add class names
         foreach($this->getCssList() as $v) {
-            $template->addClass('btn', $v);
+            $template->addCss('btn', $v);
+        }
+
+        // Add new attribute values
+        foreach($this->getAttrList() as $k => $v) {
+            $template->setAttr('btn', $k, $v);
         }
 
         return $template;

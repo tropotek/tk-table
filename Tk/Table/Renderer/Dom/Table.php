@@ -79,7 +79,7 @@ class Table extends Iface
         // render outer table wrapper (IE: <table> tag stuff)
         $template->setAttr('table', 'id', $this->getTable()->getId());
         foreach($this->getTable()->getCssClassList() as $css) {
-            $template->addClass('tk-table', $css);
+            $template->addCss('tk-table', $css);
         }
 
         $template->setAttr('form', 'id', $this->getTable()->getId().'_form');
@@ -148,9 +148,9 @@ class Table extends Iface
             if (!$repeat) continue;
             if ($this->getTable()->getOrderProperty() == $cell->getOrderProperty()) {
                 if ($this->getTable()->getOrder() == \Tk\Table::ORDER_DESC) {
-                    $repeat->addClass('th', 'orderDesc');
+                    $repeat->addCss('th', 'orderDesc');
                 } else {
-                    $repeat->addClass('th', 'orderAsc');
+                    $repeat->addCss('th', 'orderAsc');
                 }
             }
             $data = $cell->getCellHeader();
@@ -163,7 +163,7 @@ class Table extends Iface
                 $repeat->insertHtml('th', $data);
             }
 
-            $repeat->addClass('th', trim(implode(' ', $cell->getCellCssList())) );
+            $repeat->addCss('th', trim(implode(' ', $cell->getCellCssList())) );
             $repeat->setAttr('th', 'data-label', $cell->getLabel());
             $repeat->setAttr('th', 'data-prop', $cell->getProperty());
             $repeat->appendRepeat();
@@ -213,7 +213,7 @@ class Table extends Iface
             $this->cellRepeat->appendRepeat();
             $cell->resetProperties();
         }
-        $this->rowRepeat->addClass('tr', trim(implode(' ', $rowClassArr)) );
+        $this->rowRepeat->addCss('tr', trim(implode(' ', $rowClassArr)) );
     }
 
     /**
@@ -227,8 +227,8 @@ class Table extends Iface
     {
         $data = $cell->getCellHtml($obj, $this->rowId);
 
-        $this->cellRepeat->addClass('td', 'm' . ucfirst($cell->getProperty()));
-        $this->cellRepeat->addClass('td', trim(implode(' ', $cell->getCellCssList())) );
+        $this->cellRepeat->addCss('td', 'm' . ucfirst($cell->getProperty()));
+        $this->cellRepeat->addCss('td', trim(implode(' ', $cell->getCellCssList())) );
         foreach ($cell->getCellAttributeList() as $name => $value) {
             $this->cellRepeat->setAttr('td', $name, $value);
         }

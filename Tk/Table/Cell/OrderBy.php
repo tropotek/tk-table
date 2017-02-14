@@ -168,11 +168,11 @@ class OrderBy extends Text
 
 
         if ($rowIdx == 0) {
-            $template->addClass('upUrl', 'disabled');
+            $template->addCss('upUrl', 'disabled');
             $template->setAttr('upUrl', 'href', '#');
         }
         if ($this->getTable()->getList()->count() == $rowIdx+1) {
-            $template->addClass('dnUrl', 'disabled');
+            $template->addCss('dnUrl', 'disabled');
             $template->setAttr('dnUrl', 'href', '#');
         }
         return $template;
