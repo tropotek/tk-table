@@ -10,7 +10,7 @@ namespace Tk\Table\Action;
  * @link http://www.tropotek.com/
  * @license Copyright 2015 Michael Mifsud
  */
-class Button extends Iface
+class Link extends Iface
 {
 
     /**
@@ -37,7 +37,6 @@ class Button extends Iface
         $this->icon = $icon;
         if ($url)
             $this->url = \Tk\Uri::create($url);
-        $this->setAttr('type', 'submit');
     }
 
     /**
@@ -46,7 +45,7 @@ class Button extends Iface
      * @param string $name
      * @param string $icon
      * @param string|\Tk\Uri $url
-     * @return Button
+     * @return Link
      */
     static function create($name, $icon, $url = null)
     {
@@ -58,8 +57,7 @@ class Button extends Iface
      */
     public function execute()
     {
-        if ($this->url instanceof \Tk\Uri)
-            $this->url->redirect();
+        vd('No me thinks!!!!!');
     }
 
     /**
@@ -69,8 +67,6 @@ class Button extends Iface
     {
         $btnId = $this->getTable()->makeInstanceKey($this->getName());
         $this->setAttr('id', $btnId);
-        $this->setAttr('name', $btnId);
-        $this->setAttr('value', $btnId);
 
         $template = $this->getTemplate();
         if ($this->icon) {
@@ -78,6 +74,10 @@ class Button extends Iface
             $template->setChoice('icon');
         }
         $template->appendHtml('btnTitle', $this->getLabel());
+
+        if ($this->url) {
+            $template->setAttr('btn', 'href', $this->url);
+        }
 
         // Add class names
         foreach($this->getCssList() as $v) {
@@ -115,7 +115,7 @@ class Button extends Iface
     public function getTemplate()
     {
         $xhtml = <<<XHTML
-<button class="btn btn-default btn-xs" var="btn"><i var="icon" choice="icon"></i> <span var="btnTitle"></span></button>
+<a class="btn btn-default btn-xs" href="javascript:;" var="btn"><i var="icon" choice="icon"></i> <span var="btnTitle"></span></a>
 XHTML;
         return \Dom\Loader::load($xhtml);
     }

@@ -13,6 +13,11 @@ use Tk\Table;
  */
 abstract class Iface
 {
+
+    use \Tk\Dom\AttributesTrait;
+    use \Tk\Dom\CssTrait;
+
+
     /**
      * This will be used for the event name using the instance ID
      * @var string
@@ -23,16 +28,6 @@ abstract class Iface
      * @var string
      */
     protected $label = '';
-
-    /**
-     * @var array
-     */
-    protected $cssList = array();
-
-    /**
-     * @var array
-     */
-    protected $attrList = array();
 
     /**
      * @var Table
@@ -141,103 +136,6 @@ abstract class Iface
         return $this;
     }
 
-    /**
-     * Add a css class
-     *
-     * @param string $class
-     * @return $this
-     */
-    public function addCss($class)
-    {
-        $this->cssList[$class] = $class;
-        return $this;
-    }
 
-    /**
-     * remove a css class
-     *
-     * @param string $class
-     * @return $this
-     */
-    public function removeCss($class)
-    {
-        unset($this->cssList[$class]);
-        return $this;
-    }
-
-    /**
-     * Get the css class list
-     *
-     * @return array
-     */
-    public function getCssList()
-    {
-        return $this->cssList;
-    }
-
-    /**
-     * Set the css cell class list
-     * If no parameter sent the array is cleared.
-     *
-     * @param array $arr
-     * @return $this
-     */
-    public function setCssList($arr = array())
-    {
-        $this->cssList = $arr;
-        return $this;
-    }
-
-
-
-    /**
-     * Set an attribute
-     *
-     * @param string $name
-     * @param string $value
-     * @return $this
-     */
-    public function setAttr($name, $value = null)
-    {
-        if ($value === null)
-            $value = $name;
-        $this->attrList[$name] = $value;
-        return $this;
-    }
-
-    /**
-     * remove an attribute
-     *
-     * @param string $name
-     * @return $this
-     */
-    public function removeAttr($name)
-    {
-        unset($this->attrList[$name]);
-        return $this;
-    }
-
-    /**
-     * Get the attributes list
-     *
-     * @return array
-     */
-    public function getAttrList()
-    {
-        return $this->attrList;
-    }
-
-    /**
-     * Set the attributes list
-     * If no parameter sent the array is cleared.
-     *
-     * @param array $arr
-     * @return $this
-     */
-    public function setAttrList($arr = array())
-    {
-        $this->attrList = $arr;
-        return $this;
-    }
 
 }

@@ -15,6 +15,30 @@ use Tk\Uri;
 abstract class Iface
 {
 
+    use \Tk\Dom\AttributesTrait;
+    use \Tk\Dom\CssTrait;
+
+
+//    /**
+//     * All attributes appended to this tableData cell elewment
+//     * @var array
+//     */
+//    protected $attrList = array();
+//
+//    /**
+//     * All classes appended to this tableData cell element
+//     * @var array
+//     */
+//    protected $cssList = array();
+
+
+
+    /**
+     * Any classes to append to this cell's parent <tr>
+     * @var array
+     */
+    protected $rowCssList = array();
+
     /**
      * This will be used for the cell header title
      * @var string
@@ -31,24 +55,6 @@ abstract class Iface
      * @var string
      */
     protected $property = '';
-
-    /**
-     * All attributes appended to this tableData cell elewment
-     * @var array
-     */
-    protected $cellAttrList = array();
-
-    /**
-     * All classes appended to this tableData cell element
-     * @var array
-     */
-    protected $cellCssList = array();
-
-    /**
-     * Any classes to append to this cell's parent <tr>
-     * @var array
-     */
-    protected $rowCssList = array();
 
     /**
      * This cell's order property
@@ -133,8 +139,8 @@ abstract class Iface
      */
     public function resetProperties()
     {
-        $this->setCellCssList($this->store['cellCssList']);
-        $this->setCellAttributeList($this->store['cellAttrList']);
+        $this->setCssList($this->store['cellCssList']);
+        $this->setAttrList($this->store['cellAttrList']);
         $this->setRowCssList($this->store['rowCssList']);
     }
 
@@ -148,18 +154,21 @@ abstract class Iface
      */
     public function storeProperties()
     {
-        $this->store['cellCssList'] = $this->cellCssList;
-        $this->store['cellAttrList'] = $this->cellAttrList;
+        $this->store['cellCssList'] = $this->cssList;
+        $this->store['cellAttrList'] = $this->attrList;
         $this->store['rowCssList'] = $this->rowCssList;
     }
 
     // -------------------------------------------------------------------
 
     /**
+     * Get the raw string property value.
+     * This call can be used for exporting data into a csv, json, xml format
+     *
      * @param mixed $obj
      * @return string
      */
-    public function getCellCsv($obj)
+    public function getRawValue($obj)
     {
         return $this->getPropertyValue($obj, $this->getProperty());
     }
@@ -452,6 +461,7 @@ abstract class Iface
         return $this->property;
     }
 
+
     /**
      * Add a row css class
      *
@@ -499,99 +509,107 @@ abstract class Iface
         return $this;
     }
 
-    /**
-     * Add a cell css class
-     *
-     * @param string $class
-     * @return $this
-     */
-    public function addCellCss($class)
-    {
-        $this->cellCssList[$class] = $class;
-        return $this;
-    }
 
-    /**
-     * remove a css class
-     *
-     * @param string $class
-     * @return $this
-     */
-    public function removeCellCss($class)
-    {
-        unset($this->cellCssList[$class]);
-        return $this;
-    }
 
-    /**
-     * Get the css class list
-     *
-     * @return array
-     */
-    public function getCellCssList()
-    {
-        return $this->cellCssList;
-    }
-
-    /**
-     * Set the css cell class list
-     * If no parameter sent the array is cleared.
-     *
-     * @param array $arr
-     * @return $this
-     */
-    public function setCellCssList($arr = array())
-    {
-        $this->cellCssList = $arr;
-        return $this;
-    }
-
-    /**
-     * Add a cell element attribute
-     *
-     * @param string $name
-     * @param string $value
-     * @return $this
-     */
-    public function addCellAttribute($name, $value)
-    {
-        $this->cellAttrList[$name] = $value;
-        return $this;
-    }
-
-    /**
-     * remove a css element attribute
-     *
-     * @param string $name
-     * @return $this
-     */
-    public function removeCellAttribute($name)
-    {
-        unset($this->cellAttrList[$name]);
-        return $this;
-    }
-
-    /**
-     * Get the element attribute list
-     *
-     * @return array
-     */
-    public function getCellAttributeList()
-    {
-        return $this->cellAttrList;
-    }
-
-    /**
-     * Set the element attribute list
-     * If no parameter sent the array is cleared.
-     *
-     * @param array $arr
-     * @return $this
-     */
-    public function setCellAttributeList($arr = array())
-    {
-        $this->cellAttrList = $arr;
-        return $this;
-    }
+//
+//
+//    /**
+//     * Add a cell css class
+//     *
+//     * @param string $class
+//     * @return $this
+//     */
+//    public function addCss($class)
+//    {
+//        $this->cssList[$class] = $class;
+//        return $this;
+//    }
+//
+//    /**
+//     * remove a css class
+//     *
+//     * @param string $class
+//     * @return $this
+//     */
+//    public function removeCss($class)
+//    {
+//        unset($this->cssList[$class]);
+//        return $this;
+//    }
+//
+//    /**
+//     * Get the css class list
+//     *
+//     * @return array
+//     */
+//    public function getCssList()
+//    {
+//        return $this->cssList;
+//    }
+//
+//    /**
+//     * Set the css cell class list
+//     * If no parameter sent the array is cleared.
+//     *
+//     * @param array $arr
+//     * @return $this
+//     */
+//    public function setCssList($arr = array())
+//    {
+//        $this->cssList = $arr;
+//        return $this;
+//    }
+//
+//
+//
+//
+//
+//    /**
+//     * Add a cell element attribute
+//     *
+//     * @param string $name
+//     * @param string $value
+//     * @return $this
+//     */
+//    public function setAttr($name, $value)
+//    {
+//        $this->attrList[$name] = $value;
+//        return $this;
+//    }
+//
+//    /**
+//     * remove a css element attribute
+//     *
+//     * @param string $name
+//     * @return $this
+//     */
+//    public function removeAttr($name)
+//    {
+//        unset($this->attrList[$name]);
+//        return $this;
+//    }
+//
+//    /**
+//     * Get the element attribute list
+//     *
+//     * @return array
+//     */
+//    public function getAttrList()
+//    {
+//        return $this->attrList;
+//    }
+//
+//    /**
+//     * Set the element attribute list
+//     * If no parameter sent the array is cleared.
+//     *
+//     * @param array $arr
+//     * @return $this
+//     */
+//    public function setAttrList($arr = array())
+//    {
+//        $this->attrList = $arr;
+//        return $this;
+//    }
 
 }

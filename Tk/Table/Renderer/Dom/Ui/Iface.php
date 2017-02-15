@@ -20,10 +20,13 @@ abstract class Iface extends \Dom\Renderer\Renderer implements \Tk\InstanceKey, 
     const CSS_SELECTED = 'active';
     const CSS_DISABLED = 'disabled';
 
+    use \Tk\Dom\AttributesTrait;
+    use \Tk\Dom\CssTrait;
+
     /**
      * @var array
      */
-    protected $cssList = array();
+    //protected $cssList = array();
 
     /**
      * Instance base id
@@ -38,10 +41,10 @@ abstract class Iface extends \Dom\Renderer\Renderer implements \Tk\InstanceKey, 
      *
      * @param $css
      */
-    public function addCssClass($css)
-    {
-        $this->cssList[$css] = $css;
-    }
+//    public function addCss($css)
+//    {
+//        $this->cssList[$css] = $css;
+//    }
     
 
     /**

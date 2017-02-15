@@ -59,8 +59,9 @@ class Results extends Iface
     {
         $template = $this->getTemplate();
 
-        if (count($this->cssList)) {
-            $template->addCss('tk-results', $this->cssList);
+        $template->addCss('tk-results', $this->getCssString());
+        foreach ($this->getAttrList() as $k => $v) {
+            $template->setAttr('tk-results', $k, $v);
         }
 
         if (!$this->total) {

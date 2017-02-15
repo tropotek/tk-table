@@ -99,8 +99,9 @@ class Pager extends Iface
     {
         $template = $this->getTemplate();
 
-        if (count($this->cssList)) {
-            $template->addCss('tk-pager', $this->cssList);
+        $template->addCss('tk-pager', $this->getCssString());
+        foreach ($this->getAttrList() as $k => $v) {
+            $template->setAttr('tk-pager', $k, $v);
         }
 
         if ($this->limit > -1 && $this->limit < $this->total) {
@@ -135,7 +136,7 @@ class Pager extends Iface
             }
 
             $pageUrl = $this->pageUrl;
-            $pageUrl->delete($this->makeInstanceKey(self::PARAM_OFFSET));
+            $pageUrl->remove($this->makeInstanceKey(self::PARAM_OFFSET));
             for ($i = $startPage; $i < $endPage; $i++) {
                 $repeat = $template->getRepeat('page');
                 $repeat->insertText('pageUrl', $i + 1);
@@ -173,6 +174,7 @@ class Pager extends Iface
                 $template->addCss('next', self::CSS_DISABLED);
             }
         }
+
     }
 
     /**

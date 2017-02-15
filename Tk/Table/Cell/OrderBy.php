@@ -40,7 +40,7 @@ class OrderBy extends Text
      */
     public function setTable($table)
     {
-        $table->addCssClass('tk-sortable');
+        $table->addCss('tk-sortable');
         $table->setFixedOrderBy('orderBy');
         return parent::setTable($table);
     }
@@ -150,8 +150,8 @@ class OrderBy extends Text
     public function getCellHtml($obj, $rowIdx = null)
     {
         $template = $this->__makeTemplate();
-        $this->addCellAttribute('data-objectid', $obj->id);
-        $this->addCellCss('tk-orderBy');
+        $this->setAttr('data-objectid', $obj->id);
+        $this->addCss('tk-orderBy');
 //        $value = $this->getPropertyValue($obj, $this->getProperty());
         //vd($value);
 

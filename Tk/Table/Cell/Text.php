@@ -42,7 +42,7 @@ class Text extends Iface
         if ($this->charLimit && strlen($propValue) > $this->charLimit) {
             $propValue = substr($propValue, 0, $this->charLimit-3).'...';
         }
-        $this->addCellAttribute('title', $value);
+        $this->setAttr('title', $value);
         $str = htmlentities($propValue);
         $url = $this->getCellUrl($obj);
         if ($url) {

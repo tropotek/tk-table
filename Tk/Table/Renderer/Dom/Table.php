@@ -77,10 +77,13 @@ class Table extends Iface
         }
 
         // render outer table wrapper (IE: <table> tag stuff)
-        $template->setAttr('table', 'id', $this->getTable()->getId());
-        foreach($this->getTable()->getCssClassList() as $css) {
-            $template->addCss('tk-table', $css);
+        //$template->setAttr('table', 'id', $this->getTable()->getId());
+
+        $template->addCss('table', $this->getTable()->getCssString());
+        foreach($this->getTable()->getAttrList() as $k => $v) {
+            $template->setAttr('table', strip_tags($k), $v);
         }
+
 
         $template->setAttr('form', 'id', $this->getTable()->getId().'_form');
         $template->setAttr('form', 'action', \Tk\Uri::create());
@@ -94,13 +97,13 @@ class Table extends Iface
             // Results UI
             $results = Ui\Results::createFromDbArray($this->getTable()->getList());
             $results->setInstanceId($this->getTable()->getId());
-            $results->addCssClass('col-md-2');
+            $results->addCss('col-md-2');
             $this->appendFootRenderer($results);
 
             // Render Pager
             $pager = Ui\Pager::createFromDbArray($this->getTable()->getList());
             $pager->setInstanceId($this->getTable()->getId());
-            $pager->addCssClass('col-md-8 text-center');
+            $pager->addCss('col-md-8 text-center');
             $this->appendFootRenderer($pager);
 
             // Limit UI
@@ -110,7 +113,7 @@ class Table extends Iface
             }
             $limit = new Ui\Limit($this->getTable()->getList()->getTool()->getLimit(), $limitList);
             $limit->setInstanceId($this->getTable()->getId());
-            $limit->addCssClass('col-md-2');
+            $limit->addCss('col-md-2');
             $this->appendFootRenderer($limit);
         }
 
@@ -163,7 +166,7 @@ class Table extends Iface
                 $repeat->insertHtml('th', $data);
             }
 
-            $repeat->addCss('th', trim(implode(' ', $cell->getCellCssList())) );
+            $repeat->addCss('th', trim(implode(' ', $cell->getCssList())) );
             $repeat->setAttr('th', 'data-label', $cell->getLabel());
             $repeat->setAttr('th', 'data-prop', $cell->getProperty());
             $repeat->appendRepeat();
@@ -228,8 +231,8 @@ class Table extends Iface
         $data = $cell->getCellHtml($obj, $this->rowId);
 
         $this->cellRepeat->addCss('td', 'm' . ucfirst($cell->getProperty()));
-        $this->cellRepeat->addCss('td', trim(implode(' ', $cell->getCellCssList())) );
-        foreach ($cell->getCellAttributeList() as $name => $value) {
+        $this->cellRepeat->addCss('td', $cell->getCssString());
+        foreach ($cell->getAttrList() as $name => $value) {
             $this->cellRepeat->setAttr('td', $name, $value);
         }
         if ($data === null) {

@@ -24,6 +24,14 @@ class Csv extends Button
      */
     protected $checkboxName = 'id';
 
+
+    protected $ignoreCellList = array(
+        'Tk\Table\Cell\Checkbox'
+    );
+
+
+
+
     /**
      * Create
      *
@@ -107,6 +115,7 @@ class Csv extends Button
         // Write cell labels to first line of csv...
         foreach ($this->table->getCellList() as $i => $cell) {
             //if (in_array($cell->getProperty(), $this->ignore)) continue;
+            if ($this->ignoreCell($cell)) continue;
             $arr[] = $cell->getLabel();
         }
 
@@ -117,7 +126,8 @@ class Csv extends Button
                 /* @var $cell Cell\Iface */
                 foreach ($this->table->getCellList() as $cell) {
                     //if (in_array($cell->getProperty(), $this->ignore)) continue;
-                    $arr[$cell->getLabel()] = $cell->getCellCsv($obj);
+                    if ($this->ignoreCell($cell)) continue;
+                    $arr[$cell->getLabel()] = $cell->getRawValue($obj);
                 }
                 fputcsv($out, $arr);
             }
@@ -139,5 +149,40 @@ class Csv extends Button
         return $template;
     }
 
+    /**
+     *
+     * @param \Tk\Table\Cell\Iface $cell
+     * @return array
+     */
+    private function ignoreCell($cell)
+    {
+        return in_array(get_class($cell), $this->ignoreCellList);
+    }
+
+    /**
+     *
+     * @param \Tk\Table\Cell\Iface $cell
+     * @return $this
+     */
+    public function addIgnoreCell($cell)
+    {
+        $this->ignoreCellList[get_class($cell)] = get_class($cell);
+        return $this;
+    }
+
+    /**
+     * Set the ignore cell class array or reset the array if nothing passed
+     *
+     * Eg:
+     *   array('Tk\Table\Cell\Checkbox', 'App\Ui\Course\EnrolledCell');
+     *
+     * @param array $array
+     * @return $this
+     */
+    public function setIgnoreCellList($array = array())
+    {
+        $this->ignoreCellList = $array;
+        return $this;
+    }
 
 }

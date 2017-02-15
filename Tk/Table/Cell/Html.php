@@ -32,7 +32,7 @@ class Html extends Text
      * @param mixed $obj
      * @return string
      */
-    public function getCellCsv($obj)
+    public function getRawValue($obj)
     {
         return $this->getPropertyValue($obj, $this->getProperty());
     }
