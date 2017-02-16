@@ -187,7 +187,6 @@ class Table extends Iface
             $this->rowId = $this->getTable()->getList()->getTool()->getOffset();
         }
         
-        
         if (!$this->getTable()->getList()) return;
         foreach($this->getTable()->getList() as $i => $obj) {
             $this->rowRepeat = $template->getRepeat('tr');
@@ -206,17 +205,22 @@ class Table extends Iface
      */
     protected function showRow($obj)
     {
-        $rowClassArr = array();
+        $rowCssList = array();
+        $rowAttrList = array();
         /* @var \Tk\Table\Cell\Iface $cell */
         foreach($this->getTable()->getCellList() as $i => $cell) {
             $cell->storeProperties();
             $this->cellRepeat = $this->rowRepeat->getRepeat('td');
             $this->showCell($cell, $obj);
-            $rowClassArr = array_merge($rowClassArr, $cell->getRowCssList());
+            $rowCssList = array_merge($rowCssList, $cell->getRow()->getCssList());
+            $rowAttrList = array_merge($rowAttrList, $cell->getRow()->getAttrList());
             $this->cellRepeat->appendRepeat();
             $cell->resetProperties();
         }
-        $this->rowRepeat->addCss('tr', trim(implode(' ', $rowClassArr)) );
+        $this->rowRepeat->addCss('tr', trim(implode(' ', $rowCssList)) );
+        foreach ($rowAttrList as $k => $v) {
+            $this->rowRepeat->setAttr('tr', $k, $v);
+        }
     }
 
     /**

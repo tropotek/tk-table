@@ -76,6 +76,7 @@ class Delete extends Button
         /* @var \Tk\Db\Map\Model $obj */
         foreach($this->getTable()->getList() as $obj) {
             if (!$obj instanceof \Tk\Db\Map\Model) continue;
+            // TODO: should we be using the checkboxName parameter to match against?????
             if (in_array($obj->getId(), $selected) && !in_array($obj->getId(), $this->excludeIdList)) {
                 $obj->delete();
                 $i++;
@@ -100,7 +101,17 @@ class Delete extends Button
         return $template;
     }
 
+    /**
+     * @return string
+     */
+    protected function getConfirmStr()
+    {
+        return "'Are you sure you want to delete the ' + selected.length + ' selected records?'";
+    }
 
+    /**
+     * @return string
+     */
     protected function getJs()
     {
         $btnId = $this->getTable()->makeInstanceKey($this->getName());
@@ -113,7 +124,7 @@ jQuery(function($) {
     $(btnId).on('click', function (e) {
         var selected = $('#'+tid+' input[name^=\''+cbName+'\']:checked');
         if (!selected.length) return false;
-        if (!confirm('Are you sure you want to delete the ' + selected.length + ' selected records?')) {
+        if (!confirm({$this->getConfirmStr()})) {
             return false;
         }
     });
@@ -134,7 +145,7 @@ jQuery(function($) {
         }
     }
     
-    $('#'+tid+' input[name^=\''+cbName+'\'], #'+tid+' input[name^=\'cb_'+cbName+'_all\']').on('change', initCb);
+    $('#'+tid+' input[name^=\''+cbName+'\'], #'+tid+' input[name^=\''+cbName+'_all\']').on('change', initCb);
     initCb();
 });
 JS;
