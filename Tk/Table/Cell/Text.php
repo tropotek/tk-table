@@ -46,7 +46,8 @@ class Text extends Iface
         $str = htmlentities($propValue);
         $url = $this->getCellUrl($obj);
         if ($url) {
-            $str = sprintf('<a href="%s" title="%s">%s</a>', htmlentities($url->toString()), htmlentities($value), htmlentities($propValue));
+            //$str = sprintf('<a href="%s" title="%s">%s</a>', htmlentities($url->toString()), htmlentities($value), htmlentities($propValue));
+            $str = sprintf('<a href="%s">%s</a>', htmlentities($url->toString()), htmlentities($propValue));
         }
         return $str;
     }
