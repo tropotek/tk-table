@@ -1,5 +1,12 @@
 #CHANGELOG#
 
+Ver 2.0.8 [2017-02-22]:
+-------------------------------
+ - Fixed up the code with new lib updates
+ - Minor Code Updates
+ - 252s-dev.vet.unimelb.edu.au
+
+
 Ver 2.0.7 [2017-01-20]:
 -------------------------------
  - Minor Code Updates
