@@ -82,11 +82,11 @@ class OrderBy extends Text
             throw new \Tk\Table\Exception('Invalid order change parameters');
         }
         $mapperClass = $this->className . 'Map';
-        /* @var \Ts\Db\Mapper $mapper */
+        /* @var \Tk\Db\Mapper $mapper */
         $mapper = $mapperClass::create();
 
-        if (!$mapper instanceof \Ts\Db\Mapper) {
-            throw new \Tk\Table\Exception('Model objects must extend \Ts\Db\Mapper');
+        if (!$mapper instanceof \Tk\Db\Mapper) {
+            throw new \Tk\Table\Exception('Model objects must extend \Tk\Db\Mapper');
         }
         $fromObj = $mapper->find($regs[1]);
         $toObj = $mapper->find($regs[2]);
@@ -117,7 +117,7 @@ class OrderBy extends Text
     public function doOrderUpdate($request)
     {
         $mapperClass = $this->className . 'Map';
-        /* @var \Ts\Db\Mapper $mapper */
+        /* @var \Tk\Db\Mapper $mapper */
         $mapper = $mapperClass::create();
 
         $orderArr = $request['newOrder'];
@@ -192,7 +192,7 @@ JS;
     /**
      * Swap the order of 2 records
      *
-     * @param \Ts\Db\Mapper $mapper
+     * @param \Tk\Db\Mapper $mapper
      * @param \Tk\Db\Map\Model $fromObj
      * @param \Tk\Db\Map\Model $toObj
      * @return int
@@ -229,7 +229,7 @@ JS;
      *   5 => 5
      * );
      *
-     * @param \Ts\Db\Mapper $mapper
+     * @param \Tk\Db\Mapper $mapper
      * @param array $updateArray
      * @return int
      * @throws \Tk\Table\Exception
@@ -253,7 +253,7 @@ JS;
     /**
      * Reset the order values to id values.
      *
-     * @param \Ts\Db\Mapper $mapper
+     * @param \Tk\Db\Mapper $mapper
      * @return \Tk\Db\PDOStatement|null
      */
     public function resetOrder($mapper)
