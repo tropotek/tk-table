@@ -74,6 +74,7 @@ class Table extends Iface
         if (count($this->getTable()->getFilterForm()->getFieldList()) > 2) {
             $fren = $this->getFormRenderer()->show();
             $template->insertTemplate('filters', $fren->getTemplate());
+            $template->setChoice('filters');
         }
 
         // render outer table wrapper (IE: <table> tag stuff)
@@ -143,6 +144,7 @@ class Table extends Iface
             } else {
                 $template->appendHtml('actions', $html);
             }
+            $template->setChoice('actions');
         }
 
         /* @var \Tk\Table\Cell\Iface $cell */
@@ -285,10 +287,10 @@ class Table extends Iface
         $xhtml = <<<HTML
 <div class="tk-table" var="tk-table">
 
-  <div class="tk-filters" var="filters"></div>
+  <div class="tk-filters" var="filters" choice="filters"></div>
 
   <form var="form">
-      <div class="tk-actions" var="actions"></div>
+      <div class="tk-actions" var="actions" choice="actions"></div>
       
       <div class="tk-table-wrap table-responsive">
         <table border="0" cellpadding="0" cellspacing="0" class="table table-striped table-bordered table-hover" var="table">

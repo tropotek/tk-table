@@ -155,6 +155,17 @@ class OrderBy extends Text
 //        $value = $this->getPropertyValue($obj, $this->getProperty());
         //vd($value);
 
+        $template->appendJsUrl(\Tk\Uri::create('/vendor/ttek/tk-table/js/jquery.tableOrderBy.js'));
+        $js = <<<JS
+jQuery(function($) {
+  $('.tk-sortable tbody').tableOrderBy({
+      selector: '.tk-sortable tbody'
+  });
+});
+JS;
+        $template->appendJs($js);
+
+
         $upObj = $this->getListItem($rowIdx-1);
         $dnObj = $this->getListItem($rowIdx+1);
         if ($upObj) {

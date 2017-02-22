@@ -41,7 +41,7 @@
     plugin.settings = {};
 
     var defaults = {
-      selector: '.tk-sortable table tbody',
+      selector: '.tk-sortable tbody',
       sortableOptions: {
         helper: function(e, ui) {
           return plugin.sortableHelper.call(this, e, ui);
