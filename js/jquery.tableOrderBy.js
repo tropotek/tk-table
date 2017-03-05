@@ -83,8 +83,9 @@
       return ui;
     };
     plugin.sortableStop = function(e, ui) {
+
       //var url = ui.item.find('a').not('disabled').attr('href').split('?')[0];
-      var url = ui.item.find('.tk-orderBy a').not('disabled').attr('href');
+      var url = ui.item.find('.tk-orderBy .btn-group a').not('.disabled').attr('href');
       var order = {};
       $element.find('tr').each(function (i) {
         order[i] = $(this).find('.tk-orderBy').data('objectid');
@@ -92,6 +93,7 @@
       $.post(url, {newOrder: order}, function (data) {
         $element.empty().append($(data).find(plugin.settings.selector).find('tr'));
       } );
+
     };
     plugin.sortableStart = function(e, ui) { };
 

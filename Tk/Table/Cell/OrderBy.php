@@ -180,11 +180,11 @@ JS;
 
         if ($rowIdx == 0) {
             $template->addCss('upUrl', 'disabled');
-            $template->setAttr('upUrl', 'href', '#');
+            //$template->setAttr('upUrl', 'href', '#');
         }
         if ($this->getTable()->getList()->count() == $rowIdx+1) {
             $template->addCss('dnUrl', 'disabled');
-            $template->setAttr('dnUrl', 'href', '#');
+            //$template->setAttr('dnUrl', 'href', '#');
         }
         return $template;
     }
