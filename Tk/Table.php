@@ -58,12 +58,12 @@ class Table implements \Tk\InstanceKey
     protected $form = null;
 
     /**
-     * @var array|\ArrayAccess
+     * @var \Tk\Request|array|\ArrayAccess
      */
     protected $request = null;
 
     /**
-     * @var array|\ArrayAccess
+     * @var \Tk\Session|array|\ArrayAccess
      */
     protected $session = null;
 
@@ -87,24 +87,19 @@ class Table implements \Tk\InstanceKey
      * @param array|\ArrayAccess $request
      * @param array|\ArrayAccess $session
      */
-    public function __construct($id, $params = array(), $request = null, $session = null)
+    public function __construct($id, $params = array())
     {
         $this->id = $id;
         $this->paramList = $params;
 
-        // TODO: Not happy with this section of code, use a static create method to set these values, implement the request and session Tk objects or use the config as the params object????
-        if (!$request) {
-            $request = &$_REQUEST;
+        if (!$this->request) {
+            $this->request = &$_REQUEST;
         }
-        $this->request = &$request;
-
-        if (!$session) {
-            $session = &$_SESSION;
+        if (!$this->session) {
+            $this->session = &$_SESSION;
         }
-        $this->session = &$session;
-
-
-        $this->form = new Form($id.'Filter', $request);
+        
+        $this->form = new Form($id.'Filter', $this->request);
         $this->form->setParamList($params);
         $this->form->addCss('form-inline');
         $this->setAttr('id', $this->getId());
@@ -121,7 +116,14 @@ class Table implements \Tk\InstanceKey
     public static function create($id, $params = array(), $request = null, $session = null)
     {
         $obj = new static($id, $params, $request, $session);
-
+        if (!$request)
+            $request = \Tk\Config::getInstance()->getRequest();
+        if (!$session)
+            $session = \Tk\Config::getInstance()->getSession();
+            
+        $obj->setRequest($request);
+        $obj->setSession($session);
+        
         return $obj;
     }
 
@@ -189,6 +191,18 @@ class Table implements \Tk\InstanceKey
     }
 
     /**
+     * @param \Tk\Request|array|\ArrayAccess $request
+     * @return $this
+     */
+    public function setRequest(&$request)
+    {
+        $this->request = &$request;
+        if ($this->getFilterForm())
+            $this->getFilterForm()->setRequest($request);
+        return $this;
+    }
+    
+    /**
      * @return array|\ArrayAccess
      */
     public function &getRequest()
@@ -196,6 +210,16 @@ class Table implements \Tk\InstanceKey
         return $this->request;
     }
 
+    /**
+     * @param \Tk\Session|array|\ArrayAccess $session
+     * @return $this
+     */
+    public function setSession(&$session)
+    {
+        $this->session = &$session;
+        return $this;
+    }
+    
     /**
      * @return array|\ArrayAccess
      */
@@ -384,9 +408,11 @@ class Table implements \Tk\InstanceKey
     public function getFilterValues()
     {
         static $x = false;
-        if (!$x) { // execute form on first access
-            $this->form->load($this->getFilterSession());
+        if (!$x && $this->getFilterForm()) { // execute form on first access
+            $this->getFilterForm()->load($this->getFilterSession());
             $this->getFilterForm()->execute();
+            
+            // x = true; ?????
         }
         return $this->getFilterForm()->getValues();
     }
@@ -399,7 +425,10 @@ class Table implements \Tk\InstanceKey
      */
     public function clearFilterSession()
     {
-        unset($this->session[$this->form->getId()]);
+        $session = $this->getSession();
+        if ($session && $this->getFilterForm()) {
+            unset($session[$this->getFilterForm()->getId()]);
+        }
         return $this;
     }
 
@@ -411,7 +440,10 @@ class Table implements \Tk\InstanceKey
      */
     public function saveFilterSession()
     {
-        $this->session[$this->form->getId()] = $this->form->getValues();
+        $session = $this->getSession();
+        if ($session && $this->getFilterForm()) {
+            $session[$this->getFilterForm()->getId()] = $this->getFilterForm()->getValues();
+        }
         return $this;
     }
 
@@ -422,8 +454,9 @@ class Table implements \Tk\InstanceKey
      */
     public function getFilterSession()
     {
-        if (isset($this->session[$this->form->getId()])) {
-            return $this->session[$this->form->getId()];
+        $session = $this->getSession();
+        if ($session && $this->getFilterForm() && isset($session[$this->getFilterForm()->getId()])) {
+            return $session[$this->getFilterForm()->getId()];
         }
         return array();
     }
@@ -501,8 +534,9 @@ class Table implements \Tk\InstanceKey
      */
     public function resetSessionOffset()
     {
-        if (isset($this->session[$this->makeInstanceKey('dbTool')][$this->makeInstanceKey(Tool::PARAM_OFFSET)])) {
-            $this->session[$this->makeInstanceKey('dbTool')][$this->makeInstanceKey(Tool::PARAM_OFFSET)] = 0;
+        $session = $this->getSession();
+        if ($session && isset($session[$this->makeInstanceKey('dbTool')][$this->makeInstanceKey(Tool::PARAM_OFFSET)])) {
+            $session[$this->makeInstanceKey('dbTool')][$this->makeInstanceKey(Tool::PARAM_OFFSET)] = 0;
         }
         return $this;
     }
@@ -514,8 +548,9 @@ class Table implements \Tk\InstanceKey
      */
     public function resetSessionTool()
     {
-        if (isset($this->session[$this->makeInstanceKey('dbTool')])) {
-            $this->session[$this->makeInstanceKey('dbTool')] = 0;
+        $session = $this->getSession();
+        if ($session && isset($session[$this->makeInstanceKey('dbTool')])) {
+            $session[$this->makeInstanceKey('dbTool')] = 0;
         }
         return $this;
     }
@@ -534,9 +569,10 @@ class Table implements \Tk\InstanceKey
         $tool = Tool::create($defaultOrderBy, $defaultLimit);
         $tool->setInstanceId($this->getId());
         $key = 'dbTool';
+        $session = $this->getSession();
 
-        if (isset($this->session[$this->makeInstanceKey($key)])) {
-            $tool->updateFromArray($this->session[$this->makeInstanceKey($key)]);
+        if ($session && isset($session[$this->makeInstanceKey($key)])) {
+            $tool->updateFromArray($session[$this->makeInstanceKey($key)]);
         }
         //$isRequest = $tool->updateFromArray($this->request);
         $isRequest = $tool->updateFromArray(\Tk\Uri::create()->all());  // Use GET params only
@@ -545,7 +581,7 @@ class Table implements \Tk\InstanceKey
         }
 
         if ($isRequest) {   // note, should only fire on GET requests.
-            $this->session[$this->makeInstanceKey($key)] = $tool->toArray();
+            $session[$this->makeInstanceKey($key)] = $tool->toArray();
             \Tk\Uri::create()
                 ->remove($this->makeInstanceKey(Tool::PARAM_ORDER_BY))
                 ->remove($this->makeInstanceKey(Tool::PARAM_LIMIT))
