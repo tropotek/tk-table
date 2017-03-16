@@ -98,7 +98,7 @@ abstract class Iface
     {
         $str = str_replace(array('id', 'Id'), '', $this->getLabel());
         $url = $this->getOrderUrl();
-        if ($url && $this->getTable()->getFixedOrderBy() === null) {
+        if ($url && $this->getTable()->getStaticOrderBy() === null) {
             $str = sprintf('<a href="%s" class="noblock" title="Click to order by: %s">%s</a>', htmlentities($url->toString()), $this->getOrderProperty(), $this->getLabel());
         }
         return $str;
@@ -273,6 +273,8 @@ abstract class Iface
         }
         
         $order = '';
+        //vd($this->getTable()->getList());
+
         if ($this->getOrderProperty() == $this->getTable()->getOrderProperty()) {
             $order = $this->getTable()->getOrder();
         }

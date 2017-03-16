@@ -24,10 +24,8 @@ class Table implements \Tk\InstanceKey
     const ORDER_ASC = 'ASC';
     const ORDER_DESC = 'DESC';
 
-    
     use \Tk\Dom\AttributesTrait;
     use \Tk\Dom\CssTrait;
-
 
     /**
      * @var string
@@ -72,13 +70,12 @@ class Table implements \Tk\InstanceKey
     /**
      * @var string
      */
-    protected $fixedOrderBy = null;
+    protected $staticOrderBy = null;
 
     /**
      * @var bool
      */
     private $hasExecuted = false;
-
 
 
     /**
@@ -95,6 +92,7 @@ class Table implements \Tk\InstanceKey
         $this->id = $id;
         $this->paramList = $params;
 
+        // TODO: Not happy with this section of code, use a static create method to set these values, implement the request and session Tk objects or use the config as the params object????
         if (!$request) {
             $request = &$_REQUEST;
         }
@@ -105,11 +103,26 @@ class Table implements \Tk\InstanceKey
         }
         $this->session = &$session;
 
+
         $this->form = new Form($id.'Filter', $request);
         $this->form->setParamList($params);
         $this->form->addCss('form-inline');
         $this->setAttr('id', $this->getId());
 
+    }
+
+    /**
+     * @param $id
+     * @param array $params
+     * @param null $request
+     * @param null $session
+     * @return static
+     */
+    public static function create($id, $params = array(), $request = null, $session = null)
+    {
+        $obj = new static($id, $params, $request, $session);
+
+        return $obj;
     }
 
     /**
@@ -418,18 +431,18 @@ class Table implements \Tk\InstanceKey
     /**
      * @return string
      */
-    public function getFixedOrderBy()
+    public function getStaticOrderBy()
     {
-        return $this->fixedOrderBy;
+        return $this->staticOrderBy;
     }
 
     /**
-     * @param string $fixedOrderBy
+     * @param string $staticOrderBy
      * @return $this
      */
-    public function setFixedOrderBy($fixedOrderBy)
+    public function setStaticOrderBy($staticOrderBy)
     {
-        $this->fixedOrderBy = $fixedOrderBy;
+        $this->staticOrderBy = $staticOrderBy;
         return $this;
     }
 
@@ -527,8 +540,8 @@ class Table implements \Tk\InstanceKey
         }
         //$isRequest = $tool->updateFromArray($this->request);
         $isRequest = $tool->updateFromArray(\Tk\Uri::create()->all());  // Use GET params only
-        if ($this->getFixedOrderBy() !== null) {
-            $tool->setOrderBy($this->getFixedOrderBy());
+        if ($this->getStaticOrderBy() !== null) {
+            $tool->setOrderBy($this->getStaticOrderBy());
         }
 
         if ($isRequest) {   // note, should only fire on GET requests.
