@@ -12,6 +12,7 @@ namespace Tk\Table\Cell;
 class Checkbox extends Iface
 {
 
+
     /**
      * Create
      *
@@ -59,25 +60,6 @@ JS;
     }
 
 
-
-    /**
-     * Get the property value from the object
-     * This should be the clean property data with no HTML or rendering attached,
-     * unless the rendering code is part of the value as it will be called for
-     * outputting to other files like XML or CSV.
-     *
-     *
-     * @param object $obj
-     * @param string $property
-     * @return mixed
-     */
-//    public function getPropertyValue($obj, $property)
-//    {
-//        $property = substr($property, 3);
-//        return parent::getPropertyValue($obj, $property);
-//    }
-
-
     /**
      * @param mixed $obj
      * @param int|null $rowIdx The current row being rendered (0-n) If null no rowIdx available.
@@ -85,7 +67,6 @@ JS;
      */
     public function getCellHtml($obj, $rowIdx = null)
     {
-        //$prop = substr($this->getProperty(), 3);
         $prop = $this->getProperty();
         $propValue = $this->getPropertyValue($obj, $this->getProperty());
         $str = sprintf('<input type="checkbox" name="%s[]" value="%s" class="tk-tcb" />', $prop, htmlentities($propValue));
