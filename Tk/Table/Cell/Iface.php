@@ -82,7 +82,8 @@ abstract class Iface
     {
         $this->property = $property;
         if (!$label) {
-            $label = ucfirst(preg_replace('/[A-Z]/', ' $0', $property));
+            $label = preg_replace('/Id$/', '', $property);
+            $label = ucfirst(preg_replace('/[A-Z]/', ' $0', $label));
         }
         $this->label = $label;
         $this->row = new \Tk\Table\Row();
@@ -241,7 +242,7 @@ abstract class Iface
         $url = Uri::create($this->getUrl());
         if ($this->urlProperty) {
             $prop = $this->urlProperty;
-            if ($prop == 'id') {     // If 'id' then convert to '{ObjClass}Id'
+            if ($prop == 'id' && is_object($obj)) {     // If 'id' then convert to '{ObjClass}Id'
                 $class = get_class($obj);
                 $pos = strrpos($class, '\\');
                 if (!$pos === false) {
