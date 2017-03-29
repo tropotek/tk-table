@@ -168,7 +168,7 @@ class Table extends Iface
                 $repeat->insertHtml('th', $data);
             }
 
-            $repeat->addCss('th', trim(implode(' ', $cell->getCssList())) );
+            $repeat->addCss('th', $cell->getCssString());
             $repeat->setAttr('th', 'data-label', $cell->getLabel());
             $repeat->setAttr('th', 'data-prop', $cell->getProperty());
             $repeat->appendRepeat();
