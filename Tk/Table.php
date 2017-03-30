@@ -81,15 +81,12 @@ class Table implements \Tk\InstanceKey
     /**
      * Create a table object
      *
-     * @param string $id
-     * 
+     * @param string $tableId
      * @param array $params
-     * @param array|\ArrayAccess $request
-     * @param array|\ArrayAccess $session
      */
-    public function __construct($id, $params = array())
+    public function __construct($tableId, $params = array())
     {
-        $this->id = $id;
+        $this->id = $tableId;
         $this->paramList = $params;
 
         if (!$this->request) {
@@ -99,7 +96,7 @@ class Table implements \Tk\InstanceKey
             $this->session = &$_SESSION;
         }
         
-        $this->form = new Form($id.'Filter', $this->request);
+        $this->form = new Form($tableId.'Filter');
         $this->form->setParamList($params);
         $this->form->addCss('form-inline');
         $this->setAttr('id', $this->getId());
@@ -109,13 +106,13 @@ class Table implements \Tk\InstanceKey
     /**
      * @param $id
      * @param array $params
-     * @param null $request
-     * @param null $session
+     * @param null|array|\Tk\Request $request
+     * @param null|array|\Tk\Session $session
      * @return static
      */
     public static function create($id, $params = array(), $request = null, $session = null)
     {
-        $obj = new static($id, $params, $request, $session);
+        $obj = new static($id, $params);
         if (!$request)
             $request = \Tk\Config::getInstance()->getRequest();
         if (!$session)
@@ -197,8 +194,6 @@ class Table implements \Tk\InstanceKey
     public function setRequest(&$request)
     {
         $this->request = &$request;
-        if ($this->getFilterForm())
-            $this->getFilterForm()->setRequest($request);
         return $this;
     }
     
@@ -410,9 +405,8 @@ class Table implements \Tk\InstanceKey
         static $x = false;
         if (!$x && $this->getFilterForm()) { // execute form on first access
             $this->getFilterForm()->load($this->getFilterSession());
-            $this->getFilterForm()->execute();
-            
-            // x = true; ?????
+            $this->getFilterForm()->execute($this->getRequest());
+            $x = true; // ?????
         }
         return $this->getFilterForm()->getValues();
     }

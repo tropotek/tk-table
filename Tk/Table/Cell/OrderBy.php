@@ -199,7 +199,7 @@ JS;
      */
     public function orderSwap($mapper, $fromObj, $toObj)
     {
-        $property = $mapper->getDbMap()->getProperty($this->getOrderProperty());
+        $property = $mapper->getDbMap()->getPropertyMap($this->getOrderProperty());
         if (!$property) {
             return 0;
         }
@@ -236,7 +236,7 @@ JS;
      */
     public function orderUpdate($mapper, $updateArray)
     {
-        $property = $mapper->getDbMap()->getProperty($this->getOrderProperty());
+        $property = $mapper->getDbMap()->getPropertyMap($this->getOrderProperty());
         if (!$property) {
             throw new \Tk\Table\Exception('OrderBy Property Not Found');
         }
@@ -258,7 +258,7 @@ JS;
      */
     public function resetOrder($mapper)
     {
-        $property = $mapper->getDbMap()->getProperty($this->getOrderProperty());
+        $property = $mapper->getDbMap()->getPropertyMap($this->getOrderProperty());
         if (!$property) {
             return null;
         }
