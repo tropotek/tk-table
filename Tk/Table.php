@@ -529,8 +529,12 @@ class Table implements \Tk\InstanceKey
     public function resetSessionOffset()
     {
         $session = $this->getSession();
-        if ($session && isset($session[$this->makeInstanceKey('dbTool')][$this->makeInstanceKey(Tool::PARAM_OFFSET)])) {
-            $session[$this->makeInstanceKey('dbTool')][$this->makeInstanceKey(Tool::PARAM_OFFSET)] = 0;
+        if ($session && isset($session[$this->makeInstanceKey('dbTool')])) {
+            $instKey = $session[$this->makeInstanceKey('dbTool')];
+            if (isset($instKey[$this->makeInstanceKey(Tool::PARAM_OFFSET)])) {
+                $instKey[$this->makeInstanceKey(Tool::PARAM_OFFSET)] = 0;
+                $session[$this->makeInstanceKey('dbTool')] = $instKey;
+            }
         }
         return $this;
     }
@@ -544,7 +548,8 @@ class Table implements \Tk\InstanceKey
     {
         $session = $this->getSession();
         if ($session && isset($session[$this->makeInstanceKey('dbTool')])) {
-            $session[$this->makeInstanceKey('dbTool')] = 0;
+            //$session[$this->makeInstanceKey('dbTool')] = 0;
+            unset($session[$this->makeInstanceKey('dbTool')]);
         }
         return $this;
     }
