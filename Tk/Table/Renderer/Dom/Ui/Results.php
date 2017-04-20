@@ -73,15 +73,20 @@ class Results extends Iface
         if ($this->total) {
             $off = $this->offset+1;
         }
-
-        $template->insertText('from', $off);
         $to = $this->offset + $this->limit;
         if ($to > $this->total) {
             $to = $this->total;
         }
-        $template->insertText('to', $to);
-        $template->insertText('total', $this->total);
 
+        $str = sprintf('%s-%s / %s', $off, $to, $this->total);
+
+        // TODO could we just insert the string
+//        $template->insertText('from', $off);
+//        $template->insertText('to', $to);
+//        $template->insertText('total', $this->total);
+
+        $template->insertText('tk-results', $str);
+        $template->setAttr('tk-results', 'title', $str);
     }
 
     /**
@@ -93,7 +98,7 @@ class Results extends Iface
     {
         $xhtml = <<<XHTML
 <div class="tk-results" var="tk-results">
-  Records: <span var="from"></span> to <span var="to"></span> of <span var="total"></span>
+  <span var="from"></span>-<span var="to"></span> / <span var="total"></span>
 </div>
 XHTML;
         return \Dom\Loader::load($xhtml);

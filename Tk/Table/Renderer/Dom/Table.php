@@ -98,13 +98,13 @@ class Table extends Iface
             // Results UI
             $results = Ui\Results::createFromDbArray($this->getTable()->getList());
             $results->setInstanceId($this->getTable()->getId());
-            $results->addCss('col-md-2');
+            $results->addCss('col-xs-3');
             $this->appendFootRenderer($results);
 
             // Render Pager
             $pager = Ui\Pager::createFromDbArray($this->getTable()->getList());
             $pager->setInstanceId($this->getTable()->getId());
-            $pager->addCss('col-md-8 text-center');
+            $pager->addCss('col-xs-6 text-center');
             $this->appendFootRenderer($pager);
 
             // Limit UI
@@ -114,7 +114,7 @@ class Table extends Iface
             }
             $limit = new Ui\Limit($this->getTable()->getList()->getTool()->getLimit(), $limitList);
             $limit->setInstanceId($this->getTable()->getId());
-            $limit->addCss('col-md-2');
+            $limit->addCss('col-xs-3');
             $this->appendFootRenderer($limit);
         }
 
