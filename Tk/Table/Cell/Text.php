@@ -20,6 +20,17 @@ class Text extends Iface
     protected $charLimit = 0;
 
     /**
+     * Create
+     *
+     * @param string $property
+     * @param string $label If null the property name is used EG: 'propName' = 'Prop Name'
+     */
+    public function __construct($property, $label = null)
+    {
+        parent::__construct($property, $label);
+    }
+
+    /**
      * Use 0 to disable character limit
      *
      * @param $i
