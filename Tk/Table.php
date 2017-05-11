@@ -308,23 +308,52 @@ class Table implements \Tk\InstanceKey
     public function addCell($cell)
     {
         $cell->setTable($this);
-        $this->cellList[] = $cell;
+        $this->cellList[$cell->getProperty()] = $cell;
         return $cell;
     }
 
     /**
-     * Set the cells, init with the table
+     * Add a field element before another element
      *
-     * @param Cell\Iface[] $array
-     * @return Table
+     * @param string $property
+     * @param Cell\Iface $cell
+     * @return Cell\Iface
      */
-    public function setCells($array)
+    public function addCellBefore($property, $cell)
     {
-        foreach ($array as $cell) {
-            $cell->setTable($this);
+        $newArr = array();
+        $cell->setTable($this);
+        /** @var Cell\Iface $c */
+        foreach ($this->getCellList() as $c) {
+            if ($c->getProperty() == $property) {
+                $newArr[$cell->getProperty()] = $cell;
+            }
+            $newArr[$c->getProperty()] = $c;
         }
-        $this->cellList = $array;
-        return $this;
+        $this->setCellList($newArr);
+        return $cell;
+    }
+
+    /**
+     * Add an element after another element
+     *
+     * @param string $property
+     * @param Cell\Iface $cell
+     * @return Cell\Iface
+     */
+    public function addCellAfter($property, $cell)
+    {
+        $newArr = array();
+        $cell->setTable($this);
+        /** @var Cell\Iface $c */
+        foreach ($this->getCellList() as $c) {
+            $newArr[$c->getProperty()] = $c;
+            if ($c->getProperty() == $property) {
+                $newArr[$cell->getProperty()] = $cell;
+            }
+        }
+        $this->setCellList($newArr);
+        return $cell;
     }
 
     /**
@@ -338,6 +367,35 @@ class Table implements \Tk\InstanceKey
         if (array_key_exists($property, $this->cellList)) {
             return $this->cellList[$property];
         }
+    }
+
+    /**
+     * Remove a cell from the table
+     *
+     * @param string $property
+     * @return $this
+     */
+    public function removeCell($property)
+    {
+        if (array_key_exists($property, $this->cellList)) {
+            unset($this->cellList[$property]);
+        }
+        return $this;
+    }
+
+    /**
+     * Set the cells, init with the table
+     *
+     * @param Cell\Iface[] $array
+     * @return Table
+     */
+    public function setCellList($array)
+    {
+        foreach ($array as $cell) {
+            $cell->setTable($this);
+        }
+        $this->cellList = $array;
+        return $this;
     }
 
     /**
@@ -359,7 +417,7 @@ class Table implements \Tk\InstanceKey
     public function addAction($action)
     {
         $action->setTable($this);
-        $this->actionList[] = $action;
+        $this->actionList[$action->getName()] = $action;
         return $action;
     }
 

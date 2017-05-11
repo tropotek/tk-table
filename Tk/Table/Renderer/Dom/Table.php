@@ -148,7 +148,7 @@ class Table extends Iface
         }
 
         /* @var \Tk\Table\Cell\Iface $cell */
-        foreach($this->getTable()->getCellList() as $cell) {
+        foreach($this->getTable()->getCellList() as $property => $cell) {
             $repeat = $template->getRepeat('th');
             if (!$repeat) continue;
             if ($this->getTable()->getOrderProperty() == $cell->getOrderProperty()) {
@@ -210,7 +210,7 @@ class Table extends Iface
         $rowCssList = array();
         $rowAttrList = array();
         /* @var \Tk\Table\Cell\Iface $cell */
-        foreach($this->getTable()->getCellList() as $i => $cell) {
+        foreach($this->getTable()->getCellList() as $k => $cell) {
             $cell->storeProperties();
             $this->cellRepeat = $this->rowRepeat->getRepeat('td');
             $this->showCell($cell, $obj);

@@ -64,10 +64,10 @@ if (typeof (String.prototype.hashCode) == 'undefined') {
     var defaults = {
       buttonId : '',
       selectors: null,
-      disabled : null,
+      disabled : null,          // int[]
       disabledColor: '#999',
       disabledHidden: false,
-      defaultSelected : null,
+      defaultSelected : null,   // int[]
       hash: '',
 
       // Should return a jquery list containing checkbox inputs to trigger the columns.
@@ -151,9 +151,6 @@ if (typeof (String.prototype.hashCode) == 'undefined') {
 //reset cookies
 //Cookies.remove(plugin.settings.hash);
 
-
-        var state = Cookies.get(plugin.settings.hash);
-
         // TODO: Get the default state of the columns (some may be hidden by default?)
         // How do we setup default hidden cols, maybe via the settings or a data attr in the headers?????
         var selected = plugin.range(0, plugin.settings.selectors.length-1);
@@ -162,10 +159,11 @@ if (typeof (String.prototype.hashCode) == 'undefined') {
           selected = plugin.settings.defaultSelected;
         }
 
+        var state = Cookies.get(plugin.settings.hash);
         if (state) {
           try {
-            var sel = [];
             state = JSON.parse(state);
+            var sel = [];
             $.each(state, function (i, o) {
               sel[sel.length] = o.value;
             });

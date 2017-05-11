@@ -81,23 +81,23 @@ class ColumnSelect extends Button
 
     /**
      * Use this method to convert a property array to an array
-     * of column numbers fo the column select plugin
+     * of column numbers for the column select plugin
      *
      * @param $arr
      * @return array
      */
     private function propsToCols($arr) {
         $nums = array();
+        $i = 0;
         /** @var \Tk\Table\Cell\Iface $cell */
-        foreach ($this->getTable()->getCellList() as $i => $cell) {
+        foreach ($this->getTable()->getCellList() as $k => $cell) {
             if (in_array($cell->getProperty(), $arr)) {
-                $nums[] = $i;
+                $nums[] = $i;   // int not string
             }
+            $i++;
         }
         return $nums;
     }
-
-
 
     /**
      * @return string|\Dom\Template
