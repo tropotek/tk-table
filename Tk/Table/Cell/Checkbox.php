@@ -11,17 +11,21 @@ namespace Tk\Table\Cell;
  */
 class Checkbox extends Iface
 {
-
+    /**
+     * @var string
+     */
+    protected $prefix = '';
 
     /**
      * Create
      *
      * @param string $property
+     * @param string $propertyPrefix Use this to avoid conflicts with non-ui fields
      */
-    public function __construct($property)
+    public function __construct($property, $propertyPrefix = 'rs_')
     {
-        //parent::__construct('cb_'.$property, ucfirst(preg_replace('/[A-Z]/', ' $0', $property)));
-        parent::__construct($property, ucfirst(preg_replace('/[A-Z]/', ' $0', $property)));
+        $this->prefix = $propertyPrefix;
+        parent::__construct($this->prefix.$property, ucfirst(preg_replace('/[A-Z]/', ' $0', $property)));
 
     }
 
@@ -59,7 +63,6 @@ JS;
         return $template;
     }
 
-
     /**
      * @param mixed $obj
      * @param int|null $rowIdx The current row being rendered (0-n) If null no rowIdx available.
@@ -72,4 +75,5 @@ JS;
         $str = sprintf('<input type="checkbox" name="%s[]" value="%s" class="tk-tcb" />', $prop, htmlentities($propValue));
         return $str;
     }
+
 }
