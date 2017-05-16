@@ -11,21 +11,15 @@ namespace Tk\Table\Cell;
  */
 class Checkbox extends Iface
 {
-    /**
-     * @var string
-     */
-    protected $prefix = '';
 
     /**
      * Create
      *
      * @param string $property
-     * @param string $propertyPrefix Use this to avoid conflicts with non-ui fields
      */
-    public function __construct($property, $propertyPrefix = 'rs_')
+    public function __construct($property)
     {
-        $this->prefix = $propertyPrefix;
-        parent::__construct($this->prefix.$property, ucfirst(preg_replace('/[A-Z]/', ' $0', $property)));
+        parent::__construct($property, ucfirst(preg_replace('/[A-Z]/', ' $0', $property)));
 
     }
 

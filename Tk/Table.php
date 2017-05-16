@@ -308,27 +308,30 @@ class Table implements \Tk\InstanceKey
     public function addCell($cell)
     {
         $cell->setTable($this);
-        $this->cellList[$cell->getProperty()] = $cell;
+        $this->cellList[] = $cell;
+        //$this->cellList[$cell->getProperty()] = $cell;
         return $cell;
     }
 
     /**
      * Add a field element before another element
      *
-     * @param string $property
+     * @param Cell\Iface $anchorCell
      * @param Cell\Iface $cell
      * @return Cell\Iface
      */
-    public function addCellBefore($property, $cell)
+    public function addCellBefore($anchorCell, $cell)
     {
         $newArr = array();
         $cell->setTable($this);
         /** @var Cell\Iface $c */
         foreach ($this->getCellList() as $c) {
-            if ($c->getProperty() == $property) {
-                $newArr[$cell->getProperty()] = $cell;
+            if ($c === $anchorCell) {
+                //$newArr[$cell->getProperty()] = $cell;
+                $newArr[] = $cell;
             }
-            $newArr[$c->getProperty()] = $c;
+            //$newArr[$c->getProperty()] = $c;
+            $newArr[] = $c;
         }
         $this->setCellList($newArr);
         return $cell;
@@ -337,19 +340,21 @@ class Table implements \Tk\InstanceKey
     /**
      * Add an element after another element
      *
-     * @param string $property
+     * @param Cell\Iface $anchorCell
      * @param Cell\Iface $cell
      * @return Cell\Iface
      */
-    public function addCellAfter($property, $cell)
+    public function addCellAfter($anchorCell, $cell)
     {
         $newArr = array();
         $cell->setTable($this);
         /** @var Cell\Iface $c */
         foreach ($this->getCellList() as $c) {
-            $newArr[$c->getProperty()] = $c;
-            if ($c->getProperty() == $property) {
-                $newArr[$cell->getProperty()] = $cell;
+            //$newArr[$c->getProperty()] = $c;
+            $newArr[] = $c;
+            if ($c === $anchorCell) {
+                //$newArr[$cell->getProperty()] = $cell;
+                $newArr[] = $cell;
             }
         }
         $this->setCellList($newArr);
@@ -357,30 +362,58 @@ class Table implements \Tk\InstanceKey
     }
 
     /**
-     * Get a cell from the array by its property name
+     * Remove a cell from the table
      *
-     * @param string $property
-     * @return Cell\Iface
+     * @param Cell\Iface $cell
+     * @return $this
      */
-    public function getCell($property)
+    public function removeCell($cell)
     {
-        if (array_key_exists($property, $this->cellList)) {
-            return $this->cellList[$property];
+        /** @var Cell\Iface $c */
+        foreach ($this->getCellList() as $i => $c) {
+            if ($c === $cell) {
+                unset($this->cellList[$i]);
+                $this->cellList = array_values($this->cellList);
+                break;
+            }
         }
+        return $this;
     }
 
     /**
-     * Remove a cell from the table
+     * Find a cell in the table that match the given property and/or label
      *
      * @param string $property
-     * @return $this
+     * @param null|string $label
+     * @return array|Cell\Iface
      */
-    public function removeCell($property)
+    public function findCell($property, $label = null)
     {
-        if (array_key_exists($property, $this->cellList)) {
-            unset($this->cellList[$property]);
+        $found = $this->findCells($property, $label);
+        return current($found);
+    }
+
+    /**
+     * Find all cells that match the given property and/or label
+     *
+     * @param string $property
+     * @param null|string $label
+     * @return array
+     */
+    public function findCells($property, $label = null)
+    {
+        $found = array();
+        foreach ($this->getCellList() as $c) {
+            if ($c->getProperty() == $property) {
+                if ($label !== null) {
+                    if ($c->getLabel() == $label)
+                        $found[] = $c;
+                } else {
+                    $found[] = $c;
+                }
+            }
         }
-        return $this;
+        return $found;
     }
 
     /**
