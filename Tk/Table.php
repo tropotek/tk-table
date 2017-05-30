@@ -309,7 +309,6 @@ class Table implements \Tk\InstanceKey
     {
         $cell->setTable($this);
         $this->cellList[] = $cell;
-        //$this->cellList[$cell->getProperty()] = $cell;
         return $cell;
     }
 
@@ -327,10 +326,8 @@ class Table implements \Tk\InstanceKey
         /** @var Cell\Iface $c */
         foreach ($this->getCellList() as $c) {
             if ($c === $anchorCell) {
-                //$newArr[$cell->getProperty()] = $cell;
                 $newArr[] = $cell;
             }
-            //$newArr[$c->getProperty()] = $c;
             $newArr[] = $c;
         }
         $this->setCellList($newArr);
@@ -350,10 +347,8 @@ class Table implements \Tk\InstanceKey
         $cell->setTable($this);
         /** @var Cell\Iface $c */
         foreach ($this->getCellList() as $c) {
-            //$newArr[$c->getProperty()] = $c;
             $newArr[] = $c;
             if ($c === $anchorCell) {
-                //$newArr[$cell->getProperty()] = $cell;
                 $newArr[] = $cell;
             }
         }
@@ -497,7 +492,7 @@ class Table implements \Tk\InstanceKey
         if (!$x && $this->getFilterForm()) { // execute form on first access
             $this->getFilterForm()->load($this->getFilterSession());
             $this->getFilterForm()->execute($this->getRequest());
-            $x = true; // ?????
+            $x = true;
         }
         return $this->getFilterForm()->getValues();
     }

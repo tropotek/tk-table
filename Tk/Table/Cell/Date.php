@@ -18,6 +18,11 @@ class Date extends Text
      */
     protected $format = 'Y-m-d h:i:s';
 
+    /**
+     * @var string
+     */
+    protected $rawFormat = 'Y-m-d h:i:s';
+
 
     /**
      * Change the format of the date
@@ -28,6 +33,16 @@ class Date extends Text
     public function setFormat($format)
     {
         $this->format = $format;
+        return $this;
+    }
+
+    /**
+     * @param string $rawFormat
+     * @return $this
+     */
+    public function setRawFormat($rawFormat)
+    {
+        $this->rawFormat = $rawFormat;
         return $this;
     }
 
@@ -46,7 +61,6 @@ class Date extends Text
         }
         
         if ($value instanceof \DateTime) {
-            //return $value->format($this->format);
             if ($this->format == self::FORMAT_RELATIVE) {
                 return \Tk\Date::toRelativeString($value);
             } else {
@@ -57,6 +71,29 @@ class Date extends Text
     }
 
 
+    /**
+     * Get the raw string property value.
+     * This call can be used for exporting data into a csv, json, xml format
+     *
+     * @param mixed $obj
+     * @return string
+     */
+    public function getRawValue($obj)
+    {
+        $value = parent::getPropertyValue($obj, $this->getProperty());
+
+        if ($value && !$value instanceof \DateTime) {
+            $value = \Tk\Date::create($value);
+        }
+        if ($value instanceof \DateTime) {
+            if ($this->rawFormat == self::FORMAT_RELATIVE) {
+                return \Tk\Date::toRelativeString($value);
+            } else {
+                return $value->format($this->rawFormat);
+            }
+        }
+        return $value;
+    }
 
 
 }
