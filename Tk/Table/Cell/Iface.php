@@ -69,6 +69,11 @@ abstract class Iface
      */
     protected $store = array();
 
+    /**
+     * @var boolean
+     */
+    protected $visible = true;
+
     
     
 
@@ -461,5 +466,25 @@ abstract class Iface
     {
         return $this->row;
     }
+
+    /**
+     * @return bool
+     */
+    public function isVisible()
+    {
+        return $this->visible;
+    }
+
+    /**
+     * @param bool $visible
+     * @return $this
+     */
+    public function setVisible($visible)
+    {
+        $this->visible = $visible;
+        return $this;
+    }
+
+
 
 }

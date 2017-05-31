@@ -34,6 +34,11 @@ abstract class Iface
      */
     protected $table = null;
 
+    /**
+     * @var boolean
+     */
+    protected $visible = true;
+
     
     /**
      * Create
@@ -137,5 +142,23 @@ abstract class Iface
     }
 
 
+
+    /**
+     * @return bool
+     */
+    public function isVisible()
+    {
+        return $this->visible;
+    }
+
+    /**
+     * @param bool $visible
+     * @return $this
+     */
+    public function setVisible($visible)
+    {
+        $this->visible = $visible;
+        return $this;
+    }
 
 }

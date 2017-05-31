@@ -137,7 +137,7 @@ class Table extends Iface
 
         /* @var \Tk\Table\Action\Iface $action */
         foreach($this->getTable()->getActionList() as $action) {
-            if (!$action instanceof \Tk\Table\Action\Iface) continue;
+            if (!$action instanceof \Tk\Table\Action\Iface || !$action->isVisible()) continue;
             $html = $action->getHtml();
             if ($html instanceof \Dom\Template) {
                 $template->appendTemplate('actions', $html);
@@ -149,6 +149,7 @@ class Table extends Iface
 
         /* @var \Tk\Table\Cell\Iface $cell */
         foreach($this->getTable()->getCellList() as $property => $cell) {
+            if (!$cell->isVisible()) continue;
             $repeat = $template->getRepeat('th');
             if (!$repeat) continue;
             if ($this->getTable()->getOrderProperty() == $cell->getOrderProperty()) {
@@ -211,6 +212,7 @@ class Table extends Iface
         $rowAttrList = array();
         /* @var \Tk\Table\Cell\Iface $cell */
         foreach($this->getTable()->getCellList() as $k => $cell) {
+            if (!$cell->isVisible()) continue;
             $cell->storeProperties();
             $this->cellRepeat = $this->rowRepeat->getRepeat('td');
             $this->showCell($cell, $obj);
