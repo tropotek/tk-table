@@ -23,6 +23,12 @@ class Delete extends Button
      */
     protected $excludeIdList = array();
 
+    /**
+     * function (Delete $delete, array $selected)
+     * @var callable
+     */
+    protected $onExecute = null;
+
 
     /**
      * Create
@@ -51,6 +57,16 @@ class Delete extends Button
     }
 
     /**
+     * @param callable $onExecute
+     * @return $this
+     */
+    public function setOnExecute($onExecute)
+    {
+        $this->onExecute = $onExecute;
+        return $this;
+    }
+
+    /**
      * @param $array
      * @return $this
      */
@@ -59,6 +75,15 @@ class Delete extends Button
         $this->excludeIdList = $array;
         return $this;
     }
+
+    /**
+     * @return array
+     */
+    public function getExcludeIdList()
+    {
+        return $this->excludeIdList;
+    }
+
 
     /**
      * @return mixed
@@ -73,13 +98,20 @@ class Delete extends Button
         if (!is_array($selected)) return;
         $i = 0;
 
-        /* @var \Tk\Db\Map\Model $obj */
-        foreach($this->getTable()->getList() as $obj) {
-            if (!$obj instanceof \Tk\Db\Map\Model) continue;
-            // TODO: should we be using the checkboxName parameter to match against?????
-            if (in_array($obj->getId(), $selected) && !in_array($obj->getId(), $this->excludeIdList)) {
-                $obj->delete();
-                $i++;
+        $propagate = true;
+        if (is_callable($this->onExecute)) {
+            $p = call_user_func_array($this->onExecute, array($this, $selected));
+            if ($p !== null && is_bool($p)) $propagate = $p;
+        }
+        if ($propagate) {
+            /* @var \Tk\Db\Map\Model $obj */
+            foreach($this->getTable()->getList() as $obj) {
+                if (!$obj instanceof \Tk\Db\Map\Model) continue;
+                // TODO: should we be using the checkboxName parameter to match against?????
+                if (in_array($obj->getId(), $selected) && !in_array($obj->getId(), $this->excludeIdList)) {
+                    $obj->delete();
+                    $i++;
+                }
             }
         }
 
