@@ -38,6 +38,10 @@ class ActionButton
      * @var null|callable
      */
     protected $onShow = null;
+    /**
+     * @var boolean
+     */
+    protected $visible = true;
 
 
     /**
@@ -142,6 +146,22 @@ class ActionButton
     public function hasOnShow()
     {
         return is_callable($this->getOnShow());
+    }
+
+    /**
+     * @return bool
+     */
+    public function isVisible()
+    {
+        return $this->visible;
+    }
+
+    /**
+     * @param bool $visible
+     */
+    public function setVisible($visible)
+    {
+        $this->visible = $visible;
     }
 
 }

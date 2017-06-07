@@ -121,16 +121,17 @@ class Actions extends Text
         $template = $this->__makeTemplate();
         /** @var ActionButton $btn */
         foreach ($this->buttonList as $btn) {
-            $row = $template->getRepeat('btn');
             if ($btn->hasOnShow()) {
                 call_user_func_array($btn->getOnShow(), array($obj, $btn, $this));
             }
+            if (!$btn->isVisible()) continue;
+            $row = $template->getRepeat('btn');
+
             if ($btn->getUrl()) {
                 $row->setAttr('btn', 'href', $btn->getUrl());
             } else {
                 $row->setAttr('btn', 'href', '#');
             }
-
             $row->setAttr('btn', 'title', $btn->getTitle());
             $css = $btn->getCssString();
             if (!$css) {
