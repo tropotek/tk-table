@@ -34,7 +34,7 @@ class Actions extends Text
      */
     public function addButton($button) {
         $this->setVisible(true);
-        $this->buttonList->set($button->getTitle(), $button);
+        $this->buttonList->set($button->getId(), $button);
         return $button;
     }
 
@@ -51,8 +51,8 @@ class Actions extends Text
             return $button;
         }
         foreach ($this->buttonList as $k => $v) {
-            if ($k == $srcButton->getTitle()) {
-                $newArr[$button->getTitle()] =  $button;
+            if ($k == $srcButton->getId()) {
+                $newArr[$button->getId()] =  $button;
             }
             $newArr[$k] = $v;
         }
@@ -74,8 +74,8 @@ class Actions extends Text
         }
         foreach ($this->buttonList as $k => $v) {
             $newArr[$k] = $v;
-            if ($k == $srcButton->getTitle()) {
-                $newArr[$button->getTitle()] =  $button;
+            if ($k == $srcButton->getId()) {
+                $newArr[$button->getId()] =  $button;
             }
         }
         $this->buttonList->clear()->replace($newArr);
@@ -83,33 +83,38 @@ class Actions extends Text
     }
 
     /**
-     * @param string $title
+     * @param int $id
      * @return null|ActionButton
      */
-    public function findButton($title)
+    public function findButton($id)
     {
-        if ($this->buttonList->has($title))
-            return $this->buttonList->get($title);
+        if ($this->buttonList->has($id))
+            return $this->buttonList->get($id);
     }
 
     /**
-     * @param string $title
+     * @param int|ActionButton $id
      * @return null|ActionButton Return null if no button removed
      */
-    public function removeButton($title)
+    public function removeButton($id)
     {
-        if (!$this->buttonList->has($title)) return null;
-        $button = $this->buttonList->get($title);
-        $this->buttonList->remove($title);
+        if ($id instanceof ActionButton) $id = $id->getId();
+
+        if (!$this->buttonList->has($id)) return null;
+        $button = $this->buttonList->get($id);
+        $this->buttonList->remove($id);
         return $button;
     }
 
     public function getRawValue($obj)
     {
-        $value = '['.implode('][', $this->buttonList->keys()).']';
-        return $value;
+        $arr = array();
+        /** @var ActionButton $btn */
+        foreach ($this->buttonList as $btn) {
+            $arr[] = $btn->getTitle();
+        }
+        return '['.implode('][', $arr).']';
     }
-
 
     /**
      * @param \App\Db\User $obj

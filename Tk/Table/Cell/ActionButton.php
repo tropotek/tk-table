@@ -15,6 +15,15 @@ class ActionButton
     use \Tk\Dom\CssTrait;
 
     /**
+     * @var int
+     */
+    protected static $idx = 0;
+
+    /**
+     * @var int
+     */
+    protected $id = 0;
+    /**
      * @var string
      */
     protected $title = '';
@@ -55,6 +64,7 @@ class ActionButton
      */
     public function __construct($title, $url = null, $icon = '', $css = '', $attr = array(), $onShow = null)
     {
+        $this->id = self::$idx++;
         $this->title = $title;
         $this->url = $url;
         $this->icon = $icon;
@@ -74,6 +84,14 @@ class ActionButton
     {
         $obj = new self($title, $url, $icon, $css);
         return $obj;
+    }
+
+    /**
+     * @return int
+     */
+    public function getId()
+    {
+        return $this->id;
     }
 
     /**
