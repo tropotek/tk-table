@@ -124,8 +124,9 @@ class Actions extends Text
     public function getCellHtml($obj, $rowIdx = null)
     {
         $template = $this->__makeTemplate();
-        /** @var ActionButton $btn */
-        foreach ($this->buttonList as $btn) {
+        /** @var ActionButton $srcBtn */
+        foreach ($this->buttonList as $srcBtn) {
+            $btn = clone $srcBtn;
             if ($btn->hasOnShow()) {
                 call_user_func_array($btn->getOnShow(), array($obj, $btn, $this));
             }
