@@ -2,6 +2,7 @@
 namespace Tk\Table\Cell;
 
 /**
+ * TODO: Move to \Tk\Ui\Table\Cell
  * Class
  *
  * @author Michael Mifsud <info@tropotek.com>
