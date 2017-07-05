@@ -75,7 +75,7 @@ class Table implements \Tk\InstanceKey
     /**
      * @var bool
      */
-    private $hasExecuted = false;
+    protected $hasExecuted = false;
 
 
     /**
@@ -88,6 +88,7 @@ class Table implements \Tk\InstanceKey
     {
         $this->id = $tableId;
         $this->paramList = $params;
+        $this->setAttr('id', $this->getId());
 
         if (!$this->request) {
             $this->request = &$_REQUEST;
@@ -95,12 +96,18 @@ class Table implements \Tk\InstanceKey
         if (!$this->session) {
             $this->session = &$_SESSION;
         }
-        
-        $this->form = new Form($tableId.'Filter');
-        $this->form->setParamList($params);
-        $this->form->addCss('form-inline');
-        $this->setAttr('id', $this->getId());
+        $this->form = $this->makeForm();
+    }
 
+    /**
+     * @return Form
+     */
+    protected function makeForm()
+    {
+        $form = new Form($this->id . 'Filter');
+        $form->setParamList($this->paramList);
+        $form->addCss('form-inline');
+        return $form;
     }
 
     /**
@@ -485,8 +492,10 @@ class Table implements \Tk\InstanceKey
     /**
      * getFilterValues
      *
+     * @param null|array|string $regex A regular expression or array of field names to get
+     * @return array
      */
-    public function getFilterValues()
+    public function getFilterValues($regex = null)
     {
         static $x = false;
         if (!$x && $this->getFilterForm()) { // execute form on first access
@@ -494,7 +503,7 @@ class Table implements \Tk\InstanceKey
             $this->getFilterForm()->execute($this->getRequest());
             $x = true;
         }
-        return $this->getFilterForm()->getValues();
+        return $this->getFilterForm()->getValues($regex);
     }
 
     /**
