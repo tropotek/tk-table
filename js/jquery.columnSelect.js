@@ -6,7 +6,7 @@
  * Created by mifsudm on 18/01/17.
  */
 
-if (typeof (String.prototype.hashCode) == 'undefined') {
+if (typeof (String.prototype.hashCode) === 'undefined') {
 
   String.prototype.hashCode = function () {
     var a = 1, c = 0, h, o;
@@ -53,8 +53,7 @@ if (typeof (String.prototype.hashCode) == 'undefined') {
 (function($) {
 
   /**
-   *
-   * @param Element element
+   * @param element
    * @param options
    */
   var columnSelect = function(element, options) {
@@ -63,11 +62,13 @@ if (typeof (String.prototype.hashCode) == 'undefined') {
     // this is private property and is  accessible only from inside the plugin
     var defaults = {
       buttonId : '',
+      resetCookies: false,
       selectors: null,
       disabled : null,          // int[]
       disabledColor: '#999',
       disabledHidden: false,
       defaultSelected : null,   // int[]
+      defaultUnselected : null,   // int[]
       hash: '',
 
       // Should return a jquery list containing checkbox inputs to trigger the columns.
@@ -102,11 +103,11 @@ if (typeof (String.prototype.hashCode) == 'undefined') {
           row.find('input').attr('id', rowId);
           row.find('input').attr('name', 'columnSelect');
           row.find('input').attr('value', i);
-          row.find('span').text(label);
+          row.find('span').text(decodeHTMLEntities(label));
           row.find('input').prop('checked', true);
           row.find('label').attr('for', row.find('input').attr('id'));
 
-          if (isArray(plugin.settings.disabled) && $.inArray(i+'', plugin.settings.disabled) != -1) {
+          if (isArray(plugin.settings.disabled) && $.inArray(i+'', plugin.settings.disabled) !== -1) {
             row.addClass('disabled');
             row.find('label').css('color', plugin.settings.disabledColor);
             row.find('input').attr('readonly', 'readonly');
@@ -131,11 +132,11 @@ if (typeof (String.prototype.hashCode) == 'undefined') {
       onChange: function () { },
 
       onSaveState: function () {
-        var hasCookies = (typeof(Cookies) != 'undefined');
+        var hasCookies = (typeof(Cookies) !== 'undefined');
         if (!hasCookies) return;
         var data = [];
         plugin.settings.selectors.each(function (i) {
-          if ($(this).attr('data-cs-checked') == '1') {
+          if ($(this).attr('data-cs-checked') === '1') {
             data[data.length] = {name: $(this).attr('name'), value: $(this).attr('data-cs-coll')};
           }
         });
@@ -145,18 +146,27 @@ if (typeof (String.prototype.hashCode) == 'undefined') {
 
 
       onRestoreState: function() {
-        var hasCookies = (typeof(Cookies) != 'undefined');
+        var hasCookies = (typeof(Cookies) !== 'undefined');
         if (!hasCookies) return;
 
-//reset cookies
-//Cookies.remove(plugin.settings.hash);
+        //reset cookies
+        if (plugin.settings.resetCookies) {
+            Cookies.remove(plugin.settings.hash);
+        }
 
         // TODO: Get the default state of the columns (some may be hidden by default?)
         // How do we setup default hidden cols, maybe via the settings or a data attr in the headers?????
         var selected = plugin.range(0, plugin.settings.selectors.length-1);
-
         if (isArray(plugin.settings.defaultSelected) && plugin.settings.defaultSelected.length > 0) {
           selected = plugin.settings.defaultSelected;
+        }
+        if (isArray(plugin.settings.defaultUnselected) && plugin.settings.defaultUnselected.length > 0) {
+          for(var i = 0; i < plugin.settings.defaultUnselected.length; i++) {
+            var idx = selected.indexOf(plugin.settings.defaultUnselected[i]);
+            if (idx !== -1) {
+              selected.splice(idx, 1);
+            }
+          }
         }
 
         var state = Cookies.get(plugin.settings.hash);
@@ -172,7 +182,7 @@ if (typeof (String.prototype.hashCode) == 'undefined') {
         }
 
         plugin.settings.selectors.each(function(i) {
-          if ($.inArray($(this).attr('data-cs-coll'), selected) != -1) {
+          if ($.inArray($(this).attr('data-cs-coll'), selected) !== -1) {
             $(this).prop('checked', true).attr('data-cs-checked', 1);
           } else {
             $(this).prop('checked', false).attr('data-cs-checked', 0);
@@ -212,6 +222,11 @@ if (typeof (String.prototype.hashCode) == 'undefined') {
           plugin.settings.defaultSelected[i] = plugin.settings.defaultSelected[i] + '';
         });
       }
+      if (isArray(plugin.settings.defaultUnselected)) {
+        $.each(plugin.settings.defaultUnselected, function (i, o) {
+          plugin.settings.defaultUnselected[i] = plugin.settings.defaultUnselected[i] + '';
+        });
+      }
       if (isArray(plugin.settings.disabled)) {
         $.each(plugin.settings.disabled, function (i, o) {
           plugin.settings.disabled[i] = plugin.settings.disabled[i] + '';
@@ -219,7 +234,7 @@ if (typeof (String.prototype.hashCode) == 'undefined') {
       }
 
       // get the main table element in the block
-      if (element.nodeName == 'TABLE') {
+      if (element.nodeName === 'TABLE') {
         table = $element;
       } else {
         table = $element.find('table').first();
@@ -229,7 +244,7 @@ if (typeof (String.prototype.hashCode) == 'undefined') {
         return;
       }
 
-      if (plugin.settings.hash == '') {
+      if (plugin.settings.hash === '') {
         //plugin.settings.hash = document.location.pathname.replace(/[^a-z0-9_-]/g, '_').hashCode() + table.attr('id');
         plugin.settings.hash = document.location.pathname.hashCode() + table.attr('id');
       }
@@ -244,7 +259,7 @@ if (typeof (String.prototype.hashCode) == 'undefined') {
         return;
       }
 
-      if (plugin.settings.onInitColumnSelectors != undefined) {
+      if (plugin.settings.onInitColumnSelectors !== undefined) {
         plugin.settings.selectors = plugin.settings.onInitColumnSelectors.call(table, topRow);
       }
 
@@ -259,12 +274,12 @@ if (typeof (String.prototype.hashCode) == 'undefined') {
       });
 
       plugin.settings.selectors.on('click', function (e) {
-        if (plugin.settings.disabled != null && $.inArray($(this).attr('data-cs-coll'), plugin.settings.disabled) != -1) {
+        if (plugin.settings.disabled !== null && $.inArray($(this).attr('data-cs-coll'), plugin.settings.disabled) !== -1) {
           e.stopPropagation();return false;
         }
 
         var state = 0;
-        if (!$(this).attr('data-cs-checked') || $(this).attr('data-cs-checked') == '' || $(this).attr('data-cs-checked') == '1') {
+        if (!$(this).attr('data-cs-checked') || $(this).attr('data-cs-checked') === '' || $(this).attr('data-cs-checked') === '1') {
           state = 0;
         } else {
           state = 1;
@@ -283,6 +298,28 @@ if (typeof (String.prototype.hashCode) == 'undefined') {
 
     };
 
+    var decodeHTMLEntities = function(text) {
+      var entities = [
+        ['amp', '&'],
+        ['apos', '\''],
+        ['#x27', '\''],
+        ['#x2F', '/'],
+        ['#39', '\''],
+        ['#47', '/'],
+        ['lt', '<'],
+        ['gt', '>'],
+        ['nbsp', ' '],
+        ['quot', '"']
+      ];
+
+      for (var i = 0, max = entities.length; i < max; ++i)
+        text = text.replace(new RegExp('&'+entities[i][0]+';', 'g'), entities[i][1]);
+
+      return text;
+    };
+
+
+
     // private methods
     // these methods can be called only from inside the plugin like:
     // methodName(arg1, arg2, ... argn)
@@ -292,7 +329,7 @@ if (typeof (String.prototype.hashCode) == 'undefined') {
       plugin.settings.selectors.each(function(i) {
         var nth = parseInt($(this).attr('data-cs-coll'))+1;
         var cells = table.find('tr th:nth-child('+nth+'), tr td:nth-child('+nth+')');
-        if (!$(this).attr('data-cs-checked') || $(this).attr('data-cs-checked') == '' || $(this).attr('data-cs-checked') == '1') {
+        if (!$(this).attr('data-cs-checked') || $(this).attr('data-cs-checked') === '' || $(this).attr('data-cs-checked') === '1') {
           cells.show();
         } else {
           cells.hide();
@@ -338,7 +375,7 @@ if (typeof (String.prototype.hashCode) == 'undefined') {
     return this.each(function() {
 
       // if plugin has not already been attached to the element
-      if (undefined == $(this).data('columnSelect')) {
+      if (undefined === $(this).data('columnSelect')) {
 
         // create a new instance of the plugin
         // pass the DOM element and the user-provided options as arguments

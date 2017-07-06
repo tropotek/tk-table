@@ -16,7 +16,7 @@ class Boolean extends Text
     {
         $value = parent::getPropertyValue($obj, $property);
         if ($value) {
-            if ($value == true || $value == 'Yes' || $value == '1' || $value == 'ok' || $value == 'Y') {
+            if ($value == true || $value == 'Yes' || $value == '1' || $value == 'ok' || $value == 'Y' || $value == $property) {
                 return 'Yes';
             }
         }

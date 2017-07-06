@@ -15,9 +15,11 @@ class ColumnSelect extends Button
 {
 
 
-    protected $disabledSelectors = array();
+    protected $disabled = array();
 
-    protected $defaultSelectors = array();
+    protected $selected = array();
+
+    protected $unselected = array();
 
 
 
@@ -56,9 +58,33 @@ class ColumnSelect extends Button
      * @param $arr
      * @return $this
      */
-    public function setDisabledSelectors($arr)
+    public function setDisabled($arr)
     {
-        $this->disabledSelectors = $arr;
+        $this->disabled = $arr;
+        return $this;
+    }
+
+    /**
+     * Setup the disabled columns using their property name
+     *
+     * @param $selector
+     * @return $this
+     */
+    public function addDisabled($selector)
+    {
+        $this->disabled[$selector] = $selector;
+        return $this;
+    }
+
+    /**
+     * @param $selector
+     * @return $this
+     */
+    public function removeDisabled($selector)
+    {
+        if(isset($this->disabled[$selector])) {
+            unset($this->disabled[$selector]);
+        }
         return $this;
     }
 
@@ -72,9 +98,75 @@ class ColumnSelect extends Button
      * @param $arr
      * @return $this
      */
-    public function setDefaultSelectors($arr)
+    public function setSelected($arr)
     {
-        $this->defaultSelectors = $arr;
+        if(!empty($arr[0])) $arr = array_combine($arr, $arr);
+        $this->selected = $arr;
+        return $this;
+    }
+
+    /**
+     * Setup the default shown columns using their property name
+     *
+     * @param $selector
+     * @return $this
+     */
+    public function addSelected($selector)
+    {
+        $this->selected[$selector] = $selector;
+        return $this;
+    }
+
+    /**
+     * @param $selector
+     * @return $this
+     */
+    public function removeSelected($selector)
+    {
+        if(isset($this->selected[$selector])) {
+            unset($this->selected[$selector]);
+        }
+        return $this;
+    }
+
+
+    /**
+     * Setup the default shown columns using their property name
+     *
+     * EG:
+     *   array('cb_id', 'name', 'username', 'email', 'role', 'active', 'created');
+     *
+     * @param $arr
+     * @return $this
+     */
+    public function setUnselected($arr)
+    {
+        if(!empty($arr[0])) $arr = array_combine($arr, $arr);
+        $this->unselected = $arr;
+        return $this;
+    }
+
+    /**
+     * Setup the default shown columns using their property name
+     *
+     * @param $selector
+     * @return $this
+     */
+    public function addUnselected($selector)
+    {
+        $this->unselected[$selector] = $selector;
+        return $this;
+    }
+
+    /**
+     * @param $selector
+     * @return $this
+     */
+    public function removeUnselected($selector)
+    {
+        if(isset($this->unselected[$selector])) {
+            unset($this->unselected[$selector]);
+        }
         return $this;
     }
 
@@ -112,17 +204,20 @@ class ColumnSelect extends Button
         $template->appendJsUrl(\Tk\Uri::create('/vendor/ttek/tk-table/js/js.cookie.js'));
         $template->appendJsUrl(\Tk\Uri::create('/vendor/ttek/tk-table/js/jquery.columnSelect.js'));
 
-        $disablesStr = implode(', ', $this->propsToCols($this->disabledSelectors));
-        $defaultStr =  implode(', ', $this->propsToCols($this->defaultSelectors));
+        $disabledStr = implode(', ', $this->propsToCols($this->disabled));
+        $selectedStr =  implode(', ', $this->propsToCols($this->selected));
+        $unselectedStr =  implode(', ', $this->propsToCols($this->unselected));
+
 
         $js = <<<JS
 jQuery(function ($) {
     
   $('#$tableId').columnSelect({
     buttonId : '$btnId',
-    disabled : [$disablesStr],
+    disabled : [$disabledStr],
     disabledHidden : false,
-    defaultSelected : [$defaultStr]
+    defaultSelected : [$selectedStr],
+    defaultUnselected : [$unselectedStr]
   });
   
 });
