@@ -77,6 +77,11 @@ class Table implements \Tk\InstanceKey
      */
     protected $hasExecuted = false;
 
+    /**
+     * @var null|\Tk\Event\Dispatcher
+     */
+    protected $dispatcher = null;
+
 
     /**
      * Create a table object
@@ -701,5 +706,21 @@ class Table implements \Tk\InstanceKey
         return $this->getId() . '_' . $key;
     }
 
+
+    /**
+     * @return null|\Tk\Event\Dispatcher
+     */
+    public function getDispatcher()
+    {
+        return $this->dispatcher;
+    }
+
+    /**
+     * @param null|\Tk\Event\Dispatcher $dispatcher
+     */
+    public function setDispatcher($dispatcher)
+    {
+        $this->dispatcher = $dispatcher;
+    }
     
 }
