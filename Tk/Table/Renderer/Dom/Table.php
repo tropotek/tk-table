@@ -71,10 +71,12 @@ class Table extends Iface
         //$this->getTable()->execute();
 
         // Render Form
-        if (count($this->getTable()->getFilterForm()->getFieldList()) > 2) {
-            $fren = $this->getFormRenderer()->show();
-            $template->insertTemplate('filters', $fren->getTemplate());
-            $template->setChoice('filters');
+        if ($template->keyExists('var', 'filters')) {
+            if (count($this->getTable()->getFilterForm()->getFieldList()) > 2) {
+                $fren = $this->getFormRenderer()->show();
+                $template->insertTemplate('filters', $fren->getTemplate());
+                $template->setChoice('filters');
+            }
         }
 
         // render outer table wrapper (IE: <table> tag stuff)
@@ -98,13 +100,13 @@ class Table extends Iface
             // Results UI
             $results = Ui\Results::createFromDbArray($this->getTable()->getList());
             $results->setInstanceId($this->getTable()->getId());
-            $results->addCss('col-xs-3');
+            $results->addCss('col-xs-2');
             $this->appendFootRenderer($results);
 
             // Render Pager
             $pager = Ui\Pager::createFromDbArray($this->getTable()->getList());
             $pager->setInstanceId($this->getTable()->getId());
-            $pager->addCss('col-xs-6 text-center');
+            $pager->addCss('col-xs-8 text-center');
             $this->appendFootRenderer($pager);
 
             // Limit UI
@@ -114,7 +116,7 @@ class Table extends Iface
             }
             $limit = new Ui\Limit($this->getTable()->getList()->getTool()->getLimit(), $limitList);
             $limit->setInstanceId($this->getTable()->getId());
-            $limit->addCss('col-xs-3');
+            $limit->addCss('col-xs-2');
             $this->appendFootRenderer($limit);
         }
 
@@ -135,44 +137,48 @@ class Table extends Iface
 
         //  Show Actions
 
-        /* @var \Tk\Table\Action\Iface $action */
-        foreach($this->getTable()->getActionList() as $action) {
-            if (!$action instanceof \Tk\Table\Action\Iface || !$action->isVisible()) continue;
-            $html = $action->getHtml();
-            if ($html instanceof \Dom\Template) {
-                $template->appendTemplate('actions', $html);
-            } else {
-                $template->appendHtml('actions', $html);
+        if ($template->keyExists('var', 'actions')) {
+            /* @var \Tk\Table\Action\Iface $action */
+            foreach ($this->getTable()->getActionList() as $action) {
+                if (!$action instanceof \Tk\Table\Action\Iface || !$action->isVisible()) continue;
+                $html = $action->getHtml();
+                if ($html instanceof \Dom\Template) {
+                    $template->appendTemplate('actions', $html);
+                } else {
+                    $template->appendHtml('actions', $html);
+                }
+                $template->setChoice('actions');
             }
-            $template->setChoice('actions');
         }
 
-        /* @var \Tk\Table\Cell\Iface $cell */
-        foreach($this->getTable()->getCellList() as $property => $cell) {
-            if (!$cell->isVisible()) continue;
-            $repeat = $template->getRepeat('th');
-            if (!$repeat) continue;
-            if ($this->getTable()->getOrderProperty() == $cell->getOrderProperty()) {
-                if ($this->getTable()->getOrder() == \Tk\Table::ORDER_DESC) {
-                    $repeat->addCss('th', 'orderDesc');
-                } else {
-                    $repeat->addCss('th', 'orderAsc');
+        if ($template->keyExists('repeat', 'th')) {
+            /* @var \Tk\Table\Cell\Iface $cell */
+            foreach ($this->getTable()->getCellList() as $property => $cell) {
+                if (!$cell->isVisible()) continue;
+                $repeat = $template->getRepeat('th');
+                if (!$repeat) continue;
+                if ($this->getTable()->getOrderProperty() == $cell->getOrderProperty()) {
+                    if ($this->getTable()->getOrder() == \Tk\Table::ORDER_DESC) {
+                        $repeat->addCss('th', 'orderDesc');
+                    } else {
+                        $repeat->addCss('th', 'orderAsc');
+                    }
                 }
-            }
-            $data = $cell->getCellHeader();
-            if ($data === null) {
-                $data = '&#160;';
-            }
-            if ($data instanceof \Dom\Template) {
-                $repeat->insertTemplate('th', $data);
-            } else {
-                $repeat->insertHtml('th', $data);
-            }
+                $data = $cell->getCellHeader();
+                if ($data === null) {
+                    $data = '&#160;';
+                }
+                if ($data instanceof \Dom\Template) {
+                    $repeat->insertTemplate('th', $data);
+                } else {
+                    $repeat->insertHtml('th', $data);
+                }
 
-            $repeat->addCss('th', $cell->getCssString());
-            $repeat->setAttr('th', 'data-label', $cell->getLabel());
-            $repeat->setAttr('th', 'data-prop', $cell->getProperty());
-            $repeat->appendRepeat();
+                $repeat->addCss('th', $cell->getCssString());
+                $repeat->setAttr('th', 'data-label', $cell->getLabel());
+                $repeat->setAttr('th', 'data-prop', $cell->getProperty());
+                $repeat->appendRepeat();
+            }
         }
     }
 
@@ -262,7 +268,8 @@ class Table extends Iface
     protected function showFooter()
     {
         $template = $this->getTemplate();
-        // Render any footer widgets
+        if (!$template->keyExists('var', 'foot')) return;
+        // Render any footer widgetsfilters
         foreach($this->getFooterRenderList() as $renderer) {
             // TODO: should this reside here
             if ($renderer instanceof \Dom\Renderer\DisplayInterface) {

@@ -238,7 +238,7 @@ class Table implements \Tk\InstanceKey
     /**
      * Get the data list array
      *
-     * @return array
+     * @return array|\Tk\Db\Map\ArrayObject
      */
     public function getList()
     {
@@ -491,6 +491,7 @@ class Table implements \Tk\InstanceKey
         if (!$field instanceof \Tk\Form\Event\Iface && !count($this->getFilterForm()->getFieldList())) {
             $this->initFilterForm();
         }
+        $field->setLabel(null);
         return $this->getFilterForm()->addField($field);
     }
 
