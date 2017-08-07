@@ -74,6 +74,16 @@ abstract class Iface
      */
     protected $visible = true;
 
+    /**
+     * @var null|callable
+     */
+    protected $onPropertyValue = null;
+
+    /**
+     * @var null|callable
+     */
+    protected $onCellHtml = null;
+
     
     
 
@@ -197,6 +207,10 @@ abstract class Iface
      */
     protected function getObjectPropertyValue($obj, $property)
     {
+        if (is_callable($this->getOnPropertyValue())) {
+            return call_user_func_array($this->getOnPropertyValue(), array($this, $obj));
+        }
+
         $value = '';
         if (is_array($obj) && isset($obj[$property])) {
             $value = $obj[$property];
@@ -483,6 +497,38 @@ abstract class Iface
     {
         $this->visible = $visible;
         return $this;
+    }
+
+    /**
+     * @return callable|null
+     */
+    public function getOnPropertyValue()
+    {
+        return $this->onPropertyValue;
+    }
+
+    /**
+     * @param callable|null $onPropertyValue
+     */
+    public function setOnPropertyValue($onPropertyValue)
+    {
+        $this->onPropertyValue = $onPropertyValue;
+    }
+
+    /**
+     * @return callable|null
+     */
+    public function getOnCellHtml()
+    {
+        return $this->onCellHtml;
+    }
+
+    /**
+     * @param callable|null $onCellHtml
+     */
+    public function setOnCellHtml($onCellHtml)
+    {
+        $this->onCellHtml = $onCellHtml;
     }
 
 

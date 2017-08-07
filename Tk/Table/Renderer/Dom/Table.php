@@ -63,7 +63,7 @@ class Table extends Iface
      * The returned object can be anything that you need to render
      * the output.
      *
-     * @return mixed
+     * @return \Dom\Template
      */
     public function show()
     {
@@ -242,20 +242,24 @@ class Table extends Iface
      */
     protected function showCell(Cell\Iface $cell, $obj)
     {
-        $data = $cell->getCellHtml($obj, $this->rowId);
+        $html = $cell->getCellHtml($obj, $this->rowId);
+        if (is_callable($cell->getOnCellHtml())) {
+            $h = call_user_func_array($cell->getOnCellHtml(), array($cell, $obj, $html));
+            if ($h) $html = $h;
+        }
 
         $this->cellRepeat->addCss('td', 'm' . ucfirst($cell->getProperty()));
         $this->cellRepeat->addCss('td', $cell->getCssString());
         foreach ($cell->getAttrList() as $name => $value) {
             $this->cellRepeat->setAttr('td', $name, $value);
         }
-        if ($data === null) {
-            $data = '&#160;';
+        if ($html === null) {
+            $html = '&#160;';
         }
-        if ($data instanceof \Dom\Template) {
-            $this->cellRepeat->insertTemplate('td', $data);
+        if ($html instanceof \Dom\Template) {
+            $this->cellRepeat->insertTemplate('td', $html);
         } else {
-            $this->cellRepeat->insertHtml('td', $data);
+            $this->cellRepeat->insertHtml('td', $html);
         }
     }
 
