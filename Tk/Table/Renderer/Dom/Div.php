@@ -76,7 +76,7 @@ class Div extends Table
     public function __makeTemplate()
     {
         $xhtml = <<<HTML
-<div class="tk-table" var="table">
+<div class="tk-table div-table" var="table">
 
   <div class="tk-filters" var="filters" choice="filters"></div>
 
@@ -84,10 +84,10 @@ class Div extends Table
     <div class="tk-actions" var="actions" choice="actions"></div>
     
     <!-- Table -->
-    <div class="tblWrap divTable">
+    <div class="table-wrap">
       <div class="table">
-        <div class="tr clearfix" var="tr" repeat="tr">
-          <div class="rowGroup clearfix"> 
+        <div class="tr" var="tr" repeat="tr">
+          <div class="row-group"> 
             <div class="td" var="td" repeat="td"></div>
           </div>
         </div>
