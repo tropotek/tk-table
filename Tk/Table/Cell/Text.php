@@ -49,9 +49,11 @@ class Text extends Iface
     {
         $value = $propValue = $this->getPropertyValue($obj, $this->getProperty());
         if ($this->charLimit && strlen($propValue) > $this->charLimit) {
-            $propValue = substr($propValue, 0, $this->charLimit-3).'...';
+            //$propValue = substr($propValue, 0, $this->charLimit-3).'...';
+            $propValue = \Tk\Str::wordcat($value, $this->charLimit-3, '...');
         }
-        $this->setAttr('title', $value);
+        //$this->setAttr('title', \Tk\Str::wordcat($value, 32, '...'));
+        $this->setAttr('title', \Tk\Str::wordcat($this->getLabel(), 32, '...'));
         $str = htmlentities($propValue);
         $url = $this->getCellUrl($obj);
         if ($url) {

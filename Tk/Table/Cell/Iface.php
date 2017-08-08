@@ -509,10 +509,12 @@ abstract class Iface
 
     /**
      * @param callable|null $onPropertyValue
+     * @return $this
      */
     public function setOnPropertyValue($onPropertyValue)
     {
         $this->onPropertyValue = $onPropertyValue;
+        return $this;
     }
 
     /**
@@ -525,10 +527,12 @@ abstract class Iface
 
     /**
      * @param callable|null $onCellHtml
+     * @return $this
      */
     public function setOnCellHtml($onCellHtml)
     {
         $this->onCellHtml = $onCellHtml;
+        return $this;
     }
 
 
