@@ -163,8 +163,8 @@ class Table implements \Tk\InstanceKey
     protected function initFilterForm()
     {
         // Add Filter button events
-        $this->addFilter(new Event\Button($this->makeInstanceKey('search'), array($this, 'doSearch')))->setAttr('value', $this->makeInstanceKey('search'))->addCss('btn-primary')->setLabel('Search');
-        $this->addFilter(new Event\Button($this->makeInstanceKey('clear'), array($this, 'doClear')))->setAttr('value', $this->makeInstanceKey('clear'))->setLabel('Clear');
+        $this->addFilter(new Event\Submit($this->makeInstanceKey('search'), array($this, 'doSearch')))->setAttr('value', $this->makeInstanceKey('search'))->addCss('btn-primary')->setLabel('Search');
+        $this->addFilter(new Event\Submit($this->makeInstanceKey('clear'), array($this, 'doClear')))->setAttr('value', $this->makeInstanceKey('clear'))->setLabel('Clear');
     }
 
     public function doSearch($form)
