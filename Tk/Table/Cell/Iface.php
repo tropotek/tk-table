@@ -207,7 +207,7 @@ abstract class Iface
      */
     protected function getObjectPropertyValue($obj, $property)
     {
-        if (is_callable($this->getOnPropertyValue())) {
+        if (is_callable($this->getOnPropertyValue()) && $this->getProperty() == $property) {
             return call_user_func_array($this->getOnPropertyValue(), array($this, $obj));
         }
 
@@ -215,16 +215,6 @@ abstract class Iface
         if (is_array($obj) && isset($obj[$property])) {
             $value = $obj[$property];
         } else {
-
-            // Protected properties seem to cause an error ???
-//            $prop = new \ReflectionProperty($obj,'name');
-//            if ($prop->isPublic()) {
-//                $value = $prop->getValue();
-//            }
-
-//            if (!empty($obj->{$property})) {
-//                vd($obj->{$property});
-//            }
             if (property_exists($obj, $property)) {
                 $value = $obj->{$property};
             } else {
