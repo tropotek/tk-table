@@ -36,6 +36,11 @@ class Pager extends Iface
      */
     protected $pageUrl = null;
 
+    /**
+     * @var bool
+     */
+    protected $enablePageButtons = true;
+
 
 
     /**
@@ -90,6 +95,21 @@ class Pager extends Iface
         return $this;
     }
 
+    /**
+     * @return bool
+     */
+    public function isEnablePageButtons()
+    {
+        return $this->enablePageButtons;
+    }
+
+    /**
+     * @param bool $enablePageButtons
+     */
+    public function setEnablePageButtons($enablePageButtons)
+    {
+        $this->enablePageButtons = $enablePageButtons;
+    }
 
     /**
      * show
@@ -136,18 +156,21 @@ class Pager extends Iface
             }
 
             $pageUrl = $this->pageUrl;
+            $pageUrl->setFragment(substr($this->makeInstanceKey(''), 0, -1));
             $pageUrl->remove($this->makeInstanceKey(self::PARAM_OFFSET));
-            for ($i = $startPage; $i < $endPage; $i++) {
-                $repeat = $template->getRepeat('page');
-                $repeat->insertText('pageUrl', $i + 1);
-                $repeat->setAttr('pageUrl', 'title', 'Page ' . ($i + 1));
-                $pageUrl->set($this->makeInstanceKey(self::PARAM_OFFSET), $i * $this->limit);
-                $repeat->setAttr('pageUrl', 'href', $pageUrl->toString());
-                if ($i == $currentPage) {
-                    $repeat->addCss('page', self::CSS_SELECTED);
-                    $repeat->setAttr('pageUrl', 'title', 'Current Page ' . ($i + 1));
+            if ($this->enablePageButtons) {
+                for ($i = $startPage; $i < $endPage; $i++) {
+                    $repeat = $template->getRepeat('page');
+                    $repeat->insertText('pageUrl', $i + 1);
+                    $repeat->setAttr('pageUrl', 'title', 'Page ' . ($i + 1));
+                    $pageUrl->set($this->makeInstanceKey(self::PARAM_OFFSET), $i * $this->limit);
+                    $repeat->setAttr('pageUrl', 'href', $pageUrl->toString());
+                    if ($i == $currentPage) {
+                        $repeat->addCss('page', self::CSS_SELECTED);
+                        $repeat->setAttr('pageUrl', 'title', 'Current Page ' . ($i + 1));
+                    }
+                    $repeat->appendRepeat();
                 }
-                $repeat->appendRepeat();
             }
 
             if ($this->offset >= $this->limit) {

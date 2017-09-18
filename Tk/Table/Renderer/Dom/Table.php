@@ -30,6 +30,11 @@ class Table extends Iface
      */
     protected $rowClassArr = array();
 
+    /**
+     * @var bool
+     */
+    protected $enablePageButtons = true;
+
 
     /**
      * Create a new Renderer.
@@ -56,6 +61,22 @@ class Table extends Iface
         if (!$ren)
             $ren = new \Tk\Form\Renderer\Dom($this->getTable()->getFilterForm());
         return $ren;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isEnablePageButtons()
+    {
+        return $this->enablePageButtons;
+    }
+
+    /**
+     * @param bool $enablePageButtons
+     */
+    public function setEnablePageButtons($enablePageButtons)
+    {
+        $this->enablePageButtons = $enablePageButtons;
     }
 
     /**
@@ -91,6 +112,7 @@ class Table extends Iface
         $template->setAttr('form', 'id', $this->getTable()->getId().'_form');
         $template->setAttr('form', 'action', \Tk\Uri::create());
         $template->setAttr('form', 'method', 'post');
+        $template->setAttr('fragment', 'name', $this->getTable()->getId());
 
         $this->showHeader();
 
@@ -105,6 +127,7 @@ class Table extends Iface
 
             // Render Pager
             $pager = Ui\Pager::createFromDbArray($this->getTable()->getList());
+            $pager->setEnablePageButtons($this->enablePageButtons);
             $pager->setInstanceId($this->getTable()->getId());
             $pager->addCss('col-xs-8 text-center');
             $this->appendFootRenderer($pager);
@@ -299,7 +322,7 @@ class Table extends Iface
     {
         $xhtml = <<<HTML
 <div class="tk-table" var="tk-table">
-
+  <a name="" var="fragment"/>
   <div class="tk-filters" var="filters" choice="filters"></div>
 
   <form var="form">

@@ -23,10 +23,6 @@ abstract class Iface extends \Dom\Renderer\Renderer implements \Tk\InstanceKey, 
     use \Tk\Dom\AttributesTrait;
     use \Tk\Dom\CssTrait;
 
-    /**
-     * @var array
-     */
-    //protected $cssList = array();
 
     /**
      * Instance base id
@@ -34,17 +30,6 @@ abstract class Iface extends \Dom\Renderer\Renderer implements \Tk\InstanceKey, 
      */
     protected $instanceId = '';
 
-
-    
-    /**
-     * Set the css classes to append to the root node
-     *
-     * @param $css
-     */
-//    public function addCss($css)
-//    {
-//        $this->cssList[$css] = $css;
-//    }
     
 
     /**
