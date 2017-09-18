@@ -12,6 +12,26 @@ namespace Tk\Table\Cell;
 class Html extends Text
 {
 
+    private $html = '';
+
+    /**
+     * @return string
+     */
+    public function getHtml()
+    {
+        return $this->html;
+    }
+
+    /**
+     * @param string $html
+     * @return $this
+     */
+    public function setHtml($html)
+    {
+        $this->html = $html;
+        return $this;
+    }
+
     /**
      * @param mixed $obj
      * @param int|null $rowIdx The current row being rendered (0-n) If null no rowIdx available.
@@ -20,6 +40,7 @@ class Html extends Text
     public function getCellHtml($obj, $rowIdx = null)
     {
         $propValue = $this->getPropertyValue($obj, $this->getProperty());
+        if ($this->getHtml()) $propValue = $this->getHtml();
         $str = $propValue;
         $url = $this->getCellUrl($obj);
         if ($url) {
