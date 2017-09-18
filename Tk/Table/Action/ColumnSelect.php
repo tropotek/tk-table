@@ -33,6 +33,7 @@ class ColumnSelect extends Button
     public function __construct($name = 'columns', $icon = 'glyphicon glyphicon-list-alt', $url = null)
     {
         parent::__construct($name, $icon, $url);
+        $this->addCss('tk-action-column-select');
     }
 
     /**
@@ -208,18 +209,16 @@ class ColumnSelect extends Button
         $selectedStr =  implode(', ', $this->propsToCols($this->selected));
         $unselectedStr =  implode(', ', $this->propsToCols($this->unselected));
 
-
         $js = <<<JS
 jQuery(function ($) {
-    
-  $('#$tableId').columnSelect({
+  //$('#$tableId').
+  $('.tk-action-column-select').closest('.tk-table').columnSelect({
     buttonId : '$btnId',
     disabled : [$disabledStr],
     disabledHidden : false,
     defaultSelected : [$selectedStr],
     defaultUnselected : [$unselectedStr]
   });
-  
 });
 JS;
         $template->appendJs($js);

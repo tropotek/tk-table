@@ -50,7 +50,7 @@ class Div extends Table
         $html = $cell->getCellHtml($obj, $this->rowId);
         if (is_callable($cell->getOnCellHtml())) {
             $h = call_user_func_array($cell->getOnCellHtml(), array($cell, $obj, $html));
-            if ($h) $html = $h;
+            if ($h !== null) $html = $h;
         }
 
         $this->cellRepeat->addCss('td', 'm' . ucfirst($cell->getProperty()));
@@ -85,7 +85,7 @@ class Div extends Table
     
     <!-- Table -->
     <div class="table-wrap">
-      <div class="table">
+      <div class="table table-body">
         <div class="tr" var="tr" repeat="tr">
           <div class="row-group"> 
             <div class="td" var="td" repeat="td"></div>

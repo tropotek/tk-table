@@ -41,6 +41,7 @@ class Html extends Text
     {
         $propValue = $this->getPropertyValue($obj, $this->getProperty());
         if ($this->getHtml()) $propValue = $this->getHtml();
+        vd($propValue);
         $str = $propValue;
         $url = $this->getCellUrl($obj);
         if ($url) {

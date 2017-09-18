@@ -40,6 +40,7 @@ class Delete extends Button
     public function __construct($name = 'delete', $checkboxName = 'id', $icon = 'glyphicon glyphicon-remove')
     {
         parent::__construct($name, $icon);
+        $this->addCss('tk-action-delete');
         $this->checkboxName = $checkboxName;
     }
 
@@ -126,6 +127,8 @@ class Delete extends Button
 
         $this->setAttr('title', 'Delete Selected Records');
         $this->setAttr('disabled');
+        $this->setAttr('data-cb-name', $this->checkboxName);
+        $this->setAttr('data-confirm', $this->getConfirmStr());
 
         $template = parent::getHtml();
 
@@ -138,7 +141,7 @@ class Delete extends Button
      */
     protected function getConfirmStr()
     {
-        return "'Are you sure you want to delete the ' + selected.length + ' selected records?'";
+        return "'Are you sure you want to delete the %selected% selected records?'";
     }
 
     /**
@@ -146,39 +149,30 @@ class Delete extends Button
      */
     protected function getJs()
     {
-        $btnId = $this->getTable()->makeInstanceKey($this->getName());
         $js = <<<JS
 jQuery(function($) {
-    var tid = '{$this->getTable()->getId()}';
-    var cbName = '{$this->checkboxName}';
-    var btnId = '#$btnId';
-    
-    $(btnId).on('click', function (e) {
-        var selected = $('#'+tid+' input[name^=\''+cbName+'\']:checked');
-        if (!selected.length) return false;
-        if (!confirm({$this->getConfirmStr()})) {
-            return false;
-        }
-    });
-    
-    function initCb(e) {
-        if (e && e.target.name == cbName+'_all') {
-            if ($(e.target).prop('checked')) {
-                $(btnId).removeAttr('disabled');
-            } else {
-                $(btnId).attr('disabled', 'disabled');
-            }
-            return true;
-        }
-        if ($('#'+tid+' input[name^=\''+cbName+'\']:checked').length) {
-            $(btnId).removeAttr('disabled');
-        } else {
-            $(btnId).attr('disabled', 'disabled');
-        }
+    function updateBtn(btn) {
+      var cbName = btn.data('cb-name');
+      if(btn.closest('.tk-table').find('.table-body input[name^="'+cbName+'"]:checked').length) {
+        btn.removeAttr('disabled');
+      } else {
+        btn.attr('disabled', 'disabled');
+      }
     }
     
-    $('#'+tid+' input[name^=\''+cbName+'\'], #'+tid+' input[name^=\''+cbName+'_all\']').on('change', initCb);
-    initCb();
+    $('.tk-action-delete').each(function () {
+      var btn = $(this);
+      var cbName = btn.data('cb-name');
+      var confirmStr = btn.data('confirm');
+      
+      btn.on('click', function () {
+        var selected = $(this).closest('.tk-table').find('.table-body input[name^="'+cbName+'"]:checked');
+        return selected.length > 0 && confirm(confirmStr.replace(/%selected%/, selected.length));
+      });
+      btn.closest('.tk-table').find('.table-body input[name^="'+cbName+'"]').on('change', function () { updateBtn(btn); });
+      
+      updateBtn(btn);
+    });
 });
 JS;
         return $js;

@@ -37,12 +37,13 @@ jQuery(function($) {
   function checkAll(headCheckbox) {
     var _cb = $(headCheckbox);
     var name = _cb.attr('name').match(/([a-zA-Z0-9]+)_all/i)[1];
-    var _list = _cb.parents('div.tk-table').find('input[name^=\''+name+'\']');
+    var _list = _cb.parents('div.tk-table').find('.table-body input[name^=\''+name+'\']');
 	if (_cb.prop('checked'))  {
 	  _list.prop('checked', true);
 	} else {
 	  _list.prop('checked', false);
-	}  
+	}
+	_list.trigger('change');
   }
   
   var head = $('.tk-table .tk-tcb-head');

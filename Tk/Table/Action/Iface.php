@@ -49,6 +49,7 @@ abstract class Iface
     {
         $this->setName($name);
         $this->setLabel(ucfirst(preg_replace('/[A-Z]/', ' $0', $name)));
+        $this->addCss('a'.ucFirst($name));
     }
 
     /**
@@ -87,10 +88,12 @@ abstract class Iface
      * cells for the event key
      *
      * @param Table $table
+     * @return $this
      */
     public function setTable($table)
     {
         $this->table = $table;
+        return $this;
     }
 
     /**
@@ -113,10 +116,17 @@ abstract class Iface
 
     /**
      * @param string $name
+     * @return $this
+     * @throws \Tk\Exception
      */
     public function setName($name)
     {
-        $this->name = preg_replace('/[^a-z0-9_-]/i', '_', $name);
+        $name = preg_replace('/[^a-z0-9_-]/i', '_', $name);
+        if (!preg_match('/[a-z0-9_-]+/i', $name)) {
+            throw new \Tk\Exception('Invalid name value.');
+        }
+        $this->name = $name;
+        return $this;
     }
 
     /**

@@ -268,7 +268,7 @@ class Table extends Iface
         $html = $cell->getCellHtml($obj, $this->rowId);
         if (is_callable($cell->getOnCellHtml())) {
             $h = call_user_func_array($cell->getOnCellHtml(), array($cell, $obj, $html));
-            if ($h) $html = $h;
+            if ($h !== null) $html = $h;
         }
 
         $this->cellRepeat->addCss('td', 'm' . ucfirst($cell->getProperty()));
@@ -335,7 +335,7 @@ class Table extends Iface
               <th var="th" repeat="th"></th>
             </tr>
           </thead>
-          <tbody var="body">
+          <tbody class="table-body" var="body">
             <tr var="tr" repeat="tr">
               <td var="td" repeat="td">&#160;</td>
             </tr>

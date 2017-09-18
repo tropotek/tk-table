@@ -1,11 +1,7 @@
 <?php
 namespace Tk\Table\Action;
 
-
 /**
- *
- *
- *
  * @author Michael Mifsud <info@tropotek.com>
  * @link http://www.tropotek.com/
  * @license Copyright 2015 Michael Mifsud
@@ -17,7 +13,6 @@ class SelectAll extends Button
      * @var string
      */
     protected $checkboxName = 'id';
-
 
 
     /**
@@ -32,6 +27,7 @@ class SelectAll extends Button
         parent::__construct($name, $icon);
         $this->checkboxName = $checkboxName;
         $this->setAttr('type', 'button');
+        $this->addCss('tk-action-select-all');
     }
 
     /**
@@ -47,16 +43,12 @@ class SelectAll extends Button
         return new static($name, $checkboxName, $icon);
     }
 
-
-
-
     /**
      * @return mixed
      */
     public function execute()
     {
-        $request = $this->getTable()->getRequest();
-
+        //$request = $this->getTable()->getRequest();
         //\Tk\Uri::create()->remove($this->getTable()->makeInstanceKey($this->getName()))->redirect();
     }
 
@@ -67,25 +59,23 @@ class SelectAll extends Button
     {
         $this->setAttr('title', 'Select All/None');
         $this->setAttr('data-cb-name', $this->checkboxName);
-        $this->addCss( 'btn-select-all');
+        $this->addCss('tk-action-select-all');
 
         $template = parent::getHtml();
-
         $js = <<<JS
 jQuery(function($) {
-  
-  $('.btn-select-all').on('click', function () {
+  $('.tk-action-select-all').on('click', function () {
+    var cbName = $(this).data('cb-name');
     if ($(this).hasClass('selected')) {
       $(this).removeClass('selected');
       $(this).find('i').attr('class', 'fa fa-square-o');
-      $(this).closest('.tk-table').find('input[name^="'+$(this).data('cb-name')+'"]').prop('checked', false);
+      $(this).closest('.tk-table').find('.table-body input[name^="'+cbName+'"]').prop('checked', false).trigger('change');
     } else {
       $(this).addClass('selected');
       $(this).find('i').attr('class', 'fa fa-check-square-o');
-      $(this).closest('.tk-table').find('input[name^="'+$(this).data('cb-name')+'"]').prop('checked', true);
+      $(this).closest('.tk-table').find('.table-body input[name^="'+cbName+'"]').prop('checked', true).trigger('change');
     }
   });
-  
 });
 JS;
         $template->appendJs($js);
