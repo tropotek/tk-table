@@ -159,7 +159,6 @@ class Table extends Iface
         $template = $this->getTemplate();
 
         //  Show Actions
-
         if ($template->keyExists('var', 'actions')) {
             /* @var \Tk\Table\Action\Iface $action */
             foreach ($this->getTable()->getActionList() as $action) {
@@ -203,6 +202,7 @@ class Table extends Iface
                 $repeat->appendRepeat();
             }
         }
+
     }
 
     /**
