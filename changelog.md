@@ -1,5 +1,19 @@
 #CHANGELOG#
 
+Ver 2.0.16 [2017-09-27]:
+-------------------------------
+ - Minor Code Updates
+ - Merge branch 'master' of https://github.com/tropotek/tk-table
+ - Finished base company view page.
+ - Added Calendar and manager to company view
+ - Fixed student company search table renderer
+ - 252s-dev.vet.unimelb.edu.au
+ - Finished Dynamic Form Fields
+ - Added Company Categories
+ - Updated Migration script
+ - Final implementation of dynamic field system
+
+
 Ver 2.0.15 [2017-06-15]:
 -------------------------------
  - Minor Code Updates
