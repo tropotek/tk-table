@@ -21,6 +21,8 @@ class ColumnSelect extends Button
 
     protected $unselected = array();
 
+    protected $resetColumns = false;
+
 
 
     /**
@@ -52,6 +54,7 @@ class ColumnSelect extends Button
 
     /**
      * Setup the disabled columns using their property name
+     * This stops the user from hiding the column
      *
      * EG:
      *   array('cb_id', 'name');
@@ -132,7 +135,7 @@ class ColumnSelect extends Button
 
 
     /**
-     * Setup the default shown columns using their property name
+     * Setup the default hidden columns using their property name
      *
      * EG:
      *   array('cb_id', 'name', 'username', 'email', 'role', 'active', 'created');
@@ -148,7 +151,7 @@ class ColumnSelect extends Button
     }
 
     /**
-     * Setup the default shown columns using their property name
+     * Setup the default hidden columns using their property name
      *
      * @param $selector
      * @return $this
@@ -160,6 +163,8 @@ class ColumnSelect extends Button
     }
 
     /**
+     * remove the default hidden columns using their property name
+     *
      * @param $selector
      * @return $this
      */
@@ -168,6 +173,18 @@ class ColumnSelect extends Button
         if(isset($this->unselected[$selector])) {
             unset($this->unselected[$selector]);
         }
+        return $this;
+    }
+
+    /**
+     * Reset the cookies for this module
+     *
+     * @param bool $b
+     * @return $this
+     */
+    public function reset($b = true)
+    {
+        $this->resetColumns = $b;
         return $this;
     }
 
@@ -208,6 +225,7 @@ class ColumnSelect extends Button
         $disabledStr = implode(', ', $this->propsToCols($this->disabled));
         $selectedStr =  implode(', ', $this->propsToCols($this->selected));
         $unselectedStr =  implode(', ', $this->propsToCols($this->unselected));
+        $resetColumns = ($this->resetColumns) ? 'true' : 'false';
 
         $js = <<<JS
 jQuery(function ($) {
@@ -217,7 +235,8 @@ jQuery(function ($) {
     disabled : [$disabledStr],
     disabledHidden : false,
     defaultSelected : [$selectedStr],
-    defaultUnselected : [$unselectedStr]
+    defaultUnselected : [$unselectedStr],
+    resetCookies: $resetColumns
   });
 });
 JS;

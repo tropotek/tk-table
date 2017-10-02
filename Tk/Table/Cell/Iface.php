@@ -498,6 +498,10 @@ abstract class Iface
     }
 
     /**
+     * set a callback to return a modified property value
+     *
+     * Callback: function ($cell, $obj) {}
+     *
      * @param callable|null $onPropertyValue
      * @return $this
      */
