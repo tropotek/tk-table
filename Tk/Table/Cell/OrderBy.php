@@ -19,6 +19,13 @@ class OrderBy extends Text
      */
     protected $className = '';
 
+    /**
+     * function ($cell) {}
+     *
+     * @var null|Callable
+     */
+    protected $onUpdate = null;
+
 
 
     /**
@@ -31,6 +38,17 @@ class OrderBy extends Text
     {
         parent::__construct($property, $label);
     }
+
+    /**
+     * @param Callable|null $onUpdate
+     * @return $this
+     */
+    public function setOnUpdate($onUpdate)
+    {
+        $this->onUpdate = $onUpdate;
+        return $this;
+    }
+
 
     /**
      * Set table fixed order by (otherwise changing the sort order does not make any sense)
@@ -105,6 +123,10 @@ class OrderBy extends Text
 
         $this->orderSwap($mapper, $fromObj, $toObj);
 
+        if (is_callable($this->onUpdate)) {
+            call_user_func_array($this->onUpdate, array($this));
+        }
+
         \Tk\Uri::create()->remove($this->getTable()->makeInstanceKey('orderSwp'))->redirect();
     }
 
@@ -122,6 +144,10 @@ class OrderBy extends Text
 
         $orderArr = $request['newOrder'];
         $this->orderUpdate($mapper, $orderArr);
+
+        if (is_callable($this->onUpdate)) {
+            call_user_func_array($this->onUpdate, array($this));
+        }
 
         \Tk\Uri::create()->remove($this->getTable()->makeInstanceKey('orderSwp'))->remove('newOrder')->redirect();
     }
@@ -203,6 +229,14 @@ JS;
         if (!$property) {
             return 0;
         }
+
+//        $newTo = $fromObj->{$property->getPropertyName()};
+//        $newFrom = $toObj->{$property->getPropertyName()};
+//        $toObj->{$property->getPropertyName()} = $newTo;
+//        $fromObj->{$property->getPropertyName()} = $newFrom;
+//        $fromObj->save();
+//        $toObj->save();
+
         $pk = $mapper->getPrimaryKey();
         $query = sprintf('UPDATE %s SET %s = %s WHERE %s = %d',
             $mapper->getDb()->quoteParameter($mapper->getTable()),
