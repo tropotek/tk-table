@@ -127,6 +127,7 @@ class Table implements \Tk\InstanceKey
         $obj = new static($id, $params);
         if (!$request)
             $request = \Tk\Config::getInstance()->getRequest();
+
         if (!$session)
             $session = \Tk\Config::getInstance()->getSession();
             
@@ -228,12 +229,36 @@ class Table implements \Tk\InstanceKey
     }
     
     /**
-     * @return array|\ArrayAccess
+     * @return \Tk\Session|array|\ArrayAccess
      */
     public function &getSession()
     {
         return $this->session;
     }
+
+    /**
+     * All table related data should be save to this object
+     *
+     * @return Collection
+     */
+    public function getTableSession()
+    {
+        $session = $this->getSession();
+        $key = 'tables';
+        $tableSession = new Collection();
+        if (isset($session[$key])) {
+            $tableSession = $session[$key];
+        }
+        $session[$key] = $tableSession;
+
+        $instanceSession = new Collection();
+        if ($tableSession->has($this->getId())) {
+            $instanceSession = $tableSession->get($this->getId());
+        }
+        $tableSession->set($this->getId(), $instanceSession);
+        return $instanceSession;
+    }
+
 
     /**
      * Get the data list array
@@ -505,11 +530,26 @@ class Table implements \Tk\InstanceKey
     {
         static $x = false;
         if (!$x && $this->getFilterForm()) { // execute form on first access
-            $this->getFilterForm()->load($this->getFilterSession());
+            $this->getFilterForm()->load($this->getFilterSession()->all());
             $this->getFilterForm()->execute($this->getRequest());
             $x = true;
         }
         return $this->getFilterForm()->getValues($regex);
+    }
+
+    /**
+     * @param string $key
+     * @return Collection
+     */
+    public function getFilterSession($key = 'filter')
+    {
+        $tableSession = $this->getTableSession();
+        $filterSession = $tableSession->get($key);
+        if (!$filterSession instanceof Collection) {
+            $filterSession = new Collection();
+            $tableSession->set($key, $filterSession);
+        }
+        return $filterSession;
     }
 
     /**
@@ -520,10 +560,7 @@ class Table implements \Tk\InstanceKey
      */
     public function clearFilterSession()
     {
-        $session = $this->getSession();
-        if ($session && $this->getFilterForm()) {
-            unset($session[$this->getFilterForm()->getId()]);
-        }
+        $this->getFilterSession()->clear();
         return $this;
     }
 
@@ -535,26 +572,26 @@ class Table implements \Tk\InstanceKey
      */
     public function saveFilterSession()
     {
-        $session = $this->getSession();
-        if ($session && $this->getFilterForm()) {
-            $session[$this->getFilterForm()->getId()] = $this->getFilterForm()->getValues();
+        $filterSession = $this->getFilterSession();
+        if ($this->getFilterForm()) {
+            $filterSession->replace($this->getFilterForm()->getValues());
         }
         return $this;
     }
 
-    /**
-     * Return the session array for the filter form
-     *
-     * @return array|mixed
-     */
-    public function getFilterSession()
-    {
-        $session = $this->getSession();
-        if ($session && $this->getFilterForm() && isset($session[$this->getFilterForm()->getId()])) {
-            return $session[$this->getFilterForm()->getId()];
-        }
-        return array();
-    }
+//    /**
+//     * Return the session array for the filter form
+//     *
+//     * @return array|mixed
+//     */
+//    public function getFilterSession()
+//    {
+//        $session = $this->getSession();
+//        if ($session && $this->getFilterForm() && isset($session[$this->getFilterForm()->getId()])) {
+//            return $session[$this->getFilterForm()->getId()];
+//        }
+//        return array();
+//    }
 
     /**
      * @return string
@@ -622,37 +659,21 @@ class Table implements \Tk\InstanceKey
         return array();
     }
 
-    /**
-     * Reset the db tool offset to 0
-     *
-     * @return $this
-     */
-    public function resetSessionOffset()
-    {
-        $session = $this->getSession();
-        if ($session && isset($session[$this->makeInstanceKey('dbTool')])) {
-            $instKey = $session[$this->makeInstanceKey('dbTool')];
-            if (isset($instKey[$this->makeInstanceKey(Tool::PARAM_OFFSET)])) {
-                $instKey[$this->makeInstanceKey(Tool::PARAM_OFFSET)] = 0;
-                $session[$this->makeInstanceKey('dbTool')] = $instKey;
-            }
-        }
-        return $this;
-    }
+
 
     /**
-     * Reset the db tool offset to 0
-     *
-     * @return $this
+     * @param string $key
+     * @return Collection
      */
-    public function resetSessionTool()
+    public function getDbToolSession($key = 'dbTool')
     {
-        $session = $this->getSession();
-        if ($session && isset($session[$this->makeInstanceKey('dbTool')])) {
-            //$session[$this->makeInstanceKey('dbTool')] = 0;
-            unset($session[$this->makeInstanceKey('dbTool')]);
+        $tableSession = $this->getTableSession();
+        $dbToolSession = $tableSession->get($key);
+        if (!$dbToolSession instanceof Collection) {
+            $dbToolSession = new Collection();
+            $tableSession->set($key, $dbToolSession);
         }
-        return $this;
+        return $dbToolSession;
     }
 
     /**
@@ -668,20 +689,17 @@ class Table implements \Tk\InstanceKey
     {
         $tool = Tool::create($defaultOrderBy, $defaultLimit);
         $tool->setInstanceId($this->getId());
-        $key = 'dbTool';
-        $session = $this->getSession();
 
-        if ($session && isset($session[$this->makeInstanceKey($key)])) {
-            $tool->updateFromArray($session[$this->makeInstanceKey($key)]);
-        }
-        //$isRequest = $tool->updateFromArray($this->request);
+        $dbToolSession = $this->getDbToolSession();
+        $tool->updateFromArray($dbToolSession->all());
+
         $isRequest = $tool->updateFromArray(\Tk\Uri::create()->all());  // Use GET params only
         if ($this->getStaticOrderBy() !== null) {
             $tool->setOrderBy($this->getStaticOrderBy());
         }
 
         if ($isRequest) {   // note, should only fire on GET requests.
-            $session[$this->makeInstanceKey($key)] = $tool->toArray();
+            $dbToolSession->replace($tool->toArray());
             \Tk\Uri::create()
                 ->remove($this->makeInstanceKey(Tool::PARAM_ORDER_BY))
                 ->remove($this->makeInstanceKey(Tool::PARAM_LIMIT))
@@ -692,6 +710,35 @@ class Table implements \Tk\InstanceKey
                 ->redirect();
         }
         return $tool;
+    }
+
+    /**
+     * Reset the db tool offset to 0
+     *
+     * @return $this
+     */
+    public function resetSessionOffset()
+    {
+        $sesh = $this->getDbToolSession();
+        $instKey = $sesh->get($this->getId());
+        if ($instKey && isset($instKey[$this->makeInstanceKey(Tool::PARAM_OFFSET)])) {
+            $instKey[$this->makeInstanceKey(Tool::PARAM_OFFSET)] = 0;
+        }
+        $sesh->set($this->getId(), $instKey);
+        return $this;
+    }
+
+    /**
+     * Reset the db tool offset to 0
+     *
+     * @return $this
+     */
+    public function resetSessionTool()
+    {
+        $sesh = $this->getDbToolSession();
+        $sesh->remove($this->getId());
+
+        return $this;
     }
 
     /**
