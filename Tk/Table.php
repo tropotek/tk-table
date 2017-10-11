@@ -649,8 +649,6 @@ class Table implements \Tk\InstanceKey
         return array();
     }
 
-
-
     /**
      * @param string $key
      * @return Collection
