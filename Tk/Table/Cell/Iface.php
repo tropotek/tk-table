@@ -500,7 +500,7 @@ abstract class Iface
     /**
      * set a callback to return a modified property value
      *
-     * Callback: function ($cell, $obj) {}
+     * Callback: function ($cell, $obj) { return ''; }
      *
      * @param callable|null $onPropertyValue
      * @return $this
@@ -520,6 +520,10 @@ abstract class Iface
     }
 
     /**
+     * Set the onShowCell callback
+     *
+     * Callback: function ($cell, $obj, $html) { return ''; }
+     *
      * @param callable|null $onCellHtml
      * @return $this
      */
