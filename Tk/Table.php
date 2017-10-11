@@ -82,6 +82,13 @@ class Table implements \Tk\InstanceKey
      */
     protected $dispatcher = null;
 
+    /**
+     * @var Tool
+     */
+    private $tool = null;
+
+
+
 
     /**
      * Create a table object
@@ -687,29 +694,31 @@ class Table implements \Tk\InstanceKey
      */
     public function makeDbTool($defaultOrderBy = '', $defaultLimit = 25)
     {
-        $tool = Tool::create($defaultOrderBy, $defaultLimit);
-        $tool->setInstanceId($this->getId());
+        if (!$this->tool) {
+            $this->tool = Tool::create($defaultOrderBy, $defaultLimit);
+            $this->tool->setInstanceId($this->getId());
 
-        $dbToolSession = $this->getDbToolSession();
-        $tool->updateFromArray($dbToolSession->all());
+            $dbToolSession = $this->getDbToolSession();
+            $this->tool->updateFromArray($dbToolSession->all());
 
-        $isRequest = $tool->updateFromArray(\Tk\Uri::create()->all());  // Use GET params only
-        if ($this->getStaticOrderBy() !== null) {
-            $tool->setOrderBy($this->getStaticOrderBy());
+            $isRequest = $this->tool->updateFromArray(\Tk\Uri::create()->all());  // Use GET params only
+            if ($this->getStaticOrderBy() !== null) {
+                $this->tool->setOrderBy($this->getStaticOrderBy());
+            }
+
+            if ($isRequest) {   // note, should only fire on GET requests.
+                $dbToolSession->replace($this->tool->toArray());
+                \Tk\Uri::create()
+                    ->remove($this->makeInstanceKey(Tool::PARAM_ORDER_BY))
+                    ->remove($this->makeInstanceKey(Tool::PARAM_LIMIT))
+                    ->remove($this->makeInstanceKey(Tool::PARAM_OFFSET))
+                    ->remove($this->makeInstanceKey(Tool::PARAM_GROUP_BY))
+                    ->remove($this->makeInstanceKey(Tool::PARAM_HAVING))
+                    ->remove($this->makeInstanceKey(Tool::PARAM_DISTINCT))
+                    ->redirect();
+            }
         }
-
-        if ($isRequest) {   // note, should only fire on GET requests.
-            $dbToolSession->replace($tool->toArray());
-            \Tk\Uri::create()
-                ->remove($this->makeInstanceKey(Tool::PARAM_ORDER_BY))
-                ->remove($this->makeInstanceKey(Tool::PARAM_LIMIT))
-                ->remove($this->makeInstanceKey(Tool::PARAM_OFFSET))
-                ->remove($this->makeInstanceKey(Tool::PARAM_GROUP_BY))
-                ->remove($this->makeInstanceKey(Tool::PARAM_HAVING))
-                ->remove($this->makeInstanceKey(Tool::PARAM_DISTINCT))
-                ->redirect();
-        }
-        return $tool;
+        return $this->tool;
     }
 
     /**
