@@ -579,20 +579,6 @@ class Table implements \Tk\InstanceKey
         return $this;
     }
 
-//    /**
-//     * Return the session array for the filter form
-//     *
-//     * @return array|mixed
-//     */
-//    public function getFilterSession()
-//    {
-//        $session = $this->getSession();
-//        if ($session && $this->getFilterForm() && isset($session[$this->getFilterForm()->getId()])) {
-//            return $session[$this->getFilterForm()->getId()];
-//        }
-//        return array();
-//    }
-
     /**
      * @return string
      */
@@ -650,16 +636,11 @@ class Table implements \Tk\InstanceKey
      */
     private function getOrderStatus()
     {
-//        if (preg_match('/(\S+) (ASC|DESC)$/i', $this->makeDbTool()->getOrderBy(), $regs)) {
-//            return array(trim($regs[1]), $regs[2]);
-//        }
         if ($this->getList() instanceof \Tk\Db\Map\ArrayObject) {
             return explode(' ', $this->makeDbTool()->getOrderBy());
         }
         return array();
     }
-
-
 
     /**
      * @param string $key
