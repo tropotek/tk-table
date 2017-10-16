@@ -15,8 +15,14 @@ class Boolean extends Text
     public function getPropertyValue($obj, $property)
     {
         $value = parent::getPropertyValue($obj, $property);
+
+        if ($value === null) return '';
+
         if ($value) {
-            if ($value == true || $value == 'Yes' || $value == '1' || $value == 'ok' || $value == 'Y' || $value == $property) {
+            if ($value == true || strtolower($value) == 'yes' || strtolower($value) == 'true' ||
+                strtolower($value) == 't' || $value == '1' || strtolower($value) == 'ok' || strtolower($value) == 'y' ||
+                $value == $property)
+            {
                 return 'Yes';
             }
         }
