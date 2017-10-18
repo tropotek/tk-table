@@ -250,7 +250,25 @@ abstract class Iface
         }
         $url = Uri::create($this->getUrl());
         if ($this->urlProperty) {
-            $prop = $this->urlProperty;
+            list($prop, $val) = $this->getRowPropVal($obj, $this->urlProperty);
+            $url->set($prop, $val);
+        }
+        return $url;
+    }
+
+    /**
+     *
+     *
+     *
+     * @param $obj
+     * @param string $urlProperty
+     * @return array|null
+     */
+    public function getRowPropVal($obj, $urlProperty = 'id')
+    {
+        $propVal = null;
+        if ($urlProperty) {
+            $prop = $urlProperty;
             if ($prop == 'id' && is_object($obj)) {     // If 'id' then convert to '{ObjClass}Id'
                 $class = get_class($obj);
                 $pos = strrpos($class, '\\');
@@ -262,13 +280,12 @@ abstract class Iface
                 $prop = strtolower($name[0]) . substr($name, 1) . 'Id';
             }
             if ($prop == '/id') // Should not be used as id params are frowned upon in urls anyway
-                $this->urlProperty = $prop = 'id';
+                $urlProperty = $prop = 'id';
 
-            $val = $this->getObjectPropertyValue($obj, $this->urlProperty);
-            if ($val)
-                $url->set($prop, $val);
+            $val = $this->getObjectPropertyValue($obj, $urlProperty);
+            $propVal = array($prop, $val);
         }
-        return $url;
+        return $propVal;
     }
 
     /**

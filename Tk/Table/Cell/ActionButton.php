@@ -3,7 +3,6 @@ namespace Tk\Table\Cell;
 
 
 /**
- * TODO: Move to \Tk\Ui\Table\Cell
  * Class ActionButton
  *
  * @author Michael Mifsud <info@tropotek.com>
@@ -24,40 +23,52 @@ class ActionButton
      * @var int
      */
     protected $id = 0;
+
     /**
      * @var string
      */
     protected $title = '';
+
     /**
      * @var null|\Tk\Uri
      */
     protected $url = null;
+
     /**
      * @var string
      */
     protected $icon = '';
+
     /**
      * @var string
      */
     protected $css = '';
+
     /**
      * @var array
      */
     protected $attr = array();
+
     /**
      * @var null|callable
      */
     protected $onShow = null;
+
     /**
      * @var boolean
      */
     protected $visible = true;
 
+    /**
+     * @var bool
+     */
+    protected $appendQuery = false;
+
 
     /**
      * ActionButton constructor.
      * @param string $title
-     * @param null|\Tk\Url|string $url
+     * @param null|\Tk\Uri|string $url
      * @param string $icon
      * @param string $css
      * @param array $attr
@@ -105,10 +116,12 @@ class ActionButton
 
     /**
      * @param string $title
+     * @return $this
      */
     public function setTitle($title)
     {
         $this->title = $title;
+        return $this;
     }
 
     /**
@@ -121,10 +134,12 @@ class ActionButton
 
     /**
      * @param null|\Tk\Uri $url
+     * @return $this
      */
     public function setUrl($url)
     {
         $this->url = $url;
+        return $this;
     }
 
     /**
@@ -137,10 +152,12 @@ class ActionButton
 
     /**
      * @param string $icon
+     * @return $this
      */
     public function setIcon($icon)
     {
         $this->icon = $icon;
+        return $this;
     }
 
     /**
@@ -153,10 +170,12 @@ class ActionButton
 
     /**
      * @param callable|null $onShow
+     * @return $this
      */
     public function setOnShow($onShow)
     {
         $this->onShow = $onShow;
+        return $this;
     }
 
     /**
@@ -177,10 +196,32 @@ class ActionButton
 
     /**
      * @param bool $visible
+     * @return $this
      */
     public function setVisible($visible)
     {
         $this->visible = $visible;
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isAppendQuery()
+    {
+        return $this->appendQuery;
+    }
+
+    /**
+     * Should the url query parameters for the row URL be appended to this URL
+     *
+     * @param bool $appendQuery
+     * @return $this
+     */
+    public function setAppendQuery($appendQuery = true)
+    {
+        $this->appendQuery = $appendQuery;
+        return $this;
     }
 
 }

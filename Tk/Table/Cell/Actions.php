@@ -134,11 +134,17 @@ class Actions extends Text
             if (!$btn->isVisible()) continue;
             $row = $template->getRepeat('btn');
 
-            if ($btn->getUrl()) {
-                $row->setAttr('btn', 'href', $btn->getUrl());
-            } else {
-                $row->setAttr('btn', 'href', '#');
+            $row->setAttr('btn', 'href', '#');
+            $url = $btn->getUrl();
+            if ($url) {
+                if ($btn->isAppendQuery()) {
+                    $urlProperty = $this->urlProperty ? $this->urlProperty : 'id';
+                    list($prop, $val) = $this->getRowPropVal($obj, $urlProperty);
+                    $url = clone $url->set($prop, $val);
+                }
+                $row->setAttr('btn', 'href', $url);
             }
+
             $row->setAttr('btn', 'title', $btn->getTitle());
             $css = $btn->getCssString();
             if (!$css) {
