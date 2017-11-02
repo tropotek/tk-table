@@ -94,13 +94,27 @@ class Actions extends Text
     }
 
     /**
+     * Return the first button in the list matching the name
+     * 
+     * @param string $name
+     * @return null|ActionButton
+     */
+    public function findButtonByName($name)
+    {
+        /** @var ActionButton $button */
+        foreach ($this->buttonList as $button) {
+            if ($button->getTitle() == $name) return $button;
+        }
+        return null;
+    }
+
+    /**
      * @param int|ActionButton $id
      * @return null|ActionButton Return null if no button removed
      */
     public function removeButton($id)
     {
         if ($id instanceof ActionButton) $id = $id->getId();
-
         if (!$this->buttonList->has($id)) return null;
         $button = $this->buttonList->get($id);
         $this->buttonList->remove($id);
