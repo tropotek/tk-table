@@ -104,9 +104,10 @@ class Table extends Iface
         //$template->setAttr('table', 'id', $this->getTable()->getId());
 
         $template->addCss('table', $this->getTable()->getCssString());
-        foreach($this->getTable()->getAttrList() as $k => $v) {
-            $template->setAttr('table', strip_tags($k), $v);
-        }
+        $template->setAttr('table', $this->getTable()->getAttrList());
+//        foreach($this->getTable()->getAttrList() as $k => $v) {
+//            $template->setAttr('table', strip_tags($k), $v);
+//        }
 
 
         $template->setAttr('form', 'id', $this->getTable()->getId().'_form');
