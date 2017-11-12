@@ -3,11 +3,10 @@ namespace Tk\Table\Cell;
 
 
 /**
- * Class ActionButton
- *
  * @author Michael Mifsud <info@tropotek.com>
  * @link http://www.tropotek.com/
  * @license Copyright 2017 Michael Mifsud
+ * @todo Replace this with the \Tk\Ui\Button object
  */
 class ActionButton
 {
