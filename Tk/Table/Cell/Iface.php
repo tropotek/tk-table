@@ -132,7 +132,6 @@ abstract class Iface
      */
     public function execute() { }
 
-
     /**
      * Reset any persistent fields to the state of the last store() call.
      *
@@ -257,9 +256,6 @@ abstract class Iface
     }
 
     /**
-     *
-     *
-     *
      * @param $obj
      * @param string $urlProperty
      * @return array|null
