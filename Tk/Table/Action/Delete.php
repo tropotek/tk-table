@@ -169,7 +169,7 @@ jQuery(function($) {
         var selected = $(this).closest('.tk-table').find('.table-body input[name^="'+cbName+'"]:checked');
         return selected.length > 0 && confirm(confirmStr.replace(/%selected%/, selected.length));
       });
-      btn.closest('.tk-table').find('.table-body input[name^="'+cbName+'"]').on('change', function () { updateBtn(btn); });
+      btn.closest('.tk-table').on('change', '.table-body input[name^="'+cbName+'"]', function () { updateBtn(btn); });
       
       updateBtn(btn);
     });
