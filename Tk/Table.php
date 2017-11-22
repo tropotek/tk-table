@@ -87,6 +87,11 @@ class Table implements \Tk\InstanceKey
      */
     private $tool = null;
 
+    /**
+     * @var null|Table\Renderer\Iface
+     */
+    private $renderer = null;
+
 
 
 
@@ -189,6 +194,24 @@ class Table implements \Tk\InstanceKey
         $this->clearFilterSession();
         $this->resetSessionOffset();
         $this->getUri($form)->redirect();
+    }
+
+    /**
+     * @return null|Table\Renderer\Iface
+     */
+    public function getRenderer()
+    {
+        return $this->renderer;
+    }
+
+    /**
+     * @param null|Table\Renderer\Iface $renderer
+     * @return static
+     */
+    public function setRenderer($renderer)
+    {
+        $this->renderer = $renderer;
+        return $this;
     }
 
     /**

@@ -62,7 +62,7 @@ abstract class Iface extends \Dom\Renderer\Renderer implements \Dom\Renderer\Dis
         if (!$table instanceof Table) return false;
 
         $this->table = $table;
-        $this->table->setParam('renderer', $this);
+        $this->table->setRenderer($this);
 
         return true;
     }
