@@ -89,26 +89,17 @@ class Table extends Iface
     public function show()
     {
         $template = $this->getTemplate();
-        //$this->getTable()->execute();
 
         // Render Form
         if ($template->keyExists('var', 'filters')) {
             if (count($this->getTable()->getFilterForm()->getFieldList()) > 2) {
-                $fren = $this->getFormRenderer()->show();
-                $template->insertTemplate('filters', $fren->getTemplate());
+                $template->insertTemplate('filters', $this->getFormRenderer()->show());
                 $template->setChoice('filters');
             }
         }
 
-        // render outer table wrapper (IE: <table> tag stuff)
-        //$template->setAttr('table', 'id', $this->getTable()->getId());
-
         $template->addCss('table', $this->getTable()->getCssString());
         $template->setAttr('table', $this->getTable()->getAttrList());
-//        foreach($this->getTable()->getAttrList() as $k => $v) {
-//            $template->setAttr('table', strip_tags($k), $v);
-//        }
-
 
         $template->setAttr('form', 'id', $this->getTable()->getId().'_form');
         $template->setAttr('form', 'action', \Tk\Uri::create());
