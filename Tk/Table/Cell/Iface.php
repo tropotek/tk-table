@@ -91,7 +91,7 @@ abstract class Iface
      * Create
      *
      * @param string $property
-     * @param string $label If null the property name is used EG: 'propName' = 'Prop Name'
+     * @param null|string $label If null the property name is used EG: 'propName' = 'Prop Name'
      */
     public function __construct($property, $label = null)
     {
@@ -105,6 +105,16 @@ abstract class Iface
         $this->setOrderProperty($property);
     }
 
+    /**
+     * @param string $name
+     * @param null|string $label
+     * @return static
+     */
+    public static function create($name, $label = null)
+    {
+        $obj = new static($name, $label);
+        return $obj;
+    }
 
     /**
      * Return the cell header HTML string

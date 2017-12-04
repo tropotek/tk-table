@@ -21,7 +21,7 @@ class Actions extends Text
      * @param string $property
      * @param null|string $label
      */
-    public function __construct($property='actions', $label = null)
+    public function __construct($property = 'actions', $label = null)
     {
         parent::__construct($property, $label);
         $this->setOrderProperty('');
@@ -135,6 +135,7 @@ class Actions extends Text
      * @param \App\Db\User $obj
      * @param int|null $rowIdx The current row being rendered (0-n) If null no rowIdx available.
      * @return string|\Dom\Template
+     * @throws \Dom\Exception
      */
     public function getCellHtml($obj, $rowIdx = null)
     {
@@ -160,6 +161,11 @@ class Actions extends Text
             }
 
             $row->setAttr('btn', 'title', $btn->getTitle());
+            if ($btn->isShowLabel()) {
+                $row->insertText('label', $btn->getTitle());
+                $row->setChoice('label');
+            }
+
             $css = $btn->getCssString();
             if (!$css) {
                 $css = 'btn-default';
@@ -182,12 +188,13 @@ class Actions extends Text
      * makeTemplate
      *
      * @return \Dom\Template
+     * @throws \Dom\Exception
      */
     public function __makeTemplate()
     {
         $html = <<<HTML
 <div class="tk-table-actions">
-  <a href="#" class="btn btn-xs btn-default" title="" var="btn" repeat="btn"><i var="icon" class=""></i></a>
+  <a href="#" class="btn btn-xs btn-default" title="" var="btn" repeat="btn"><i var="icon" class=""></i> <span var="label" choice="label"></span></a>
 </div>
 HTML;
         return \Dom\Loader::load($html);

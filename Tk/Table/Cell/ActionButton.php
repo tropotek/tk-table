@@ -59,6 +59,11 @@ class ActionButton
     protected $visible = true;
 
     /**
+     * @var boolean
+     */
+    protected $showLabel = false;
+
+    /**
      * @var bool
      */
     protected $appendQuery = false;
@@ -66,6 +71,7 @@ class ActionButton
 
     /**
      * ActionButton constructor.
+     *
      * @param string $title
      * @param null|\Tk\Uri|string $url
      * @param string $icon
@@ -85,6 +91,8 @@ class ActionButton
     }
 
     /**
+     * ActionButton constructor.
+     *
      * @param string $title
      * @param null|\Tk\Uri $url
      * @param string $icon
@@ -111,6 +119,24 @@ class ActionButton
     public function getTitle()
     {
         return $this->title;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isShowLabel()
+    {
+        return $this->showLabel;
+    }
+
+    /**
+     * @param bool $showLabel
+     * @return ActionButton
+     */
+    public function setShowLabel($showLabel = true)
+    {
+        $this->showLabel = $showLabel;
+        return $this;
     }
 
     /**
