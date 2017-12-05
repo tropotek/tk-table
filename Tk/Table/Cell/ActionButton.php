@@ -194,6 +194,8 @@ class ActionButton
     }
 
     /**
+     * Eg: function ($cell, $obj, $btn) {}
+     *
      * @param callable|null $onShow
      * @return $this
      */

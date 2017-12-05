@@ -144,7 +144,8 @@ class Actions extends Text
         foreach ($this->buttonList as $srcBtn) {
             $btn = clone $srcBtn;
             if ($btn->hasOnShow()) {
-                call_user_func_array($btn->getOnShow(), array($obj, $btn, $this));
+                //call_user_func_array($btn->getOnShow(), array($obj, $btn, $this));
+                call_user_func_array($btn->getOnShow(), array($this, $obj, $btn));
             }
             if (!$btn->isVisible()) continue;
             $row = $template->getRepeat('btn');
