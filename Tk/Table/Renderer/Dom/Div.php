@@ -85,7 +85,7 @@ class Div extends Table
     
     <!-- Table -->
     <div class="table-wrap">
-      <div class="table table-body" var="table">
+      <div class="table table-body" var="table-body">
         <div class="tr" var="tr" repeat="tr">
           <div class="row-group"> 
             <div class="td" var="td" repeat="td"></div>
