@@ -1,5 +1,13 @@
 #CHANGELOG#
 
+Ver 2.0.18 [2018-01-15]:
+-------------------------------
+ - Minor Code Updates
+ - Added placement status plot to Client Dashboard
+ - Merge branch 'master' of https://github.com/tropotek/tk-table
+ - Finished adding Skills item editors and managers, and migration
+
+
 Ver 2.0.17 [2017-10-03]:
 -------------------------------
  - Minor Code Updates
