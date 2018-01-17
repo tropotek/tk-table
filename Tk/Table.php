@@ -745,7 +745,8 @@ class Table implements \Tk\InstanceKey
     public function resetSessionTool()
     {
         $sesh = $this->getDbToolSession();
-        $sesh->remove($this->getId());
+        //$sesh->remove($this->getId());
+        $sesh->clear();
         return $this;
     }
 
