@@ -5,19 +5,18 @@ use \Tk\Table;
 use \Tk\Table\Cell;
 
 /**
- * Class Iface
- *
  * @author Michael Mifsud <info@tropotek.com>
  * @link http://www.tropotek.com/
  * @license Copyright 2015 Michael Mifsud
- * @todo Major coupling issue here with the Table and Dom libs, need to remove that dependency 
+ * @todo Major coupling issue here with the Table and Dom libs, need to remove that dependency
  */
 abstract class Iface extends \Dom\Renderer\Renderer implements \Dom\Renderer\DisplayInterface
 {
     /**
+     * Enable Rendering of the footer
      * @var bool
      */
-    private $footerEnabled = true;
+    private $footer = true;
 
     /**
      * @var Table
@@ -66,7 +65,6 @@ abstract class Iface extends \Dom\Renderer\Renderer implements \Dom\Renderer\Dis
 
         return true;
     }
-
 
     /**
      * Get the table
@@ -120,18 +118,18 @@ abstract class Iface extends \Dom\Renderer\Renderer implements \Dom\Renderer\Dis
     /**
      * @return boolean
      */
-    public function isFooterEnabled()
+    public function hasFooter()
     {
-        return $this->footerEnabled;
+        return $this->footer;
     }
 
     /**
      * @param boolean $footerEnabled
      * @return $this
      */
-    public function setFooterEnabled($footerEnabled)
+    public function enableFooter($footerEnabled)
     {
-        $this->footerEnabled = $footerEnabled;
+        $this->footer = $footerEnabled;
         return $this;
     }
 
@@ -157,22 +155,16 @@ abstract class Iface extends \Dom\Renderer\Renderer implements \Dom\Renderer\Dis
      * You may need to add the filter submit/clear events here.
      * This is highly dependant on the type of renderer you are using
      * So it is left for you to implement for that reason.
-     *
-     * @return mixed
      */
     //abstract protected function initFilterForm();
 
     /**
      * Render the table header
-     *
-     * @return mixed
      */
     abstract protected function showHeader();
 
     /**
      * Render the table body
-     *
-     * @return mixed
      */
     abstract protected function showBody();
 
@@ -180,7 +172,6 @@ abstract class Iface extends \Dom\Renderer\Renderer implements \Dom\Renderer\Dis
      * Render the table row
      *
      * @param mixed $obj
-     * @return mixed
      */
     abstract protected function showRow($obj);
 
@@ -189,14 +180,11 @@ abstract class Iface extends \Dom\Renderer\Renderer implements \Dom\Renderer\Dis
      *
      * @param Cell\Iface $cell
      * @param mixed $obj
-     * @return mixed
      */
     abstract protected function showCell(Cell\Iface $cell, $obj);
 
     /**
      * Render the table footer
-     *
-     * @return mixed
      */
     abstract protected function showFooter();
 

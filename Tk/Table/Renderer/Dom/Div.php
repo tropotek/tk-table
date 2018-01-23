@@ -77,14 +77,14 @@ class Div extends Table
     {
         $xhtml = <<<HTML
 <div class="tk-table div-table" var="table">
-
+  <a name="" var="fragment"/>
   <div class="tk-filters" var="filters" choice="filters"></div>
 
   <form var="form">
     <div class="tk-actions" var="actions" choice="actions"></div>
     
     <!-- Table -->
-    <div class="table-wrap">
+    <div class="tk-table-wrap">
       <div class="table table-body" var="table-body">
         <div class="tr" var="tr" repeat="tr">
           <div class="row-group"> 

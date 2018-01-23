@@ -69,6 +69,9 @@ jQuery(function($) {
 
     function setUrlParam(url, name, value)
     {
+        url = url.substring(0, url.indexOf('#'));
+        console.log(url);
+      
         if (url.indexOf(name + "=") >= 0) {
             var prefix = url.substring(0, url.indexOf(name));
             var suffix = url.substring(url.indexOf(name));
@@ -87,12 +90,15 @@ jQuery(function($) {
 
     // Limit onchange event
     $('.tk-limit select').change(function(e) {
-        if ($(this).val() == 0) {
+        if ($(this).val() === 0) {
             if (!confirm('WARNING: If there are many records this action could be slow.')) {
                 return false;
             }
         }
+        
         window.location.href = setUrlParam(window.location.href, $(this).data('name'), $(this).val());
+        // window.location.replace(url);
+        return false;
     });
 
 });

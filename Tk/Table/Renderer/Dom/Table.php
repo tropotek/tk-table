@@ -6,8 +6,6 @@ use \Tk\Table\Renderer\Iface;
 use Tk\Form;
 
 /**
- * Class Table
- *
  * @author Michael Mifsud <info@tropotek.com>
  * @link http://www.tropotek.com/
  * @license Copyright 2007 Michael Mifsud
@@ -31,9 +29,11 @@ class Table extends Iface
     protected $rowClassArr = array();
 
     /**
+     * Enable the rendering of the pager individual page buttons
+     * Set to false to only show next/prev buttons
      * @var bool
      */
-    protected $enablePageButtons = true;
+    protected $pageButtons = true;
 
 
     /**
@@ -45,7 +45,6 @@ class Table extends Iface
     static function create($table = null)
     {
         $obj = new static($table);
-
         return $obj;
     }
 
@@ -66,17 +65,17 @@ class Table extends Iface
     /**
      * @return bool
      */
-    public function isEnablePageButtons()
+    public function hasPageButtons()
     {
-        return $this->enablePageButtons;
+        return $this->pageButtons;
     }
 
     /**
-     * @param bool $enablePageButtons
+     * @param bool $pageButtons
      */
-    public function setEnablePageButtons($enablePageButtons)
+    public function enablePageButtons($pageButtons)
     {
-        $this->enablePageButtons = $enablePageButtons;
+        $this->pageButtons = $pageButtons;
     }
 
     /**
@@ -107,10 +106,10 @@ class Table extends Iface
         $template->setAttr('fragment', 'name', $this->getTable()->getId());
 
         $this->showHeader();
-
         $this->showBody();
 
-        if ($this->isFooterEnabled() && count($this->getTable()->getList()) && $this->getTable()->getList() instanceof \Tk\Db\Map\ArrayObject && $this->getTable()->getList()->getTool()) {
+        if ($this->hasFooter() && count($this->getTable()->getList()) && $this->getTable()->getList() instanceof \Tk\Db\Map\ArrayObject && $this->getTable()->getList()->getTool()) {
+
             // Results UI
             $results = Ui\Results::createFromDbArray($this->getTable()->getList());
             $results->setInstanceId($this->getTable()->getId());
@@ -119,7 +118,7 @@ class Table extends Iface
 
             // Render Pager
             $pager = Ui\Pager::createFromDbArray($this->getTable()->getList());
-            $pager->setEnablePageButtons($this->enablePageButtons);
+            $pager->setEnablePageButtons($this->pageButtons);
             $pager->setInstanceId($this->getTable()->getId());
             $pager->addCss('col-xs-8 text-center');
             $this->appendFootRenderer($pager);
@@ -194,13 +193,11 @@ class Table extends Iface
                 $repeat->appendRepeat();
             }
         }
-
     }
 
     /**
      * Render the table body
      *
-     * @return mixed
      */
     protected function showBody()
     {
@@ -210,7 +207,8 @@ class Table extends Iface
         if ($this->getTable()->getList() instanceof \Tk\Db\Map\ArrayObject) {
             $this->rowId = $this->getTable()->getList()->getTool()->getOffset();
         }
-        
+
+        if (!$template || !$template->keyExists('repeat', 'tr')) return;
         if (!$this->getTable()->getList()) return;
         foreach($this->getTable()->getList() as $i => $obj) {
             $this->rowRepeat = $template->getRepeat('tr');
@@ -225,12 +223,14 @@ class Table extends Iface
      * Render the table row
      *
      * @param mixed $obj
-     * @return mixed
      */
     protected function showRow($obj)
     {
         $rowCssList = array();
         $rowAttrList = array();
+
+        if (!$this->rowRepeat || !$this->rowRepeat->keyExists('repeat', 'td')) return;
+
         /* @var \Tk\Table\Cell\Iface $cell */
         foreach($this->getTable()->getCellList() as $k => $cell) {
             if (!$cell->isVisible()) continue;
@@ -253,7 +253,6 @@ class Table extends Iface
      *
      * @param Cell\Iface $cell
      * @param mixed $obj
-     * @return mixed
      */
     protected function showCell(Cell\Iface $cell, $obj)
     {
@@ -281,17 +280,15 @@ class Table extends Iface
     /**
      * Render the table footer
      * Render the table footer html like pagination etc...
-     *
-     * @return mixed
      */
     protected function showFooter()
     {
         $template = $this->getTemplate();
         if (!$template->keyExists('var', 'foot')) return;
-        // Render any footer widgetsfilters
+
+        // Render any footer widgets filters
         foreach($this->getFooterRenderList() as $renderer) {
-            // TODO: should this reside here
-            if ($renderer instanceof \Dom\Renderer\DisplayInterface) {
+            if ($renderer instanceof \Dom\Renderer\DisplayInterface) {      // TODO: should this reside here
                 $renderer->show();
             }
             if ($renderer instanceof \Dom\Renderer\RendererInterface) {
