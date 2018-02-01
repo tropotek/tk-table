@@ -91,6 +91,7 @@ class OrderBy extends Text
      * Swap 2 object orderBy locations
      *
      * @param $request
+     * @throws \Tk\Db\Exception
      * @throws \Tk\Table\Exception
      */
     public function doOrderSwap($request)
@@ -134,6 +135,7 @@ class OrderBy extends Text
      * Swap 2 object orderBy locations
      *
      * @param $request
+     * @throws \Tk\Db\Exception
      * @throws \Tk\Table\Exception
      */
     public function doOrderUpdate($request)
@@ -222,6 +224,7 @@ JS;
      * @param \Tk\Db\Map\Model $fromObj
      * @param \Tk\Db\Map\Model $toObj
      * @return int
+     * @throws \Tk\Db\Exception
      */
     public function orderSwap($mapper, $fromObj, $toObj)
     {
@@ -265,7 +268,8 @@ JS;
      *
      * @param \Tk\Db\Mapper $mapper
      * @param array $updateArray
-     * @return int
+     * @return void
+     * @throws \Tk\Db\Exception
      * @throws \Tk\Table\Exception
      */
     public function orderUpdate($mapper, $updateArray)
@@ -289,6 +293,7 @@ JS;
      *
      * @param \Tk\Db\Mapper $mapper
      * @return \Tk\Db\PDOStatement|null
+     * @throws \Tk\Db\Exception
      */
     public function resetOrder($mapper)
     {
@@ -315,9 +320,8 @@ JS;
   <div class="btn-group" role="group">
     <a href="javascript:;" title="Move Order Up" rel="nofollow" class="btn btn-default btn-xs" var="upUrl"><i class="fa fa-caret-up" var="upIcon"></i></a>
     <a href="javascript:;" title="Move Order Down" rel="nofollow" class="btn btn-default btn-xs" var="dnUrl"><i class="fa fa-caret-down" var="dnIcon"></i></a>
-  </div>
-    
-    <a href="javascript:;" title="Click And Drag" rel="nofollow" class="drag"><i class="fa fa-ellipsis-v"></i></a>
+  </div>  
+  <a href="javascript:;" title="Click And Drag" rel="nofollow" class="drag"><i class="fa fa-ellipsis-v"></i></a>
 </div>
 HTML;
         return \Dom\Loader::load($html);
