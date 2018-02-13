@@ -555,6 +555,7 @@ class Table implements \Tk\InstanceKey
      *
      * @param null|array|string $regex A regular expression or array of field names to get
      * @return array
+     * @throws \Exception
      */
     public function getFilterValues($regex = null)
     {
