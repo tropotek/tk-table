@@ -142,6 +142,8 @@ class ColumnSelect extends Button
      *
      * @param $arr
      * @return $this
+     * @todo: We need a setDefaultSelected(array) method instead of this one, think of it for the future
+     * @todo:  If there is no default then all should show by default.
      */
     public function setUnselected($arr)
     {
