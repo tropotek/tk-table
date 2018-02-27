@@ -61,13 +61,23 @@ class Pager extends Iface
 
 
     /**
+     * @param \Tk\Db\Tool $tool
+     * @param int $foundRows
+     * @return Pager
+     */
+    public static function createFromDbTool($tool, $foundRows = 0)
+    {
+        return new self($foundRows, $tool->getLimit(), $tool->getOffset());
+    }
+
+    /**
      *
      * @param \Tk\Db\Map\ArrayObject $list
      * @return Pager
      */
     public static function createFromDbArray(\Tk\Db\Map\ArrayObject $list)
     {
-        return new self($list->getFoundRows(), $list->getTool()->getLimit(), $list->getTool()->getOffset());
+        return new self($list->countAll(), $list->getTool()->getLimit(), $list->getTool()->getOffset());
     }
 
     /**

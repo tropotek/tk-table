@@ -216,9 +216,6 @@ abstract class Iface
      */
     protected function getObjectPropertyValue($obj, $property)
     {
-        if (is_callable($this->getOnPropertyValue()) && $this->getProperty() == $property) {
-            return call_user_func_array($this->getOnPropertyValue(), array($this, $obj));
-        }
 
         $value = '';
         if (is_array($obj) && isset($obj[$property])) {
@@ -242,6 +239,9 @@ abstract class Iface
                     $value = $obj->$method();
                 }
             }
+        }
+        if (is_callable($this->getOnPropertyValue()) && $this->getProperty() == $property) {
+            return call_user_func_array($this->getOnPropertyValue(), array($this, $obj, $value));
         }
         return $value;
     }
@@ -523,7 +523,7 @@ abstract class Iface
     /**
      * set a callback to return a modified property value
      *
-     * Callback: function ($cell, $obj) { return ''; }
+     * Callback: function ($cell, $obj, $value) { return ''; }
      *
      * @param callable|null $onPropertyValue
      * @return $this

@@ -53,7 +53,7 @@ class Limit extends Iface
         foreach ($this->getAttrList() as $k => $v) {
             $template->setAttr('tk-limit', $k, $v);
         }
-
+        /** @var \Dom\Form\Select $select */
         $select = $domform->getFormElement('limit');
         foreach($this->limitList as $val) {
             $select->appendOption($val, $val);

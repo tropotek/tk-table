@@ -668,7 +668,7 @@ class Table implements \Tk\InstanceKey
     private function getOrderStatus()
     {
         if ($this->getList() instanceof \Tk\Db\Map\ArrayObject) {
-            return explode(' ', $this->makeDbTool()->getOrderBy());
+            return explode(' ', $this->getTool()->getOrderBy());
         }
         return array();
     }
@@ -697,7 +697,7 @@ class Table implements \Tk\InstanceKey
      * @return Tool
      * TODO: we could put this into the pager`s area of responsibility if we wish to reduce the Table objects complexity
      */
-    public function makeDbTool($defaultOrderBy = '', $defaultLimit = 25)
+    public function getTool($defaultOrderBy = '', $defaultLimit = 25)
     {
         if (!$this->tool) {
             $this->tool = Tool::create($defaultOrderBy, $defaultLimit);
@@ -724,6 +724,17 @@ class Table implements \Tk\InstanceKey
             }
         }
         return $this->tool;
+    }
+
+    /**
+     * @param string $defaultOrderBy
+     * @param int $defaultLimit
+     * @return Tool
+     * @deprecated  Use self::getTool() instead
+     */
+    public function makeDbTool($defaultOrderBy = '', $defaultLimit = 25)
+    {
+        return $this->getTool();
     }
 
     /**

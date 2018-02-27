@@ -42,13 +42,22 @@ class Results extends Iface
     }
 
     /**
-     *
      * @param \Tk\Db\Map\ArrayObject $list
-     * @return Pager
+     * @return Results
      */
     public static function createFromDbArray(\Tk\Db\Map\ArrayObject $list)
     {
-        return new self($list->getFoundRows(), $list->getTool()->getLimit(), $list->getTool()->getOffset());
+        return new self($list->countAll(), $list->getTool()->getLimit(), $list->getTool()->getOffset());
+    }
+
+    /**
+     * @param \Tk\Db\Tool $tool
+     * @param int $foundRows
+     * @return Results
+     */
+    public static function createFromDbTool($tool, $foundRows = 0)
+    {
+        return new self($foundRows, $tool->getLimit(), $tool->getOffset());
     }
 
     /**

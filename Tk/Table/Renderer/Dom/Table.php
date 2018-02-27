@@ -84,6 +84,7 @@ class Table extends Iface
      * the output.
      *
      * @return \Dom\Template
+     * @throws \Dom\Exception
      */
     public function show()
     {
@@ -108,16 +109,23 @@ class Table extends Iface
         $this->showHeader();
         $this->showBody();
 
-        if ($this->hasFooter() && count($this->getTable()->getList()) && $this->getTable()->getList() instanceof \Tk\Db\Map\ArrayObject && $this->getTable()->getList()->getTool()) {
+        $count = count($this->getTable()->getList());
+        $countAll = count($this->getTable()->getList());
+        $tool = $this->getTable()->getTool();
+        if ($this->getTable()->getList() instanceof \Tk\Db\Map\ArrayObject) {
+            $countAll = $this->getTable()->getList()->countAll();
+            $tool = $this->getTable()->getList()->getTool();
+        }
+        if ($this->hasFooter() && $count && $tool) {
 
             // Results UI
-            $results = Ui\Results::createFromDbArray($this->getTable()->getList());
+            $results = Ui\Results::createFromDbTool($tool, $countAll);
             $results->setInstanceId($this->getTable()->getId());
             $results->addCss('col-xs-2');
             $this->appendFootRenderer($results);
 
             // Render Pager
-            $pager = Ui\Pager::createFromDbArray($this->getTable()->getList());
+            $pager = Ui\Pager::createFromDbTool($tool, $countAll);
             $pager->setEnablePageButtons($this->pageButtons);
             $pager->setInstanceId($this->getTable()->getId());
             $pager->addCss('col-xs-8 text-center');
@@ -128,7 +136,7 @@ class Table extends Iface
             if ($this->getTable()->getParam('limitList')) {
                 $limitList = $this->getTable()->getParam('limitList');
             }
-            $limit = new Ui\Limit($this->getTable()->getList()->getTool()->getLimit(), $limitList);
+            $limit = new Ui\Limit($tool->getLimit(), $limitList);
             $limit->setInstanceId($this->getTable()->getId());
             $limit->addCss('col-xs-2');
             $this->appendFootRenderer($limit);
@@ -144,6 +152,7 @@ class Table extends Iface
      * Render header row and any filters, etc....
      *
      * @return mixed
+     * @throws \Dom\Exception
      */
     protected function showHeader()
     {
@@ -198,6 +207,7 @@ class Table extends Iface
     /**
      * Render the table body
      *
+     * @throws \Dom\Exception
      */
     protected function showBody()
     {
@@ -223,6 +233,7 @@ class Table extends Iface
      * Render the table row
      *
      * @param mixed $obj
+     * @throws \Dom\Exception
      */
     protected function showRow($obj)
     {
@@ -253,6 +264,7 @@ class Table extends Iface
      *
      * @param Cell\Iface $cell
      * @param mixed $obj
+     * @throws \Dom\Exception
      */
     protected function showCell(Cell\Iface $cell, $obj)
     {

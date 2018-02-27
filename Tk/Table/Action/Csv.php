@@ -4,9 +4,6 @@ namespace Tk\Table\Action;
 use \Tk\Table\Cell;
 
 /**
- *
- *
- *
  * @author Michael Mifsud <info@tropotek.com>
  * @link http://www.tropotek.com/
  * @license Copyright 2015 Michael Mifsud
@@ -28,8 +25,6 @@ class Csv extends Button
     protected $ignoreCellList = array(
         'Tk\Table\Cell\Checkbox'
     );
-
-
 
 
     /**
@@ -64,10 +59,10 @@ class Csv extends Button
 
         return new self($db, $name, $checkboxName, $icon);
     }
-    
-    
+
     /**
-     * @return mixed
+     * @return mixed|void
+     * @throws \Tk\Db\Exception
      */
     public function execute()
     {   
@@ -86,14 +81,12 @@ class Csv extends Button
         $fullList = $list;
         if (isset($request[$this->checkboxName]) && is_array($request[$this->checkboxName])) {
             $fullList = array();
-
-            //TODO: Choose what one is better
             foreach($list as $obj) {
                 if (in_array($obj->getId(), $request[$this->checkboxName])) {
                     $fullList[] = $obj;
                 }
             }
-        } else if ($list && is_object($list) && $list->getFoundRows() > $list->count()) {
+        } else if ($list && is_object($list) && $list->countAll() > $list->count()) {
             $st = $list->getStatement();
             $sql = $st->queryString;
             if (preg_match('/ LIMIT /i', $sql)) {
@@ -102,12 +95,15 @@ class Csv extends Button
 
             $stmt = $this->db->prepare($sql);
             $stmt->execute($st->getBindParams());
-            $fullList = \Tk\Db\Map\ArrayObject::createFromMapper($list->getMapper(), $stmt);
+            if ($list->getMapper()) {
+                $fullList = \Tk\Db\Map\ArrayObject::createFromMapper($list->getMapper(), $stmt);
+            } else {
+                $fullList = \Tk\Db\Map\ArrayObject::create($stmt);
+            }
         }
 
         // Output the CSV data
         $out = fopen('php://output', 'w');
-
         header('Content-Type: application/octet-stream');
         header('Content-Disposition: attachment; filename="' . $file . '"');
         header('Content-Transfer-Encoding: binary');
@@ -115,7 +111,6 @@ class Csv extends Button
         $arr = array();
         // Write cell labels to first line of csv...
         foreach ($this->table->getCellList() as $i => $cell) {
-            //if (in_array($cell->getProperty(), $this->ignore)) continue;
             if ($this->ignoreCell($cell)) continue;
             $arr[] = $cell->getLabel();
         }
@@ -126,7 +121,6 @@ class Csv extends Button
                 $arr = array();
                 /* @var $cell Cell\Iface */
                 foreach ($this->table->getCellList() as $cell) {
-                    //if (in_array($cell->getProperty(), $this->ignore)) continue;
                     if ($this->ignoreCell($cell)) continue;
                     $arr[$cell->getLabel()] = $cell->getRawValue($obj);
                 }
