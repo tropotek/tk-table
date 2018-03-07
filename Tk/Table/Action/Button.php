@@ -48,7 +48,7 @@ class Button extends Iface
      * @param string|\Tk\Uri $url
      * @return Button
      */
-    static function create($name, $icon, $url = null)
+    static function createButton($name, $icon, $url = null)
     {
         return new static($name, $icon, $url);
     }
@@ -67,12 +67,13 @@ class Button extends Iface
      */
     public function getHtml()
     {
+        $template = $this->getTemplate();
+
         $btnId = $this->getTable()->makeInstanceKey($this->getName());
         $this->setAttr('id', $btnId);
         $this->setAttr('name', $btnId);
         $this->setAttr('value', $btnId);
 
-        $template = $this->getTemplate();
         if ($this->icon) {
             $template->addCss('icon', $this->icon);
             $template->setChoice('icon');
