@@ -7,7 +7,7 @@ namespace Tk\Event;
  * @link http://www.tropotek.com/
  * @license Copyright 2016 Michael Mifsud
  */
-class TableEvent extends Iface
+class TableEvent extends Event
 {
 
     /**
@@ -20,7 +20,6 @@ class TableEvent extends Iface
      */
     public function __construct($table)
     {
-        parent::__construct();
         $this->table = $table;
     }
 
