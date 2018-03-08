@@ -12,7 +12,6 @@ use Tk\Form;
 class Div extends Table
 {
 
-
     /**
      * @param \Tk\Table $table
      * @return Div
@@ -22,7 +21,6 @@ class Div extends Table
         $obj = new static($table);
         return $obj;
     }
-
 
     /**
      * Execute the renderer.

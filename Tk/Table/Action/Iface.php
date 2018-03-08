@@ -11,7 +11,7 @@ use Tk\Table;
  * @link http://www.tropotek.com/
  * @license Copyright 2015 Michael Mifsud
  */
-abstract class Iface
+abstract class Iface extends \Dom\Renderer\Renderer implements \Dom\Renderer\DisplayInterface
 {
 
     use \Tk\Dom\AttributesTrait;
@@ -67,9 +67,12 @@ abstract class Iface
 
 
     /**
-     * @return string|\Dom\Template
+     * @return \Dom\Template|string
+     * @deprecated Use show()
      */
-    abstract public function getHtml();
+    public function getHtml() {
+        return $this->show();
+    }
 
 
     /**

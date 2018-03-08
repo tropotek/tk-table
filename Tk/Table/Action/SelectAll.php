@@ -55,13 +55,13 @@ class SelectAll extends Button
     /**
      * @return string|\Dom\Template
      */
-    public function getHtml()
+    public function show()
     {
         $this->setAttr('title', 'Select All/None');
         $this->setAttr('data-cb-name', $this->checkboxName);
         $this->addCss('tk-action-select-all');
 
-        $template = parent::getHtml();
+        $template = parent::show();
         $js = <<<JS
 jQuery(function($) {
   $('.tk-action-select-all').on('click', function () {

@@ -19,6 +19,11 @@ class Dialog extends Button
      */
     public $onExecute = null;
 
+    /**
+     * @var string
+     */
+    protected $checkboxName = 'id';
+
 
     /**
      * @param string $name
@@ -85,6 +90,22 @@ class Dialog extends Button
     /**
      * @return string
      */
+    public function getCheckboxName()
+    {
+        return $this->checkboxName;
+    }
+
+    /**
+     * @param string $checkboxName
+     */
+    public function setCheckboxName($checkboxName)
+    {
+        $this->checkboxName = $checkboxName;
+    }
+
+    /**
+     * @return string
+     */
     public function getDialogId()
     {
         return 'id-' . $this->getName();
@@ -106,33 +127,65 @@ class Dialog extends Button
     /**
      * @return string|\Dom\Template
      */
-    public function getHtml()
+    public function show()
     {
-        $template = parent::getHtml();
+        $template = $this->getTemplate();
         $dialogId = $this->getDialogId();
 
-        $template->setAttr('btn', 'data-target', '#'.$dialogId);
+        $this->setAttr('data-target', '#'.$dialogId);
+        $this->setAttr('data-cb-name', $this->getCheckboxName());
+        $template = parent::show();
+
         $template->setAttr('dialog', 'id', $dialogId);
         $template->setAttr('dialog', 'aria-labelledby', $dialogId.'Label');
         $template->setAttr('title', 'id', $dialogId.'Label');
         $template->insertText('title', $this->getLabel());
 
+
+        $js = <<<JS
+jQuery(function($) {
+    function updateBtn(btn) {
+      var cbName = btn.data('cb-name');
+      if(btn.closest('.tk-table').find('.table-body input[name^="'+cbName+'"]:checked').length) {
+        btn.removeAttr('disabled');
+      } else {
+        btn.attr('disabled', 'disabled');
+      }
+    }
+    
+    
+    $('.tk-action-dialog').each(function () {
+      var btn = $(this).find('.btn-action');
+      var cbName = btn.data('cb-name');
+      
+      // btn.on('click', function () {
+      //   var selected = $(this).closest('.tk-table').find('.table-body input[name^="'+cbName+'"]:checked');
+      //   return selected.length > 0 && confirm(confirmStr.replace(/%selected%/, selected.length));
+      // });
+      
+      btn.closest('.tk-table').on('change', '.table-body input[name^="'+cbName+'"]', function () { updateBtn(btn); });
+      updateBtn(btn);
+    });
+});
+JS;
+        $template->appendJs($js);
+
+
         if ($this->getOnShow()) {
             call_user_func_array($this->getOnShow(), array($this));
         }
-
         return $template;
     }
 
     /**
      * @return \Dom\Template
      */
-    public function getTemplate()
+    public function __makeTemplate()
     {
         $xhtml = <<<XHTML
 <div style="display: inline-block;" class="tk-action-dialog">
   
-  <button class="btn btn-default btn-xs" data-toggle="modal" data-target="#myModal" var="btn"><i var="icon" choice="icon"></i> <span var="btnTitle"></span></button>
+  <button class="btn btn-default btn-xs btn-action" data-toggle="modal" data-target="#myModal" var="btn"><i var="icon" choice="icon"></i> <span var="btnTitle"></span></button>
   
   <div class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" id="myModal" var="dialog">
     <div class="modal-dialog" role="document">
@@ -143,8 +196,8 @@ class Dialog extends Button
         </div>
         <div class="modal-body" var="body"></div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-default" data-dismiss="modal" var="close">Close</button>
-          <button type="button" class="btn btn-primary dialog-submit" var="submit">Submit</button>
+          <button type="button" class="btn btn-default btn-close" data-dismiss="modal" var="close">Close</button>
+          <button type="button" class="btn btn-primary btn-submit" var="submit">Submit</button>
         </div>
       </div>
     </div>

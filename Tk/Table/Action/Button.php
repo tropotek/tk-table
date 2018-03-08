@@ -3,9 +3,6 @@ namespace Tk\Table\Action;
 
 
 /**
- *
- *
- *
  * @author Michael Mifsud <info@tropotek.com>
  * @link http://www.tropotek.com/
  * @license Copyright 2015 Michael Mifsud
@@ -25,8 +22,6 @@ class Button extends Iface
 
     
     /**
-     * Create
-     *
      * @param string $name
      * @param string $icon
      * @param string|\Tk\Uri $url
@@ -41,8 +36,6 @@ class Button extends Iface
     }
 
     /**
-     * Create
-     * 
      * @param string $name
      * @param string $icon
      * @param string|\Tk\Uri $url
@@ -65,7 +58,7 @@ class Button extends Iface
     /**
      * @return string|\Dom\Template
      */
-    public function getHtml()
+    public function show()
     {
         $template = $this->getTemplate();
 
@@ -110,10 +103,9 @@ class Button extends Iface
     }
 
     /**
-     *
      * @return \Dom\Template
      */
-    public function getTemplate()
+    public function __makeTemplate()
     {
         $xhtml = <<<XHTML
 <button class="btn btn-default btn-xs" var="btn"><i var="icon" choice="icon"></i> <span var="btnTitle"></span></button>

@@ -163,7 +163,7 @@ class Table extends Iface
             /* @var \Tk\Table\Action\Iface $action */
             foreach ($this->getTable()->getActionList() as $action) {
                 if (!$action instanceof \Tk\Table\Action\Iface || !$action->isVisible()) continue;
-                $html = $action->getHtml();
+                $html = $action->show();
                 if ($html instanceof \Dom\Template) {
                     $template->appendTemplate('actions', $html);
                 } else {

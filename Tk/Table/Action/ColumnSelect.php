@@ -214,9 +214,9 @@ class ColumnSelect extends Button
     /**
      * @return string|\Dom\Template
      */
-    public function getHtml()
+    public function show()
     {
-        $template = parent::getHtml();
+        $template = parent::show();
 
         $btnId = $this->getTable()->makeInstanceKey($this->getName());
         $tableId = $this->getTable()->getId();

@@ -63,7 +63,7 @@ class Link extends Iface
     /**
      * @return string|\Dom\Template
      */
-    public function getHtml()
+    public function show()
     {
         $btnId = $this->getTable()->makeInstanceKey($this->getName());
         $this->setAttr('id', $btnId);
@@ -112,7 +112,7 @@ class Link extends Iface
      *
      * @return \Dom\Template
      */
-    public function getTemplate()
+    public function __makeTemplate()
     {
         $xhtml = <<<XHTML
 <a class="btn btn-default btn-xs" href="javascript:;" var="btn"><i var="icon" choice="icon"></i> <span var="btnTitle"></span></a>

@@ -122,7 +122,7 @@ class Delete extends Button
     /**
      * @return string|\Dom\Template
      */
-    public function getHtml()
+    public function show()
     {
 
         $this->setAttr('title', 'Delete Selected Records');
@@ -130,7 +130,7 @@ class Delete extends Button
         $this->setAttr('data-cb-name', $this->checkboxName);
         $this->setAttr('data-confirm', $this->getConfirmStr());
 
-        $template = parent::getHtml();
+        $template = parent::show();
 
         $template->appendJs($this->getJs());
         return $template;
