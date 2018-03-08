@@ -48,12 +48,13 @@ class Text extends Iface
     public function getCellHtml($obj, $rowIdx = null)
     {
         $value = $propValue = $this->getPropertyValue($obj, $this->getProperty());
+        $this->setAttr('title', \Tk\Str::wordcat($this->getLabel(), 32, '...'));
         if ($this->charLimit && strlen($propValue) > $this->charLimit) {
             //$propValue = substr($propValue, 0, $this->charLimit-3).'...';
-            $propValue = \Tk\Str::wordcat($value, $this->charLimit-3, '...');
+            $propValue = \Tk\Str::wordcat($propValue, $this->charLimit-3, '...');
+            $this->setAttr('title', htmlentities($value));      // <--- TODO: see if this is ok here for long strings
         }
         //$this->setAttr('title', \Tk\Str::wordcat($value, 32, '...'));
-        $this->setAttr('title', \Tk\Str::wordcat($this->getLabel(), 32, '...'));
         $str = htmlentities($propValue);
         $url = $this->getCellUrl($obj);
         if ($url) {
