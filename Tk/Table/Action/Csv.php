@@ -169,7 +169,7 @@ class Csv extends Button
      * Set the ignore cell class array or reset the array if nothing passed
      *
      * Eg:
-     *   array('Tk\Table\Cell\Checkbox', 'App\Ui\Course\EnrolledCell');
+     *   array('Tk\Table\Cell\Checkbox', 'App\Ui\Subject\EnrolledCell');
      *
      * @param array $array
      * @return $this
