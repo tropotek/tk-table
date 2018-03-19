@@ -39,11 +39,12 @@ abstract class Iface extends \Dom\Renderer\Renderer implements \Dom\Renderer\Dis
      */
     protected $visible = true;
 
-    
+
     /**
      * Create
      *
      * @param string $name The action event name
+     * @throws \Tk\Exception
      */
     public function __construct($name)
     {

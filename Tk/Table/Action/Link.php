@@ -23,13 +23,14 @@ class Link extends Iface
      */
     protected $url = null;
 
-    
+
     /**
      * Create
      *
      * @param string $name
      * @param string $icon
      * @param string|\Tk\Uri $url
+     * @throws \Tk\Exception
      */
     public function __construct($name, $icon, $url = null)
     {
@@ -41,11 +42,12 @@ class Link extends Iface
 
     /**
      * Create
-     * 
+     *
      * @param string $name
      * @param string $icon
      * @param string|\Tk\Uri $url
      * @return Link
+     * @throws \Tk\Exception
      */
     static function create($name, $icon, $url = null)
     {
@@ -62,6 +64,7 @@ class Link extends Iface
 
     /**
      * @return string|\Dom\Template
+     * @throws \Dom\Exception
      */
     public function show()
     {

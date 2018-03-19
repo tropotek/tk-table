@@ -34,6 +34,7 @@ class Csv extends Button
      * @param string $name
      * @param string $checkboxName
      * @param string $icon
+     * @throws \Tk\Exception
      */
     public function __construct($db, $name = 'csv', $checkboxName = 'id', $icon = 'glyphicon glyphicon-list-alt')
     {
@@ -46,11 +47,12 @@ class Csv extends Button
     /**
      * Create
      *
-     * @param \Tk\Db\Pdo $db
      * @param string $name
      * @param string $checkboxName
      * @param string $icon
+     * @param \Tk\Db\Pdo $db
      * @return Csv
+     * @throws \Tk\Exception
      */
     static function create($name = 'csv', $checkboxName = 'id', $icon = 'glyphicon glyphicon-list-alt', $db = null)
     {
@@ -134,6 +136,7 @@ class Csv extends Button
 
     /**
      * @return string|\Dom\Template
+     * @throws \Dom\Exception
      */
     public function show()
     {

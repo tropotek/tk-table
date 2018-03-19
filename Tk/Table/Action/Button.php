@@ -20,11 +20,12 @@ class Button extends Iface
      */
     protected $url = null;
 
-    
+
     /**
      * @param string $name
      * @param string $icon
      * @param string|\Tk\Uri $url
+     * @throws \Tk\Exception
      */
     public function __construct($name, $icon, $url = null)
     {
@@ -40,6 +41,7 @@ class Button extends Iface
      * @param string $icon
      * @param string|\Tk\Uri $url
      * @return Button
+     * @throws \Tk\Exception
      */
     static function createButton($name, $icon, $url = null)
     {
@@ -57,6 +59,7 @@ class Button extends Iface
 
     /**
      * @return string|\Dom\Template
+     * @throws \Dom\Exception
      */
     public function show()
     {

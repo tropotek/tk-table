@@ -24,13 +24,13 @@ class ColumnSelect extends Button
     protected $resetColumns = false;
 
 
-
     /**
      * Create
      *
      * @param string $name
      * @param string $icon
      * @param null $url
+     * @throws \Tk\Exception
      */
     public function __construct($name = 'columns', $icon = 'glyphicon glyphicon-list-alt', $url = null)
     {
@@ -45,6 +45,7 @@ class ColumnSelect extends Button
      * @param string $icon
      * @param null $url
      * @return ColumnSelect
+     * @throws \Tk\Exception
      */
     static function create($name = 'columns', $icon = 'fa fa-columns', $url = null)
     {
@@ -213,6 +214,7 @@ class ColumnSelect extends Button
 
     /**
      * @return string|\Dom\Template
+     * @throws \Dom\Exception
      */
     public function show()
     {

@@ -28,6 +28,7 @@ class Div extends Table
      * the output.
      *
      * @return mixed
+     * @throws \Dom\Exception
      */
     public function show()
     {
@@ -42,6 +43,7 @@ class Div extends Table
      * @param Cell\Iface $cell
      * @param mixed $obj
      * @return mixed
+     * @throws \Dom\Exception
      */
     protected function showCell(Cell\Iface $cell, $obj)
     {

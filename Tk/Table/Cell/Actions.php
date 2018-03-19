@@ -135,7 +135,6 @@ class Actions extends Text
      * @param \App\Db\User $obj
      * @param int|null $rowIdx The current row being rendered (0-n) If null no rowIdx available.
      * @return string|\Dom\Template
-     * @throws \Dom\Exception
      */
     public function getCellHtml($obj, $rowIdx = null)
     {
@@ -189,7 +188,6 @@ class Actions extends Text
      * makeTemplate
      *
      * @return \Dom\Template
-     * @throws \Dom\Exception
      */
     public function __makeTemplate()
     {
