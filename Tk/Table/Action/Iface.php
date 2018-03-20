@@ -8,7 +8,7 @@ use Tk\Table;
  *
  *
  * @author Michael Mifsud <info@tropotek.com>
- * @link http://www.tropotek.com/
+ * @see http://www.tropotek.com/
  * @license Copyright 2015 Michael Mifsud
  */
 abstract class Iface extends \Dom\Renderer\Renderer implements \Dom\Renderer\DisplayInterface

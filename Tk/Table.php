@@ -10,7 +10,7 @@ use \Tk\Form\Event;
  * Class Table
  *
  * @author Michael Mifsud <info@tropotek.com>
- * @link http://www.tropotek.com/
+ * @see http://www.tropotek.com/
  * @license Copyright 2015 Michael Mifsud
  * TODO: Thinking of moving the filter form and actions out to their own objects so we
  * TODO: can remove the responsibility from the Table ????
