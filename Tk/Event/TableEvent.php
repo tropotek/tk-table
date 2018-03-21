@@ -26,7 +26,7 @@ class TableEvent extends Event
     /**
      * @return null|\Tk\Table
      */
-    public function getForm()
+    public function getTable()
     {
         return $this->table;
     }

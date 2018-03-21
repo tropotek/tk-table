@@ -1,4 +1,5 @@
 <?php
+
 namespace Tk;
 
 use Tk\Table\Action;
@@ -93,8 +94,6 @@ class Table implements \Tk\InstanceKey
     private $renderer = null;
 
 
-
-
     /**
      * Create a table object
      *
@@ -142,10 +141,10 @@ class Table implements \Tk\InstanceKey
 
         if (!$session)
             $session = \Tk\Config::getInstance()->getSession();
-            
+
         $obj->setRequest($request);
         $obj->setSession($session);
-        
+
         return $obj;
     }
 
@@ -239,7 +238,7 @@ class Table implements \Tk\InstanceKey
         $this->request = &$request;
         return $this;
     }
-    
+
     /**
      * @return array|\ArrayAccess
      */
@@ -257,7 +256,7 @@ class Table implements \Tk\InstanceKey
         $this->session = &$session;
         return $this;
     }
-    
+
     /**
      * @return \Tk\Session|array|\ArrayAccess
      */
@@ -306,8 +305,15 @@ class Table implements \Tk\InstanceKey
      */
     public function setList($list)
     {
+        $e = new \Tk\Event\TableEvent($this);
+        if ($this->dispatcher) {
+            $this->dispatcher->dispatch(\Tk\Table\TableEvents::TABLE_INIT, $e);
+        }
         $this->list = $list;
         $this->execute();
+        if ($this->dispatcher) {
+            $this->dispatcher->dispatch(\Tk\Table\TableEvents::TABLE_EXECUTE, $e);
+        }
         return $this;
     }
 
@@ -382,12 +388,15 @@ class Table implements \Tk\InstanceKey
     /**
      * Add a field element before another element
      *
-     * @param Cell\Iface $anchorCell
+     * @param string|Cell\Iface $anchorCell
      * @param Cell\Iface $cell
      * @return Cell\Iface
      */
     public function addCellBefore($anchorCell, $cell)
     {
+        if (is_string($anchorCell)) {
+            $anchorCell = $this->findCell($anchorCell);
+        }
         $newArr = array();
         $cell->setTable($this);
         /** @var Cell\Iface $c */
@@ -404,12 +413,15 @@ class Table implements \Tk\InstanceKey
     /**
      * Add an element after another element
      *
-     * @param Cell\Iface $anchorCell
+     * @param string|Cell\Iface $anchorCell
      * @param Cell\Iface $cell
      * @return Cell\Iface
      */
     public function addCellAfter($anchorCell, $cell)
     {
+        if (is_string($anchorCell)) {
+            $anchorCell = $this->findCell($anchorCell);
+        }
         $newArr = array();
         $cell->setTable($this);
         /** @var Cell\Iface $c */
@@ -426,11 +438,14 @@ class Table implements \Tk\InstanceKey
     /**
      * Remove a cell from the table
      *
-     * @param Cell\Iface $cell
+     * @param string|Cell\Iface $cell
      * @return $this
      */
     public function removeCell($cell)
     {
+        if (is_string($cell)) {
+            $cell = $this->findCell($cell);
+        }
         /** @var Cell\Iface $c */
         foreach ($this->getCellList() as $i => $c) {
             if ($c === $cell) {
@@ -657,7 +672,7 @@ class Table implements \Tk\InstanceKey
         }
         return '';
     }
-    
+
     /**
      * Get the property and order value from the Request or params
      *
@@ -791,5 +806,5 @@ class Table implements \Tk\InstanceKey
     {
         $this->dispatcher = $dispatcher;
     }
-    
+
 }
