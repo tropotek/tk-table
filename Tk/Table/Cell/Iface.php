@@ -218,8 +218,9 @@ abstract class Iface
     {
 
         $value = '';
-        if (is_array($obj) && isset($obj[$property])) {
-            $value = $obj[$property];
+        if (is_array($obj)) {
+            if (isset($obj[$property]))
+                $value = $obj[$property];
         } else {
             if (property_exists($obj, $property)) {
                 $value = $obj->{$property};
