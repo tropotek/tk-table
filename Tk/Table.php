@@ -749,7 +749,7 @@ class Table implements \Tk\InstanceKey
      */
     public function makeDbTool($defaultOrderBy = '', $defaultLimit = 25)
     {
-        return $this->getTool();
+        return $this->getTool($defaultOrderBy, $defaultLimit);
     }
 
     /**
