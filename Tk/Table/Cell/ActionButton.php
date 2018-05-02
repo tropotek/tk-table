@@ -121,6 +121,7 @@ class ActionButton
         return $this->title;
     }
 
+
     /**
      * @return bool
      */
