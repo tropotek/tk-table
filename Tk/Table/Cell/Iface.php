@@ -308,6 +308,7 @@ abstract class Iface
         
         $order = '';
         //vd($this->getTable()->getList());
+        //vd($this->getOrderProperty(), $this->getTable()->getOrderProperty());
 
         if ($this->getOrderProperty() == $this->getTable()->getOrderProperty()) {
             $order = $this->getTable()->getOrder();

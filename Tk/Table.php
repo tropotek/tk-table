@@ -682,10 +682,11 @@ class Table implements \Tk\InstanceKey
      */
     private function getOrderStatus()
     {
+        $o = array();
         if ($this->getList() instanceof \Tk\Db\Map\ArrayObject) {
-            return explode(' ', $this->getTool()->getOrderBy());
+            $o = explode(' ', $this->getTool()->getOrderBy());
         }
-        return array();
+        return $o;
     }
 
     /**
