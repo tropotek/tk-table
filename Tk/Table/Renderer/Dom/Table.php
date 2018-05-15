@@ -116,7 +116,9 @@ class Table extends Iface
             $countAll = $this->getTable()->getList()->countAll();
             $tool = $this->getTable()->getList()->getTool();
         }
-        if ($this->hasFooter() && $count && $tool) {
+
+        //vd($count, $countAll, $tool->getLimit(), $countAll > $tool->getLimit());
+        if ($this->hasFooter() && $count && $tool && $countAll > $tool->getLimit()) {
 
             // Results UI
             $results = Ui\Results::createFromDbTool($tool, $countAll);
