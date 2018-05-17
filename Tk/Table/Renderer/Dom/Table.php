@@ -45,6 +45,7 @@ class Table extends Iface
     static function create($table = null)
     {
         $obj = new static($table);
+        $table->addCss('table table-bordered table-striped table-hover');
         return $obj;
     }
 
@@ -332,7 +333,7 @@ class Table extends Iface
       <div class="tk-actions" var="actions" choice="actions"></div>
       
       <div class="tk-table-wrap table-responsive">
-        <table border="0" cellpadding="0" cellspacing="0" class="table table-striped table-bordered table-hover" var="table">
+        <table border="0" cellpadding="0" cellspacing="0" class="" var="table">
           <thead var="head">
             <tr>
               <th var="th" repeat="th"></th>
