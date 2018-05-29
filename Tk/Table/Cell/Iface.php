@@ -125,7 +125,8 @@ abstract class Iface
         $str = str_replace(array('id', 'Id'), '', $this->getLabel());
         $url = $this->getOrderUrl();
         if ($url && $this->getTable()->getStaticOrderBy() === null) {
-            $str = sprintf('<a href="%s" class="noblock" title="Click to order by: %s">%s</a>', htmlentities($url->toString()), $this->getOrderProperty(), $this->getLabel());
+            $str = sprintf('<a href="%s" class="noblock" title="Click to order by: %s">%s</a>',
+                htmlentities($url->toString()), $this->getOrderProperty(), $this->getLabel());
         }
         return $str;
     }
@@ -525,7 +526,7 @@ abstract class Iface
     /**
      * set a callback to return a modified property value
      *
-     * Callback: function ($cell, $obj, $value) { return ''; }
+     * Callback: function ($cell, $obj, $value) { return $value; }
      *
      * @param callable|null $onPropertyValue
      * @return $this
@@ -547,7 +548,7 @@ abstract class Iface
     /**
      * Set the onShowCell callback
      *
-     * Callback: function ($cell, $obj, $html) { return ''; }
+     * Callback: function ($cell, $obj, $html) { return $html; }
      *
      * @param callable|null $onCellHtml
      * @return $this
