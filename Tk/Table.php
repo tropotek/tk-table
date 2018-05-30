@@ -8,8 +8,6 @@ use Tk\Db\Tool;
 use \Tk\Form\Event;
 
 /**
- * Class Table
- *
  * @author Michael Mifsud <info@tropotek.com>
  * @see http://www.tropotek.com/
  * @license Copyright 2015 Michael Mifsud
