@@ -92,6 +92,7 @@ class Table implements \Tk\InstanceKey
     private $renderer = null;
 
     
+    
     /**
      * Create a table object
      *
