@@ -3,15 +3,12 @@ namespace Tk\Table\Cell;
 
 
 /**
- * Class OrderBy
- *
  * @author Michael Mifsud <info@tropotek.com>
  * @see http://www.tropotek.com/
  * @license Copyright 2015 Michael Mifsud
  */
 class OrderBy extends Text
 {
-
 
     /**
      * The object class name we are ordering
@@ -25,7 +22,6 @@ class OrderBy extends Text
      * @var null|Callable
      */
     protected $onUpdate = null;
-
 
 
     /**
@@ -64,7 +60,8 @@ class OrderBy extends Text
     }
 
     /**
-     *
+     * @throws \Tk\Db\Exception
+     * @throws \Tk\Table\Exception
      */
     public function execute()
     {
