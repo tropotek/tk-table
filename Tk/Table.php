@@ -149,7 +149,6 @@ class Table implements \Tk\InstanceKey
     /**
      * Execute the table
      * Generally called in the renderer`s show() method
-     *
      */
     public function execute()
     {
@@ -169,7 +168,9 @@ class Table implements \Tk\InstanceKey
         }
     }
 
-
+    /**
+     * @throws Form\Exception
+     */
     protected function initFilterForm()
     {
         // Add Filter button events
@@ -177,6 +178,9 @@ class Table implements \Tk\InstanceKey
         $this->addFilter(new Event\Submit($this->makeInstanceKey('clear'), array($this, 'doClear')))->setAttr('value', $this->makeInstanceKey('clear'))->setLabel('Clear');
     }
 
+    /**
+     * @param $form
+     */
     public function doSearch($form)
     {
         //  Save to session
@@ -185,6 +189,9 @@ class Table implements \Tk\InstanceKey
         $this->getUri($form)->redirect();
     }
 
+    /**
+     * @param $form
+     */
     public function doClear($form)
     {
         // Clear session
@@ -553,6 +560,7 @@ class Table implements \Tk\InstanceKey
      *
      * @param \Tk\Form\Field\Iface $field
      * @return \Tk\Form\Field\Iface
+     * @throws Form\Exception
      */
     public function addFilter($field)
     {
@@ -651,10 +659,11 @@ class Table implements \Tk\InstanceKey
     public function getOrder()
     {
         $ord = $this->getOrderStatus();
+        $val = self::ORDER_NONE;
         if (count($ord) >= 2) {
-            return trim($ord[1]);
+            $val = trim($ord[1]);
         }
-        return self::ORDER_NONE;
+        return $val;
     }
 
     /**
@@ -665,11 +674,14 @@ class Table implements \Tk\InstanceKey
     public function getOrderProperty()
     {
         $ord = $this->getOrderStatus();
+        $prop = '';
         if (count($ord)) {
-            return trim($ord[0]);
+            $prop = trim($ord[0]);
+
         }
-        return '';
+        return $prop;
     }
+
 
     /**
      * Get the property and order value from the Request or params
