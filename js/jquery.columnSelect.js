@@ -61,15 +61,16 @@ if (typeof (String.prototype.hashCode) === 'undefined') {
     // plugin's default options
     // this is private property and is  accessible only from inside the plugin
     var defaults = {
+      sid: 'column-select-00',
       buttonId : '',
-      resetCookies: false,
+      ajaxUrl: '',
+      reset: false,
       selectors: null,
-      disabled : null,          // int[]
+      disabled : [],
       disabledColor: '#999',
       disabledHidden: false,
-      defaultSelected : null,   // int[]
-      defaultUnselected : null,   // int[]
-      hash: '',
+      defaultSelected : [],
+      defaultUnselected : [],
 
       // Should return a jquery list containing checkbox inputs to trigger the columns.
       onInitColumnSelectors: function(topRow) {
@@ -132,8 +133,6 @@ if (typeof (String.prototype.hashCode) === 'undefined') {
       onChange: function () { },
 
       onSaveState: function () {
-        var hasCookies = (typeof(Cookies) !== 'undefined');
-        if (!hasCookies) return;
         var data = [];
         plugin.settings.selectors.each(function (i) {
           if ($(this).attr('data-cs-checked') === '1') {
@@ -141,17 +140,13 @@ if (typeof (String.prototype.hashCode) === 'undefined') {
           }
         });
         var json = JSON.stringify(data);
-        Cookies.set(plugin.settings.hash, json);
+        setSessionParam(plugin.settings.sid, json);
       },
 
 
       onRestoreState: function() {
-        var hasCookies = (typeof(Cookies) !== 'undefined');
-        if (!hasCookies) return;
-
-        //reset cookies
-        if (plugin.settings.resetCookies) {
-            Cookies.remove(plugin.settings.hash);
+        if (plugin.settings.reset) {
+          removeSessionParam(plugin.settings.sid);
         }
 
         // TODO: Get the default state of the columns (some may be hidden by default?)
@@ -169,27 +164,28 @@ if (typeof (String.prototype.hashCode) === 'undefined') {
           }
         }
 
-        var state = Cookies.get(plugin.settings.hash);
-        if (state) {
-          try {
-            state = JSON.parse(state);
-            var sel = [];
-            $.each(state, function (i, o) {
-              sel[sel.length] = o.value;
-            });
-            selected = sel;
-          } catch(e) { console.warn(e); }
-        }
-
-        plugin.settings.selectors.each(function(i) {
-          if ($.inArray($(this).attr('data-cs-coll'), selected) !== -1) {
-            $(this).prop('checked', true).attr('data-cs-checked', 1);
-          } else {
-            $(this).prop('checked', false).attr('data-cs-checked', 0);
+        //var state = Cookies.get(plugin.settings.sid);
+        getSessionParam(plugin.settings.sid, function (data) {
+          if (data.value) {
+            try {
+              var value = JSON.parse(data.value);
+              var sel = [];
+              $.each(value, function (i, o) {
+                sel[sel.length] = o.value;
+              });
+              selected = sel;
+            } catch(e) { console.warn(e); }
           }
+          plugin.settings.selectors.each(function(i) {
+            if ($.inArray($(this).attr('data-cs-coll'), selected) !== -1) {
+              $(this).prop('checked', true).attr('data-cs-checked', 1);
+            } else {
+              $(this).prop('checked', false).attr('data-cs-checked', 0);
+            }
+          });
+          refresh();
         });
 
-        refresh();
       }
 
     };
@@ -215,7 +211,13 @@ if (typeof (String.prototype.hashCode) === 'undefined') {
 
       // the plugin's final properties are the merged default and
       // user-provided options (if any)
-      plugin.settings = $.extend({}, defaults, options);
+      plugin.settings = $.extend({}, defaults, $element.data(), options);
+      //plugin.settings = $.extend({}, defaults, options);
+
+
+      if (plugin.settings.sid === '') {
+        plugin.settings.sid = document.location.pathname.hashCode() + table.attr('id')
+      }
 
       if (isArray(plugin.settings.defaultSelected)) {
         $.each(plugin.settings.defaultSelected, function (i, o) {
@@ -233,21 +235,26 @@ if (typeof (String.prototype.hashCode) === 'undefined') {
         });
       }
 
+      var form = $element.find('form').first();
+      if (form.length && $(form).prop('action')) {
+        plugin.settings.ajaxUrl = $(form).prop('action');
+      }
+      // This is required so the crumbs are not messed up...
+      plugin.settings.ajaxUrl = addParam(plugin.settings.ajaxUrl, 'crumb_ignore', 'crumb_ignore');
+
+
       // get the main table element in the block
       if (element.nodeName === 'TABLE') {
         table = $element;
       } else {
         table = $element.find('table').first();
       }
+
       if (!table) {
         console.error('jquery.columnSelect Error: No valid table found!');
         return;
       }
 
-      if (plugin.settings.hash === '') {
-        //plugin.settings.hash = document.location.pathname.replace(/[^a-z0-9_-]/g, '_').hashCode() + table.attr('id');
-        plugin.settings.hash = document.location.pathname.hashCode() + table.attr('id');
-      }
 
       // Get the first row that we will use to setup the column selector
       topRow = table.find('th');
@@ -291,12 +298,50 @@ if (typeof (String.prototype.hashCode) === 'undefined') {
         plugin.settings.onSaveState.call(this);
 
       });
-
       plugin.settings.onRestoreState.call(this);
-
-
-
     };
+
+    var addParam = function(url, param, value) {
+       var a = document.createElement('a'), regex = /(?:\?|&amp;|&)+([^=]+)(?:=([^&]*))*/g;
+       var match, str = []; a.href = url; param = encodeURIComponent(param);
+       while (match = regex.exec(a.search))
+           if (param !== match[1]) str.push(match[1]+(match[2]?"="+match[2]:""));
+       str.push(param+(value?"="+ encodeURIComponent(value):""));
+       a.search = str.join("&");
+       return a.href;
+    };
+
+    // private methods
+    // these methods can be called only from inside the plugin like:
+    // methodName(arg1, arg2, ... argn)
+
+    var setSessionParam = function(name, value, callback) {
+      //console.log('Set("'+name+'", "'+value+'")');
+      var params = {action: 'session.set', name : name, value: value};
+      $.post(plugin.settings.ajaxUrl, params, function (data) {
+        if (callback)
+          callback.apply(params, [data]);
+      });
+    };
+
+    var getSessionParam = function(name, callback) {
+      //console.log('Get("'+name+'")');
+      var params = {action: 'session.get', name : name};
+      $.post(plugin.settings.ajaxUrl, params, function (data) {
+        if (callback)
+          callback.apply(params, [data]);
+      });
+    };
+
+    var removeSessionParam = function(name, callback) {
+      //console.log('Remove("'+name+'")');
+      var params = {action: 'session.remove', name : name};
+      $.post(plugin.settings.ajaxUrl, params, function (data) {
+        if (callback)
+          callback.apply(params, [data]);
+      });
+    };
+
 
     var decodeHTMLEntities = function(text) {
       var entities = [
@@ -318,12 +363,6 @@ if (typeof (String.prototype.hashCode) === 'undefined') {
       return text;
     };
 
-
-
-    // private methods
-    // these methods can be called only from inside the plugin like:
-    // methodName(arg1, arg2, ... argn)
-
     var refresh = function() {
       // code goes here
       plugin.settings.selectors.each(function(i) {
@@ -337,23 +376,17 @@ if (typeof (String.prototype.hashCode) === 'undefined') {
       });
     };
 
-
     var isArray = function(obj) {
       return !!obj && Array === obj.constructor;
     };
+
 
     // public methods
     // these methods can be called like:
     // plugin.methodName(arg1, arg2, ... argn) from inside the plugin or
     // element.data('columnSelect').publicMethod(arg1, arg2, ... argn) from outside 
-    // the plugin, where "element" is the element the plugin is attached to;
+    // the plugin, where "element" is the element the plugin is attached to
 
-    // a public method. for demonstration purposes only - remove it!
-    // plugin.public_method = function() {
-    //
-    // };
-
-    //
     plugin.range = function(start, end) {
       var foo = [];
       for (var i = start; i <= end; i++) {
@@ -363,35 +396,15 @@ if (typeof (String.prototype.hashCode) === 'undefined') {
     };
 
     // fire up the plugin!
-    // call the "constructor" method
     plugin.init();
-
   };
-
   // add the plugin to the jQuery.fn object
   $.fn.columnSelect = function(options) {
-
-    // iterate through the DOM elements we are attaching the plugin to
     return this.each(function() {
-
-      // if plugin has not already been attached to the element
       if (undefined === $(this).data('columnSelect')) {
-
-        // create a new instance of the plugin
-        // pass the DOM element and the user-provided options as arguments
         var plugin = new columnSelect(this, options);
-
-        // in the jQuery version of the element
-        // store a reference to the plugin object
-        // you can later access the plugin and its methods and properties like
-        // element.data('columnSelect').publicMethod(arg1, arg2, ... argn) or
-        // element.data('columnSelect').settings.propertyName
         $(this).data('columnSelect', plugin);
-
       }
-
     });
-
   }
-
 })(jQuery);

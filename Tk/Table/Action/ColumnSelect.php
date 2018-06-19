@@ -14,19 +14,23 @@ use \Tk\Table\Cell;
 class ColumnSelect extends Button
 {
 
-
+    /**
+     * @var array
+     */
     protected $disabled = array();
 
+    /**
+     * @var array
+     */
     protected $selected = array();
 
+    /**
+     * @var array
+     */
     protected $unselected = array();
-
-    protected $resetColumns = false;
 
 
     /**
-     * Create
-     *
      * @param string $name
      * @param string $icon
      * @param null $url
@@ -36,11 +40,14 @@ class ColumnSelect extends Button
     {
         parent::__construct($name, $icon, $url);
         $this->addCss('tk-action-column-select');
+
+        $request = \Tk\Config::getInstance()->getRequest();
+        if ($request->has('action') && preg_match('/^session\.([a-z]+)/', $request->get('action'), $regs)) {
+            $this->doAction($request, $regs[1]);
+        }
     }
 
     /**
-     * Create
-     *
      * @param string $name
      * @param string $icon
      * @param null $url
@@ -50,6 +57,56 @@ class ColumnSelect extends Button
     static function create($name = 'columns', $icon = 'fa fa-columns', $url = null)
     {
         return new static($name, $icon, $url);
+    }
+
+    /**
+     * @return string
+     * @throws \Tk\Db\Exception
+     * @throws \Tk\Exception
+     */
+    public function getSid()
+    {
+        return $this->getTable()->getId().'-'.\App\Config::getInstance()->getProfileId();
+    }
+
+    /**
+     * @param \Tk\Request $request
+     * @param string $action
+     */
+    public function doAction(\Tk\Request $request, $action)
+    {
+        $session = \Tk\Config::getInstance()->getSession();
+        $data = array();
+        try {
+            switch ($action) {
+                case 'set':
+                    if (!$request->get('name') || !$request->get('value'))
+                        throw new \Tk\Exception('Invalid parameter name or value');
+                    $session->set($request->get('name'), $request->get('value'));
+                    $data['name'] = $request->get('name');
+                    $data['value'] = $request->get('value');
+                    break;
+                case 'get':
+                    if (!$request->get('name'))
+                        throw new \Tk\Exception('Invalid parameter name');
+                    $data['name'] = $request->get('name');
+                    $data['value'] = $session->get($request->get('name'));
+                    break;
+                case 'remove':
+                    if (!$request->get('name'))
+                        throw new \Tk\Exception('Invalid parameter name');
+                    $data['name'] = $request->get('name');
+                    $data['value'] = $session->get($request->get('name'));
+                    $session->remove($request->get('name'));
+                    break;
+            }
+            $response = \Tk\ResponseJson::createJson($data);
+            $response->send();
+        } catch (\Exception $e) {
+            $response = \Tk\ResponseJson::createJson($data, \Tk\Response::HTTP_INTERNAL_SERVER_ERROR);
+            $response->send();
+        }
+        exit();
     }
 
 
@@ -184,10 +241,14 @@ class ColumnSelect extends Button
      *
      * @param bool $b
      * @return $this
+     * @throws \Tk\Db\Exception
+     * @throws \Tk\Exception
      */
     public function reset($b = true)
     {
-        $this->resetColumns = $b;
+        if ($b) {
+            \Tk\Config::getInstance()->getSession()->remove($this->getSid());
+        }
         return $this;
     }
 
@@ -213,35 +274,39 @@ class ColumnSelect extends Button
     }
 
     /**
+     * @return mixed|void
+     */
+    public function execute()
+    {
+        parent::execute();
+    }
+
+    /**
      * @return string|\Dom\Template
      * @throws \Dom\Exception
+     * @throws \Tk\Db\Exception
+     * @throws \Tk\Exception
      */
     public function show()
     {
         $template = parent::show();
 
-        $btnId = $this->getTable()->makeInstanceKey($this->getName());
-        $tableId = $this->getTable()->getId();
-
-        $template->appendJsUrl(\Tk\Uri::create('/vendor/ttek/tk-table/js/js.cookie.js'));
         $template->appendJsUrl(\Tk\Uri::create('/vendor/ttek/tk-table/js/jquery.columnSelect.js'));
 
         $disabledStr = implode(', ', $this->propsToCols($this->disabled));
         $selectedStr =  implode(', ', $this->propsToCols($this->selected));
         $unselectedStr =  implode(', ', $this->propsToCols($this->unselected));
-        $resetColumns = ($this->resetColumns) ? 'true' : 'false';
+
+        $this->getTable()->setAttr('data-sid', $this->getSid());
+        $this->getTable()->setAttr('data-button-id', $this->getTable()->makeInstanceKey($this->getName()));
+        $this->getTable()->setAttr('data-disabled-hidden', '['.$disabledStr.']');
+        $this->getTable()->setAttr('data-default-selected', '['.$selectedStr.']');
+        $this->getTable()->setAttr('data-default-unselected', '['.$unselectedStr.']');
 
         $js = <<<JS
 jQuery(function ($) {
-  //$('#$tableId').
-  $('.tk-action-column-select').closest('.tk-table').columnSelect({
-    buttonId : '$btnId',
-    disabled : [$disabledStr],
-    disabledHidden : false,
-    defaultSelected : [$selectedStr],
-    defaultUnselected : [$unselectedStr],
-    resetCookies: $resetColumns
-  });
+  var table = $('.tk-action-column-select').closest('.tk-table');
+  table.columnSelect(table.find('table').data());
 });
 JS;
         $template->appendJs($js);

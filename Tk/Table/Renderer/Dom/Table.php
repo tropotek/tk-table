@@ -99,9 +99,6 @@ class Table extends Iface
             }
         }
 
-        $template->addCss('table', $this->getTable()->getCssString());
-        $template->setAttr('table', $this->getTable()->getAttrList());
-
         $template->setAttr('form', 'id', $this->getTable()->getId().'_form');
         $template->setAttr('form', 'action', \Tk\Uri::create());
         $template->setAttr('form', 'method', 'post');
@@ -113,12 +110,17 @@ class Table extends Iface
         $count = count($this->getTable()->getList());
         $countAll = count($this->getTable()->getList());
         $tool = $this->getTable()->getTool();
+        if ($tool) {
+            $countAll = $tool->getFoundRows();
+        }
+
+
+        // TODO: this could be unrequired since we added $tool->getFoundRows()
         if ($this->getTable()->getList() instanceof \Tk\Db\Map\ArrayObject) {
             $countAll = $this->getTable()->getList()->countAll();
             $tool = $this->getTable()->getList()->getTool();
         }
 
-        //vd($count, $countAll, $tool->getLimit(), $countAll > $tool->getLimit());
         if ($this->hasFooter() && $count && $tool && $countAll > $tool->getLimit()) {
 
             // Results UI
@@ -146,6 +148,9 @@ class Table extends Iface
         }
 
         $this->showFooter();
+
+        $template->addCss('table', $this->getTable()->getCssString());
+        $template->setAttr('table', $this->getTable()->getAttrList());
 
         return $template;
     }
