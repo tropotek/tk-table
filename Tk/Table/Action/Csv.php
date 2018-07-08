@@ -36,7 +36,7 @@ class Csv extends Button
      * @param string $icon
      * @throws \Tk\Exception
      */
-    public function __construct($db, $name = 'csv', $checkboxName = 'id', $icon = 'glyphicon glyphicon-list-alt')
+    public function __construct($db, $name = 'csv', $checkboxName = 'id', $icon = 'fa fa-list-alt')
     {
         parent::__construct($name, $icon);
         $this->db = $db;
@@ -54,7 +54,7 @@ class Csv extends Button
      * @return Csv
      * @throws \Tk\Exception
      */
-    static function create($name = 'csv', $checkboxName = 'id', $icon = 'glyphicon glyphicon-list-alt', $db = null)
+    static function create($name = 'csv', $checkboxName = 'id', $icon = 'fa fa-list-alt', $db = null)
     {
         if ($db === null)
             $db = \Tk\Config::getInstance()->getDb();

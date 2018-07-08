@@ -3,9 +3,6 @@ namespace Tk\Table\Action;
 
 
 /**
- *
- *
- *
  * @author Michael Mifsud <info@tropotek.com>
  * @see http://www.tropotek.com/
  * @license Copyright 2015 Michael Mifsud
@@ -38,7 +35,7 @@ class Delete extends Button
      * @param string $icon
      * @throws \Tk\Exception
      */
-    public function __construct($name = 'delete', $checkboxName = 'id', $icon = 'glyphicon glyphicon-remove')
+    public function __construct($name = 'delete', $checkboxName = 'id', $icon = 'fa fa-times')
     {
         parent::__construct($name, $icon);
         $this->addCss('tk-action-delete');
@@ -54,7 +51,7 @@ class Delete extends Button
      * @return Delete
      * @throws \Tk\Exception
      */
-    static function create($name = 'delete', $checkboxName = 'id', $icon = 'glyphicon glyphicon-remove')
+    static function create($name = 'delete', $checkboxName = 'id', $icon = 'fa fa-times')
     {
         return new static($name, $checkboxName, $icon);
     }

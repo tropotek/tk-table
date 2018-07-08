@@ -36,7 +36,7 @@ class ColumnSelect extends Button
      * @param null $url
      * @throws \Tk\Exception
      */
-    public function __construct($name = 'columns', $icon = 'glyphicon glyphicon-list-alt', $url = null)
+    public function __construct($name = 'columns', $icon = 'fa fa-list-alt', $url = null)
     {
         parent::__construct($name, $icon, $url);
         $this->addCss('tk-action-column-select');
