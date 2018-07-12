@@ -24,7 +24,8 @@
     "require":  {
         "ttek/tk-framework": "~2.0",
         "ttek/tk-database": "~2.0",
-        "ttek/tk-domtemplate": "~2.0"
+        "ttek/tk-domtemplate": "~2.0",
+        "ttek/tk-mvc": "~2.0"
     },
     "extra":  {
         "branch-alias":  {
