@@ -223,7 +223,7 @@ abstract class Iface
             if (isset($obj[$property]))
                 $value = $obj[$property];
         } else {
-            if (property_exists($obj, $property)) {
+            if ($this->propertyExists($obj, $property)) {
                 $value = $obj->{$property};
             } else {
                 // Get property by method if accessor exists
@@ -246,6 +246,25 @@ abstract class Iface
             return call_user_func_array($this->getOnPropertyValue(), array($this, $obj, $value));
         }
         return $value;
+    }
+
+    /**
+     * @param object $obj
+     * @param string $property
+     * @return bool
+     */
+    private function propertyExists($obj, $property)
+    {
+        $exists = false;
+        try {
+            $class = new \ReflectionClass($obj);
+            $property = $class->getProperty($property);
+            if ($property->isPublic())
+                $exists = true;
+        } catch (\Exception $e) {
+            $exists = property_exists($obj, $property);
+        }
+        return $exists;
     }
 
     /**
