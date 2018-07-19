@@ -17,14 +17,18 @@ use \Tk\Form\Event;
  */
 class Table implements \Tk\InstanceKey
 {
+    use \Tk\Dom\AttributesTrait;
+    use \Tk\Dom\CssTrait;
 
     const PARAM_ORDER_BY = 'orderBy';
     const ORDER_NONE = '';
     const ORDER_ASC = 'ASC';
     const ORDER_DESC = 'DESC';
 
-    use \Tk\Dom\AttributesTrait;
-    use \Tk\Dom\CssTrait;
+    /**
+     * @var int|null
+     */
+    private $instanceId = null;
 
     /**
      * @var string
@@ -100,7 +104,7 @@ class Table implements \Tk\InstanceKey
      */
     public function __construct($tableId, $params = array())
     {
-        $this->id = $tableId;
+        $this->id = $tableId.'_'.$this->getInstanceId();
         $this->paramList = $params;
         $this->setAttr('id', $this->getId());
 
@@ -111,6 +115,19 @@ class Table implements \Tk\InstanceKey
             $this->session = &$_SESSION;
         }
         $this->form = $this->makeForm();
+    }
+
+    /**
+     * get the unique table instance ID
+     * @return int|null
+     */
+    protected function getInstanceId()
+    {
+        static $count = 1;
+        if ($this->instanceId === null) {
+            $this->instanceId = $count++;
+        }
+        return $this->instanceId;
     }
 
     /**
