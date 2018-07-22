@@ -115,6 +115,8 @@ class Table implements \Tk\InstanceKey
             $this->session = &$_SESSION;
         }
         $this->form = $this->makeForm();
+
+        $this->initCells();
     }
 
     /**
@@ -162,6 +164,11 @@ class Table implements \Tk\InstanceKey
 
         return $obj;
     }
+
+    /**
+     * Use for your own table parent objects
+     */
+    public function initCells() {}
 
     /**
      * Execute the table
