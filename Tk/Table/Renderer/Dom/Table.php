@@ -59,7 +59,7 @@ class Table extends Iface
     {
         static $ren = null;
         if (!$ren)
-            $ren = new \Tk\Form\Renderer\Dom($this->getTable()->getFilterForm());
+            $ren = \Tk\Form\Renderer\Dom::create($this->getTable()->getFilterForm());
         return $ren;
     }
 
