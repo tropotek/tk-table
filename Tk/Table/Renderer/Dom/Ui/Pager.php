@@ -218,17 +218,16 @@ class Pager extends Iface
     public function __makeTemplate()
     {
         $xhtml = <<<XHTML
-<?xml version="1.0"?>
-<nav class="tk-pager" var="tk-pager">
-  <ul choice="Pager" var="pager" class="pagination pagination-sm">
-    <li var="start"><a href="javascript:;" var="startUrl" rel="nofollow">Start</a></li>
-    <li var="back"><a href="javascript:;" var="backUrl">&laquo;</a></li>
+<nav class="tk-pager" var="tk-pager" aria-label="Page Navigation">
+  <ul choice="Pager" var="pager" class="pagination pagination-sm justify-content-center">
+    <li class="page-item" var="start"><a class="page-link" href="javascript:;" var="startUrl" rel="nofollow">Start</a></li>
+    <li class="page-item" var="back"><a class="page-link" href="javascript:;" var="backUrl">&laquo;</a></li>
 
-    <li repeat="page" var="page"><a href="javascript:;" var="pageUrl" rel="nofollow"></a></li>
+    <li class="page-item" repeat="page" var="page"><a class="page-link" href="javascript:;" var="pageUrl" rel="nofollow"></a></li>
 
-    <li var="next"><a href="javascript:;" var="nextUrl">&raquo;</a></li>
-    <li var="end"><a href="javascript:;" var="endUrl" rel="nofollow">End</a></li>
-    </ul>
+    <li class="page-item" var="next"><a class="page-link" href="javascript:;" var="nextUrl">&raquo;</a></li>
+    <li class="page-item" var="end"><a class="page-link" href="javascript:;" var="endUrl" rel="nofollow">End</a></li>
+  </ul>
 </nav>
 XHTML;
         return \Dom\Loader::load($xhtml);

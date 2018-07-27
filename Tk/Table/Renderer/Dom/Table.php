@@ -126,14 +126,14 @@ class Table extends Iface
             // Results UI
             $results = Ui\Results::createFromDbTool($tool, $countAll);
             $results->setInstanceId($this->getTable()->getId());
-            $results->addCss('col-xs-2');
+            $results->addCss('col-sm-2');
             $this->appendFootRenderer($results);
 
             // Render Pager
             $pager = Ui\Pager::createFromDbTool($tool, $countAll);
             $pager->setEnablePageButtons($this->pageButtons);
             $pager->setInstanceId($this->getTable()->getId());
-            $pager->addCss('col-xs-8 text-center');
+            $pager->addCss('col-sm-8 text-center');
             $this->appendFootRenderer($pager);
 
             // Limit UI
@@ -143,7 +143,7 @@ class Table extends Iface
             }
             $limit = new Ui\Limit($tool->getLimit(), $limitList);
             $limit->setInstanceId($this->getTable()->getId());
-            $limit->addCss('col-xs-2');
+            $limit->addCss('col-sm-2');
             $this->appendFootRenderer($limit);
         }
 
@@ -351,8 +351,8 @@ class Table extends Iface
           </tbody>
         </table>
       </div>
-      
-      <div class="tk-foot" choice="foot" var="foot"></div>
+       
+      <div class="tk-foot row" choice="foot" var="foot"></div>
   </form>
   
 </div>
