@@ -187,7 +187,7 @@ JS;
         $xhtml = <<<XHTML
 <div style="display: inline-block;" class="tk-action-dialog">
   
-  <button class="btn btn-default btn-xs btn-action" data-toggle="modal" data-target="#myModal" var="btn"><i var="icon" choice="icon"></i> <span var="btnTitle"></span></button>
+  <button class="btn btn-default btn-sm btn-action" data-toggle="modal" data-target="#myModal" var="btn"><i var="icon" choice="icon"></i> <span var="btnTitle"></span></button>
   
   <div class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" id="myModal" var="dialog">
     <div class="modal-dialog" role="document">

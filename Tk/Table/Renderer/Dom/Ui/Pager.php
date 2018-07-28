@@ -219,7 +219,7 @@ class Pager extends Iface
     {
         $xhtml = <<<XHTML
 <nav class="tk-pager" var="tk-pager" aria-label="Page Navigation">
-  <ul choice="Pager" var="pager" class="pagination pagination-sm justify-content-center">
+  <ul choice="Pager" var="pager" class="pagination justify-content-center">
     <li class="page-item" var="start"><a class="page-link" href="javascript:;" var="startUrl" rel="nofollow">Start</a></li>
     <li class="page-item" var="back"><a class="page-link" href="javascript:;" var="backUrl">&laquo;</a></li>
 

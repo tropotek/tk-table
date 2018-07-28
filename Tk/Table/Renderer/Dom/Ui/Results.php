@@ -78,24 +78,24 @@ class Results extends Iface
             return;
         }
 
-        $off = 0;
+        $from = 0;
         if ($this->total) {
-            $off = $this->offset+1;
+            $from = $this->offset+1;
         }
         $to = $this->offset + $this->limit;
         if ($to > $this->total) {
             $to = $this->total;
         }
 
-        $str = sprintf('%s-%s / %s', $off, $to, $this->total);
+        $str = sprintf('%s-%s / %s', $from, $to, $this->total);
+        //$template->insertText('tk-results', $str);
+        $template->setAttr('tk-results', 'title', $str);
 
         // TODO could we just insert the string
-//        $template->insertText('from', $off);
-//        $template->insertText('to', $to);
-//        $template->insertText('total', $this->total);
+        $template->insertText('from', $from);
+        $template->insertText('to', $to);
+        $template->insertText('total', $this->total);
 
-        $template->insertText('tk-results', $str);
-        $template->setAttr('tk-results', 'title', $str);
     }
 
     /**

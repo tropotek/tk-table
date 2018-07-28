@@ -315,8 +315,8 @@ JS;
         $html = <<<HTML
 <div class="text-center">
   <div class="btn-group" role="group">
-    <a href="javascript:;" title="Move Order Up" rel="nofollow" class="btn btn-default btn-xs" var="upUrl"><i class="fa fa-caret-up" var="upIcon"></i></a>
-    <a href="javascript:;" title="Move Order Down" rel="nofollow" class="btn btn-default btn-xs" var="dnUrl"><i class="fa fa-caret-down" var="dnIcon"></i></a>
+    <a href="javascript:;" title="Move Order Up" rel="nofollow" class="btn btn-default btn-sm" var="upUrl"><i class="fa fa-caret-up" var="upIcon"></i></a>
+    <a href="javascript:;" title="Move Order Down" rel="nofollow" class="btn btn-default btn-sm" var="dnUrl"><i class="fa fa-caret-down" var="dnIcon"></i></a>
   </div>  
   <a href="javascript:;" title="Click And Drag" rel="nofollow" class="drag"><i class="fa fa-ellipsis-v"></i></a>
 </div>

@@ -118,7 +118,7 @@ class Link extends Iface
     public function __makeTemplate()
     {
         $xhtml = <<<XHTML
-<a class="btn btn-default btn-xs" href="javascript:;" var="btn"><i var="icon" choice="icon"></i> <span var="btnTitle"></span></a>
+<a class="btn btn-default btn-sm" href="javascript:;" var="btn"><i var="icon" choice="icon"></i> <span var="btnTitle"></span></a>
 XHTML;
         return \Dom\Loader::load($xhtml);
     }
