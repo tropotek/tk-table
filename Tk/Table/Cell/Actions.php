@@ -193,7 +193,7 @@ class Actions extends Text
     {
         $html = <<<HTML
 <div class="tk-table-actions">
-  <a href="#" class="btn btn-sm btn-default" title="" var="btn" repeat="btn"><i var="icon" class=""></i> <span var="label" choice="label"></span></a>
+  <a href="#" class="btn btn-xs btn-default" title="" var="btn" repeat="btn"><i var="icon" class=""></i> <span var="label" choice="label"></span></a>
 </div>
 HTML;
         return \Dom\Loader::load($html);

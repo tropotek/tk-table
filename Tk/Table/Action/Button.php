@@ -111,7 +111,7 @@ class Button extends Iface
     public function __makeTemplate()
     {
         $xhtml = <<<XHTML
-<button class="btn btn-default btn-sm" var="btn"><i var="icon" choice="icon"></i> <span var="btnTitle"></span></button>
+<button class="btn btn-default btn-xs" var="btn"><i var="icon" choice="icon"></i> <span var="btnTitle"></span></button>
 XHTML;
         return \Dom\Loader::load($xhtml);
     }
