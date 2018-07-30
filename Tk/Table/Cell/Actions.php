@@ -126,7 +126,8 @@ class Actions extends Text
         $arr = array();
         /** @var ActionButton $btn */
         foreach ($this->buttonList as $btn) {
-            $arr[] = $btn->getTitle();
+            if ($btn->isVisible())
+                $arr[] = $btn->getTitle();
         }
         return '['.implode('][', $arr).']';
     }

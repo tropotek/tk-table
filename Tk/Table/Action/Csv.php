@@ -23,7 +23,8 @@ class Csv extends Button
 
 
     protected $ignoreCellList = array(
-        'Tk\Table\Cell\Checkbox'
+        //'Tk\Table\Cell\Checkbox',
+        'Tk\Table\Cell\Actions'
     );
 
 
@@ -67,7 +68,7 @@ class Csv extends Button
      * @throws \Tk\Db\Exception
      */
     public function execute()
-    {   
+    {
         $request = $this->getTable()->getRequest();
         // Headers for an download:
         ini_set('max_execution_time', 0);
