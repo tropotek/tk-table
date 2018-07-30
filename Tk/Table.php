@@ -225,6 +225,22 @@ class Table implements \Tk\InstanceKey
     }
 
     /**
+     * @return null|\Tk\Event\Dispatcher
+     */
+    public function getDispatcher()
+    {
+        return $this->dispatcher;
+    }
+
+    /**
+     * @param null|\Tk\Event\Dispatcher $dispatcher
+     */
+    public function setDispatcher($dispatcher)
+    {
+        $this->dispatcher = $dispatcher;
+    }
+
+    /**
      * @return null|Table\Renderer\Iface
      */
     public function getRenderer()
@@ -334,11 +350,11 @@ class Table implements \Tk\InstanceKey
      */
     public function setList($list)
     {
+        $this->list = $list;
         $e = new \Tk\Event\TableEvent($this);
         if ($this->dispatcher) {
             $this->dispatcher->dispatch(\Tk\Table\TableEvents::TABLE_INIT, $e);
         }
-        $this->list = $list;
         $this->execute();
         if ($this->dispatcher) {
             $this->dispatcher->dispatch(\Tk\Table\TableEvents::TABLE_EXECUTE, $e);
@@ -600,7 +616,7 @@ class Table implements \Tk\InstanceKey
      *
      * @param null|array|string $regex A regular expression or array of field names to get
      * @return array
-     * @throws \Tk\Exception
+     * @throws \Exception
      */
     public function getFilterValues($regex = null)
     {
@@ -825,21 +841,5 @@ class Table implements \Tk\InstanceKey
         return $this->getId() . '_' . $key;
     }
 
-
-    /**
-     * @return null|\Tk\Event\Dispatcher
-     */
-    public function getDispatcher()
-    {
-        return $this->dispatcher;
-    }
-
-    /**
-     * @param null|\Tk\Event\Dispatcher $dispatcher
-     */
-    public function setDispatcher($dispatcher)
-    {
-        $this->dispatcher = $dispatcher;
-    }
 
 }
