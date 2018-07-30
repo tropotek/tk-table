@@ -19,6 +19,7 @@ class Table implements \Tk\InstanceKey
 {
     use \Tk\Dom\AttributesTrait;
     use \Tk\Dom\CssTrait;
+    use \Tk\CollectionTrait;
 
     const PARAM_ORDER_BY = 'orderBy';
     const ORDER_NONE = '';
@@ -61,16 +62,6 @@ class Table implements \Tk\InstanceKey
     protected $form = null;
 
     /**
-     * @var \Tk\Request|array|\ArrayAccess
-     */
-    protected $request = null;
-
-    /**
-     * @var \Tk\Session|array|\ArrayAccess
-     */
-    protected $session = null;
-
-    /**
      * @var string
      */
     protected $staticOrderBy = null;
@@ -102,20 +93,11 @@ class Table implements \Tk\InstanceKey
      * @param string $tableId
      * @param array $params
      */
-    public function __construct($tableId, $params = array())
+    public function __construct($tableId)
     {
         $this->id = $tableId.'_'.$this->getInstanceId();
-        $this->paramList = $params;
         $this->setAttr('id', $this->getId());
-
-        if (!$this->request) {
-            $this->request = &$_REQUEST;
-        }
-        if (!$this->session) {
-            $this->session = &$_SESSION;
-        }
         $this->form = $this->makeForm();
-
         $this->initCells();
     }
 
@@ -133,34 +115,19 @@ class Table implements \Tk\InstanceKey
     }
 
     /**
-     * @return Form
-     */
-    protected function makeForm()
-    {
-        $form = new Form($this->id . 'Filter');
-        $form->setParamList($this->paramList);
-        $form->addCss('form-inline');
-        return $form;
-    }
-
-    /**
      * @param $id
-     * @param array $params
-     * @param null|array|\Tk\Request $request
-     * @param null|array|\Tk\Session $session
+     * @param array $params         (deprecated)
      * @return static
      */
-    public static function create($id, $params = array(), $request = null, $session = null)
+    public static function create($id, $params = null)
     {
-        $obj = new static($id, $params);
-        if (!$request)
-            $request = \Tk\Config::getInstance()->getRequest();
+        $obj = new static($id);
 
-        if (!$session)
-            $session = \Tk\Config::getInstance()->getSession();
-
-        $obj->setRequest($request);
-        $obj->setSession($session);
+        // TODO: This should be removed
+        if (is_array($params)) {
+            \Tk\Log::warning('\Tk\Table::create(): Deprecated parameter $params being used...');
+            $obj->replace($params);
+        }
 
         return $obj;
     }
@@ -169,6 +136,27 @@ class Table implements \Tk\InstanceKey
      * Use for your own table parent objects
      */
     public function initCells() {}
+
+    /**
+     * @param array|\ArrayAccess|\Iterator $list
+     * @return $this
+     */
+    public function setList($list)
+    {
+        $this->list = $list;
+
+        $e = new \Tk\Event\TableEvent($this);
+        if ($this->dispatcher) {
+            $this->dispatcher->dispatch(\Tk\Table\TableEvents::TABLE_INIT, $e);
+        }
+
+        $this->execute();
+
+        if ($this->dispatcher) {
+            $this->dispatcher->dispatch(\Tk\Table\TableEvents::TABLE_EXECUTE, $e);
+        }
+        return $this;
+    }
 
     /**
      * Execute the table
@@ -193,6 +181,16 @@ class Table implements \Tk\InstanceKey
     }
 
     /**
+     * Get the data list array
+     *
+     * @return array|\Tk\Db\Map\ArrayObject
+     */
+    public function getList()
+    {
+        return $this->list;
+    }
+
+    /**
      * @throws Form\Exception
      */
     protected function initFilterForm()
@@ -200,6 +198,18 @@ class Table implements \Tk\InstanceKey
         // Add Filter button events
         $this->addFilter(new Event\Submit($this->makeInstanceKey('search'), array($this, 'doSearch')))->setAttr('value', $this->makeInstanceKey('search'))->addCss('btn-primary')->setLabel('Search');
         $this->addFilter(new Event\Submit($this->makeInstanceKey('clear'), array($this, 'doClear')))->setAttr('value', $this->makeInstanceKey('clear'))->setLabel('Clear');
+    }
+
+    /**
+     * @return Form
+     */
+    protected function makeForm()
+    {
+        $form = new Form($this->id . 'Filter');
+        $form->setDispatcher($this->getDispatcher());
+        $form->setParamList($this->all());
+        $form->addCss('tk-table-filter-form form-inline');
+        return $form;
     }
 
     /**
@@ -277,10 +287,10 @@ class Table implements \Tk\InstanceKey
     /**
      * @param \Tk\Request|array|\ArrayAccess $request
      * @return $this
+     * @deprecated
      */
-    public function setRequest(&$request)
+    public function setRequest($request)
     {
-        $this->request = &$request;
         return $this;
     }
 
@@ -289,16 +299,19 @@ class Table implements \Tk\InstanceKey
      */
     public function &getRequest()
     {
-        return $this->request;
+        $request = $_REQUEST;
+        if (class_exists('\Tk\Config'))
+            $request = \Tk\Config::getInstance()->getRequest();
+        return $request;
     }
 
     /**
      * @param \Tk\Session|array|\ArrayAccess $session
      * @return $this
+     * @deprecated
      */
-    public function setSession(&$session)
+    public function setSession($session)
     {
-        $this->session = &$session;
         return $this;
     }
 
@@ -307,7 +320,10 @@ class Table implements \Tk\InstanceKey
      */
     public function &getSession()
     {
-        return $this->session;
+        $session = $_SESSION;
+        if (class_exists('\Tk\Config'))
+            $session = \Tk\Config::getInstance()->getSession();
+        return $session;
     }
 
     /**
@@ -331,35 +347,6 @@ class Table implements \Tk\InstanceKey
         }
         $tableSession->set($this->getId(), $instanceSession);
         return $instanceSession;
-    }
-
-
-    /**
-     * Get the data list array
-     *
-     * @return array|\Tk\Db\Map\ArrayObject
-     */
-    public function getList()
-    {
-        return $this->list;
-    }
-
-    /**
-     * @param array|\ArrayAccess|\Iterator $list
-     * @return $this
-     */
-    public function setList($list)
-    {
-        $this->list = $list;
-        $e = new \Tk\Event\TableEvent($this);
-        if ($this->dispatcher) {
-            $this->dispatcher->dispatch(\Tk\Table\TableEvents::TABLE_INIT, $e);
-        }
-        $this->execute();
-        if ($this->dispatcher) {
-            $this->dispatcher->dispatch(\Tk\Table\TableEvents::TABLE_EXECUTE, $e);
-        }
-        return $this;
     }
 
     /**
