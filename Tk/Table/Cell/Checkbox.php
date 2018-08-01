@@ -3,8 +3,6 @@ namespace Tk\Table\Cell;
 
 
 /**
- * Class Text
- *
  * @author Michael Mifsud <info@tropotek.com>
  * @see http://www.tropotek.com/
  * @license Copyright 2015 Michael Mifsud
@@ -20,7 +18,6 @@ class Checkbox extends Iface
     public function __construct($property)
     {
         parent::__construct($property, ucfirst(preg_replace('/[A-Z]/', ' $0', $property)));
-
     }
 
     /**

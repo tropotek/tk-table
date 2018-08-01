@@ -459,7 +459,7 @@ abstract class Iface
      * @param string $orderProperty
      * @return $this
      */
-    public function setOrderProperty($orderProperty)
+    public function setOrderProperty($orderProperty = '')
     {
         $this->orderProperty = $orderProperty;
         return $this;

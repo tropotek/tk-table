@@ -59,7 +59,6 @@ class Button extends Iface
 
     /**
      * @return string|\Dom\Template
-     * @throws \Dom\Exception
      */
     public function show()
     {

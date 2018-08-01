@@ -23,8 +23,15 @@ class Delete extends Button
     /**
      * function (Delete $delete, array $selected)
      * @var callable
+     * @deprecated
      */
     protected $onExecute = null;
+
+    /**
+     * function (Delete $delete, $obj)
+     * @var callable
+     */
+    protected $onDelete = null;
 
 
     /**
@@ -33,7 +40,7 @@ class Delete extends Button
      * @param string $name
      * @param string $checkboxName The checkbox name to get the selected id's from
      * @param string $icon
-     * @throws \Tk\Exception
+     * @throws \Exception
      */
     public function __construct($name = 'delete', $checkboxName = 'id', $icon = 'fa fa-times')
     {
@@ -48,8 +55,8 @@ class Delete extends Button
      * @param string $name
      * @param string $checkboxName
      * @param string $icon
-     * @return Delete
-     * @throws \Tk\Exception
+     * @return static
+     * @throws \Exception
      */
     static function create($name = 'delete', $checkboxName = 'id', $icon = 'fa fa-times')
     {
@@ -57,20 +64,46 @@ class Delete extends Button
     }
 
     /**
+     * EG:  function (Delete $action, array $selected) { }
+     *
      * @param callable $onExecute
      * @return $this
+     * @deprecated
      */
     public function setOnExecute($onExecute)
     {
+        \Tk\Log::warning('Deprecated function ');
         $this->onExecute = $onExecute;
+        return $this;
+    }
+
+    /**
+     * EG:  function (Delete $action, $obj) { }
+     *
+     * @param callable $callable
+     * @return $this
+     */
+    public function setOnDelete($callable)
+    {
+        $this->onDelete = $callable;
         return $this;
     }
 
     /**
      * @param $array
      * @return $this
+     * @deprecated use setExcludeIdList()
      */
     public function setExcludeList($array)
+    {
+        return $this->setExcludeIdList($array);
+    }
+
+    /**
+     * @param $array
+     * @return $this
+     */
+    public function setExcludeIdList($array)
     {
         $this->excludeIdList = $array;
         return $this;
@@ -96,21 +129,28 @@ class Delete extends Button
         }
         $selected = $request[$this->checkboxName];
         if (!is_array($selected)) return;
-        $i = 0;
 
+        // TODO: This is deprecated delete in the future
         $propagate = true;
         if (is_callable($this->onExecute)) {
             $p = call_user_func_array($this->onExecute, array($this, $selected));
             if ($p !== null && is_bool($p)) $propagate = $p;
         }
+
         if ($propagate) {
             /* @var \Tk\Db\Map\Model $obj */
             foreach($this->getTable()->getList() as $obj) {
                 if (!$obj instanceof \Tk\Db\Map\Model) continue;
                 // TODO: should we be using the checkboxName parameter to match against?????
-                if (in_array($obj->getId(), $selected) && !in_array($obj->getId(), $this->excludeIdList)) {
-                    $obj->delete();
-                    $i++;
+                if (in_array($obj->getId(), $selected) && !in_array($obj->getId(), $this->getExcludeIdList())) {
+                    $propagate = true;
+                    if (is_callable($this->onDelete)) {
+                        $p = call_user_func_array($this->onDelete, array($this, $obj));
+                        if ($p !== null && is_bool($p)) $propagate = $p;
+                    }
+                    if ($propagate) {
+                        $obj->delete();
+                    }
                 }
             }
         }
@@ -120,7 +160,6 @@ class Delete extends Button
 
     /**
      * @return string|\Dom\Template
-     * @throws \Dom\Exception
      */
     public function show()
     {
