@@ -106,13 +106,13 @@ abstract class Iface
     }
 
     /**
-     * @param string $name
+     * @param string $property
      * @param null|string $label
      * @return static
      */
-    public static function create($name, $label = null)
+    public static function create($property, $label = null)
     {
-        $obj = new static($name, $label);
+        $obj = new static($property, $label);
         return $obj;
     }
 
