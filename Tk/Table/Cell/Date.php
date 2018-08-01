@@ -24,6 +24,14 @@ class Date extends Text
     protected $rawFormat = 'Y-m-d h:i:s';
 
 
+    public static function createDate($property, $format = null)
+    {
+        $obj = new self($property);
+        if ($format)
+            $obj->setFormat($format);
+        return $obj;
+    }
+
     /**
      * Change the format of the date
      *
