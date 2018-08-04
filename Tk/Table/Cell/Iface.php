@@ -213,9 +213,10 @@ abstract class Iface
      *
      * @param object $obj
      * @param string $property
+     * @param bool $withCallable
      * @return mixed
      */
-    protected function getObjectPropertyValue($obj, $property)
+    protected function getObjectPropertyValue($obj, $property, $withCallable = true)
     {
 
         $value = '';
@@ -242,7 +243,7 @@ abstract class Iface
                 }
             }
         }
-        if (is_callable($this->getOnPropertyValue()) && $this->getProperty() == $property) {
+        if ($withCallable && is_callable($this->getOnPropertyValue()) && $this->getProperty() == $property) {
             return call_user_func_array($this->getOnPropertyValue(), array($this, $obj, $value));
         }
         return $value;
@@ -309,7 +310,7 @@ abstract class Iface
             if ($prop == '/id') // Should not be used as id params are frowned upon in urls anyway
                 $urlProperty = $prop = 'id';
 
-            $val = $this->getObjectPropertyValue($obj, $urlProperty);
+            $val = $this->getObjectPropertyValue($obj, $urlProperty, false);
             $propVal = array($prop, $val);
         }
         return $propVal;
@@ -327,9 +328,6 @@ abstract class Iface
         }
         
         $order = '';
-        //vd($this->getTable()->getList());
-        //vd($this->getOrderProperty(), $this->getTable()->getOrderProperty());
-
         if ($this->getOrderProperty() == $this->getTable()->getOrderProperty()) {
             $order = $this->getTable()->getOrder();
         }
