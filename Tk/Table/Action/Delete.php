@@ -141,8 +141,11 @@ class Delete extends Button
             /* @var \Tk\Db\Map\Model $obj */
             foreach($this->getTable()->getList() as $obj) {
                 if (!$obj instanceof \Tk\Db\Map\Model) continue;
-                // TODO: should we be using the checkboxName parameter to match against?????
-                if (in_array($obj->getId(), $selected) && !in_array($obj->getId(), $this->getExcludeIdList())) {
+                $keyValue = $obj->getId();
+                if (property_exists($obj, $this->checkboxName)) {
+                    $keyValue = $obj->{$this->checkboxName};
+                }
+                if (in_array($keyValue, $selected) && !in_array($obj->getId(), $this->getExcludeIdList())) {
                     $propagate = true;
                     if (is_callable($this->onDelete)) {
                         $p = call_user_func_array($this->onDelete, array($this, $obj));
