@@ -50,7 +50,7 @@ abstract class Iface
     protected $orderProperty = null;
 
     /**
-     * @var string|Uri
+     * @var string|Uri|callable
      */
     protected $url = null;
 
@@ -276,7 +276,11 @@ abstract class Iface
      */
     public function getCellUrl($obj)
     {
-        if (!$this->url) {
+        $url = $this->url;
+        if (is_callable($this->url)) {
+            $url = call_user_func_array($this->url, array($this, $obj));
+        }
+        if (!$url) {
             return null;
         }
         $url = Uri::create($this->getUrl());
@@ -350,7 +354,7 @@ abstract class Iface
      * Set the default cell data url
      *
      *
-     * @param Uri $url
+     * @param string|Uri|callable $url
      * @param string $urlProperty
      * @return $this
      */
@@ -364,7 +368,7 @@ abstract class Iface
     /**
      * Get the default data URL
      *
-     * @return Uri|string
+     * @return Uri|string|callable
      */
     public function getUrl()
     {

@@ -91,9 +91,8 @@ class Table implements \Tk\InstanceKey
      * Create a table object
      *
      * @param string $tableId
-     * @param array $params
      */
-    public function __construct($tableId)
+    public function __construct($tableId = 'table')
     {
         $this->id = $tableId.'_'.$this->getInstanceId();
         $this->setAttr('id', $this->getId());
@@ -116,24 +115,23 @@ class Table implements \Tk\InstanceKey
 
     /**
      * @param $id
-     * @param array $params         (deprecated)
      * @return static
      */
-    public static function create($id, $params = null)
+    public static function create($id = '')
     {
         $obj = new static($id);
 
-        // TODO: This should be removed
-        if (is_array($params)) {
-            \Tk\Log::warning('\Tk\Table::create(): Deprecated parameter $params being used...');
-            $obj->replace($params);
-        }
+//        if (is_array($params)) {
+//            \Tk\Log::warning('\Tk\Table::create(): Deprecated parameter $params being used...');
+//            $obj->replace($params);
+//        }
 
         return $obj;
     }
 
     /**
      * Use for your own table parent objects
+     * @deprecated
      */
     public function initCells() {}
 
