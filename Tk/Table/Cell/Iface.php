@@ -276,16 +276,16 @@ abstract class Iface
      */
     public function getCellUrl($obj)
     {
-        $url = $this->url;
-        if (is_callable($this->url)) {
-            $url = call_user_func_array($this->url, array($this, $obj));
+        $url = $this->getUrl();
+        if (is_callable($url)) {
+            $url = call_user_func_array($this->getUrl(), array($this, $obj));
         }
         if (!$url) {
             return null;
         }
-        $url = Uri::create($this->getUrl());
-        if ($this->urlProperty) {
-            list($prop, $val) = $this->getRowPropVal($obj, $this->urlProperty);
+        $url = Uri::create($url);
+        if ($this->getUrlProperty()) {
+            list($prop, $val) = $this->getRowPropVal($obj, $this->getUrlProperty());
             $url->set($prop, $val);
         }
         return $url;
@@ -353,10 +353,14 @@ abstract class Iface
     /**
      * Set the default cell data url
      *
+     * Callable Eg:
+     *   function (Iface $cell, $obj) { return new \Tk\Uri::create(); }
+     *
      *
      * @param string|Uri|callable $url
      * @param string $urlProperty
      * @return $this
+     * @note When using a callable do not call $cell->setUrl($url) within the function or else you overwrite the callable method
      */
     public function setUrl($url, $urlProperty = 'id')
     {

@@ -94,7 +94,7 @@ class Table extends Iface
         // Render Form
         if ($template->keyExists('var', 'filters')) {
             if (count($this->getTable()->getFilterForm()->getFieldList()) > 2) {
-                $template->insertTemplate('filters', $this->getFormRenderer()->show());
+                $template->appendTemplate('filters', $this->getFormRenderer()->show());
                 $template->setChoice('filters');
             }
         }

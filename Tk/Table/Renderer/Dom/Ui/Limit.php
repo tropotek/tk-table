@@ -70,8 +70,6 @@ jQuery(function($) {
     function setUrlParam(url, name, value)
     {
         url = url.substring(0, url.indexOf('#'));
-        console.log(url);
-      
         if (url.indexOf(name + "=") >= 0) {
             var prefix = url.substring(0, url.indexOf(name));
             var suffix = url.substring(url.indexOf(name));

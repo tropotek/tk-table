@@ -33,6 +33,11 @@ class Delete extends Button
      */
     protected $onDelete = null;
 
+    /**
+     * @var string
+     */
+    protected $confirmStr = 'Are you sure you want to delete the %selected% selected records?';
+
 
     /**
      * Create
@@ -170,7 +175,7 @@ class Delete extends Button
         $this->setAttr('title', 'Delete Selected Records');
         $this->setAttr('disabled');
         $this->setAttr('data-cb-name', $this->checkboxName);
-        $this->setAttr('data-confirm', $this->getConfirmStr());
+        $this->setAttr('data-cb-confirm', $this->getConfirmStr());
 
         $template = parent::show();
 
@@ -183,7 +188,17 @@ class Delete extends Button
      */
     protected function getConfirmStr()
     {
-        return "'Are you sure you want to delete the %selected% selected records?'";
+        return $this->confirmStr;
+    }
+
+    /**
+     * @param string $confirmStr
+     * @return Delete
+     */
+    public function setConfirmStr(string $confirmStr)
+    {
+        $this->confirmStr = $confirmStr;
+        return $this;
     }
 
     /**
@@ -205,7 +220,7 @@ jQuery(function($) {
     $('.tk-action-delete').each(function () {
       var btn = $(this);
       var cbName = btn.data('cb-name');
-      var confirmStr = btn.data('confirm');
+      var confirmStr = btn.data('cb-confirm');
       
       btn.on('click', function () {
         var selected = $(this).closest('.tk-table').find('.table-body input[name^="'+cbName+'"]:checked');
