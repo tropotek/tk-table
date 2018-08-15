@@ -27,6 +27,19 @@ class Table implements \Tk\InstanceKey
     const ORDER_DESC = 'DESC';
 
     /**
+     * Used internally to flag when the filter submit buttons have been appended
+     * @var bool
+     */
+    protected $formInit = false;
+
+    /**
+     * Internal flag for executing the filter form
+     * @var bool
+     */
+    protected $filterFormExecuted = false;
+
+
+    /**
      * @var int|null
      */
     private $instanceId = null;
@@ -77,12 +90,6 @@ class Table implements \Tk\InstanceKey
      * @var null|\Tk\Event\Dispatcher
      */
     protected $dispatcher = null;
-
-    /**
-     * Used internally to flag when the filter submit buttons have been appended
-     * @var bool
-     */
-    protected $formInit = false;
 
     /**
      * @var Tool
@@ -203,6 +210,7 @@ class Table implements \Tk\InstanceKey
                 ->setAttr('value', $this->makeInstanceKey('clear'))->setLabel('Clear');
             $this->formInit = true;
         }
+
     }
 
     /**
@@ -609,17 +617,27 @@ class Table implements \Tk\InstanceKey
     }
 
     /**
+     * @param \Tk\Form\Field\Iface $field
+     * @return null|\Tk\Form\Field\Iface
+     * @since 2.0.68
+     */
+    public function removeFilter($field)
+    {
+        $this->initFilterForm();
+        return $this->getFilterForm()->removeField($field);
+    }
+
+    /**
      * @param null|array|string $regex A regular expression or array of field names to get
      * @return array
      * @throws \Exception
      */
     public function getFilterValues($regex = null)
     {
-        static $x = false;
-        if (!$x && $this->getFilterForm()) { // execute form on first access
+        if (!$this->filterFormExecuted && $this->getFilterForm()) { // execute form on first access
             $this->getFilterForm()->load($this->getFilterSession()->all());
             $this->getFilterForm()->execute($this->getRequest());
-            $x = true;
+            $this->filterFormExecuted = true;
         }
         return $this->getFilterForm()->getValues($regex);
     }
