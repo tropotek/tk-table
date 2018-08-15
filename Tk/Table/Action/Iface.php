@@ -41,10 +41,7 @@ abstract class Iface extends \Dom\Renderer\Renderer implements \Dom\Renderer\Dis
 
 
     /**
-     * Create
-     *
      * @param string $name The action event name
-     * @throws \Tk\Exception
      */
     public function __construct($name)
     {
@@ -71,7 +68,8 @@ abstract class Iface extends \Dom\Renderer\Renderer implements \Dom\Renderer\Dis
      * @return \Dom\Template|string
      * @deprecated Use show()
      */
-    public function getHtml() {
+    public function getHtml()
+    {
         return $this->show();
     }
 
@@ -121,14 +119,10 @@ abstract class Iface extends \Dom\Renderer\Renderer implements \Dom\Renderer\Dis
     /**
      * @param string $name
      * @return $this
-     * @throws \Tk\Exception
      */
     public function setName($name)
     {
         $name = preg_replace('/[^a-z0-9_-]/i', '_', $name);
-        if (!preg_match('/[a-z0-9_-]+/i', $name)) {
-            throw new \Tk\Exception('Invalid name value.');
-        }
         $this->name = $name;
         return $this;
     }
@@ -154,8 +148,6 @@ abstract class Iface extends \Dom\Renderer\Renderer implements \Dom\Renderer\Dis
         $this->label = $str;
         return $this;
     }
-
-
 
     /**
      * @return bool

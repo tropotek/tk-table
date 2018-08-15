@@ -3,9 +3,6 @@ namespace Tk\Table\Action;
 
 
 /**
- *
- *
- *
  * @author Michael Mifsud <info@tropotek.com>
  * @see http://www.tropotek.com/
  * @license Copyright 2015 Michael Mifsud
@@ -16,55 +13,58 @@ class Link extends Iface
     /**
      * @var string
      */
-    protected $icon = '';
+    protected $icon = null;
 
     /**
-     * @var string|\Tk\Uri
+     * @var \Tk\Uri
      */
     protected $url = null;
 
 
     /**
-     * Create
-     *
      * @param string $name
-     * @param string $icon
-     * @param string|\Tk\Uri $url
-     * @throws \Tk\Exception
+     * @param string|\Tk\Uri|null $url
+     * @param string|null $icon
      */
-    public function __construct($name, $icon, $url = null)
+    public function __construct($name, $url = null, $icon = null)
     {
         parent::__construct($name);
-        $this->icon = $icon;
-        if ($url)
-            $this->url = \Tk\Uri::create($url);
+        $this->setIcon($icon);
+        if ($url) $this->setUrl($url);
     }
 
     /**
-     * Create
-     *
      * @param string $name
      * @param string $icon
-     * @param string|\Tk\Uri $url
+     * @param string|\Tk\Uri|null $url
      * @return Link
-     * @throws \Tk\Exception
+     * @todo: we need to re-arrange these params, use createLink for now we will fix this in another major version
+     * @deprecated use createLink($name, $url, $icon)
      */
     static function create($name, $icon, $url = null)
     {
-        return new static($name, $icon, $url);
-    }
-    
-    /**
-     * @return mixed
-     */
-    public function execute()
-    {
-        vd('No me thinks!!!!!');
+        return new static($name, $url, $icon);
     }
 
     /**
+     * @param string $name
+     * @param string|\Tk\Uri|null $url
+     * @param string|null $icon
+     * @return static
+     * @since 2.0.68
+     */
+    static function createLink($name, $url = null, $icon = null)
+    {
+        return new static($name, $url, $icon);
+    }
+    
+    /**
+     *
+     */
+    public function execute() { }
+
+    /**
      * @return string|\Dom\Template
-     * @throws \Dom\Exception
      */
     public function show()
     {
@@ -72,14 +72,15 @@ class Link extends Iface
         $this->setAttr('id', $btnId);
 
         $template = $this->getTemplate();
-        if ($this->icon) {
-            $template->addCss('icon', $this->icon);
-            $template->setChoice('icon');
+        if ($this->getIcon()) {
+            $template->addCss('icon', $this->getIcon());
+        } else {
+            $template->hide('icon');
         }
         $template->appendHtml('btnTitle', $this->getLabel());
 
-        if ($this->url) {
-            $template->setAttr('btn', 'href', $this->url);
+        if ($this->getUrl()) {
+            $template->setAttr('btn', 'href', $this->getUrl());
         }
 
         // Add class names
@@ -112,13 +113,31 @@ class Link extends Iface
     }
 
     /**
+     * @return \Tk\Uri
+     */
+    public function getUrl()
+    {
+        return $this->url;
+    }
+
+    /**
+     * @param \Tk\Uri|string $url
+     * @return Link
+     */
+    public function setUrl($url)
+    {
+        $this->url = \Tk\Uri::create($url);
+        return $this;
+    }
+
+    /**
      *
      * @return \Dom\Template
      */
     public function __makeTemplate()
     {
         $xhtml = <<<XHTML
-<a class="btn btn-default btn-sm btn-xs" href="javascript:;" var="btn"><i var="icon" choice="icon"></i> <span var="btnTitle"></span></a>
+<a class="btn btn-default btn-sm btn-xs" href="javascript:;" var="btn"><i var="icon"></i> <span var="btnTitle"></span></a>
 XHTML;
         return \Dom\Loader::load($xhtml);
     }

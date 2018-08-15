@@ -48,6 +48,8 @@ class Table implements \Tk\InstanceKey
 
     /**
      * @var array|\ArrayAccess
+     * @deprecated
+     * @remove 2.4.0
      */
     protected $paramList = array();
 
@@ -75,6 +77,12 @@ class Table implements \Tk\InstanceKey
      * @var null|\Tk\Event\Dispatcher
      */
     protected $dispatcher = null;
+
+    /**
+     * Used internally to flag when the filter submit buttons have been appended
+     * @var bool
+     */
+    protected $formInit = false;
 
     /**
      * @var Tool
@@ -130,12 +138,6 @@ class Table implements \Tk\InstanceKey
     }
 
     /**
-     * Use for your own table parent objects
-     * @deprecated
-     */
-    public function initCells() {}
-
-    /**
      * @param array|\ArrayAccess|\Iterator $list
      * @return $this
      */
@@ -188,14 +190,19 @@ class Table implements \Tk\InstanceKey
         return $this->list;
     }
 
+
     /**
-     * @throws Form\Exception
+     * Add Filter submit events
      */
     protected function initFilterForm()
     {
-        // Add Filter button events
-        $this->addFilter(new Event\Submit($this->makeInstanceKey('search'), array($this, 'doSearch')))->setAttr('value', $this->makeInstanceKey('search'))->addCss('btn-primary')->setLabel('Search');
-        $this->addFilter(new Event\Submit($this->makeInstanceKey('clear'), array($this, 'doClear')))->setAttr('value', $this->makeInstanceKey('clear'))->setLabel('Clear');
+        if (!$this->formInit) {
+            $this->appendFilter(new Event\Submit($this->makeInstanceKey('search'), array($this, 'doSearch')))
+                ->setAttr('value', $this->makeInstanceKey('search'))->addCss('btn-primary')->setLabel('Search');
+            $this->appendFilter(new Event\Submit($this->makeInstanceKey('clear'), array($this, 'doClear')))
+                ->setAttr('value', $this->makeInstanceKey('clear'))->setLabel('Clear');
+            $this->formInit = true;
+        }
     }
 
     /**
@@ -358,110 +365,55 @@ class Table implements \Tk\InstanceKey
     }
 
     /**
-     * Get a parameter from the array
-     *
-     * @param $name
-     * @return string|mixed
-     */
-    public function getParam($name)
-    {
-        if (!empty($this->paramList[$name])) {
-            return $this->paramList[$name];
-        }
-        return '';
-    }
-
-    /**
-     * @param string $name
-     * @param mixed $value
-     * @return $this
-     */
-    public function setParam($name, $value)
-    {
-        $this->paramList[$name] = $value;
-        return $this;
-    }
-
-    /**
-     * Get the param array
-     *
-     * @return array
-     */
-    public function getParamList()
-    {
-        return $this->paramList;
-    }
-
-    /**
-     * @param array $params
-     * @return $this
-     */
-    public function setParamList($params)
-    {
-        $this->paramList = $params;
-        return $this;
-    }
-
-    /**
-     * Add a cell to this table
-     *
      * @param Cell\Iface $cell
+     * @param null|Cell\Iface|string $refCell
      * @return Cell\Iface
+     * @since 2.0.68
      */
-    public function addCell($cell)
+    public function appendCell($cell, $refCell = null)
     {
         $cell->setTable($this);
-        $this->cellList[] = $cell;
+        if (is_string($refCell)) {
+            $refCell = $this->findCell($refCell);
+        }
+        if (!$refCell || !$refCell instanceof Cell\Iface) {    // Append to end of list
+            array_push($this->cellList, $cell);
+        } else {
+            $newArr = array();
+            /** @var Cell\Iface $c */
+            foreach ($this->getCellList() as $c) {
+                $newArr[] = $c;
+                if ($c === $refCell) $newArr[] = $cell;
+            }
+            $this->setCellList($newArr);
+        }
         return $cell;
     }
 
     /**
-     * Add a field element before another element
-     *
-     * @param string|Cell\Iface $anchorCell
      * @param Cell\Iface $cell
+     * @param null|Cell\Iface|string $refCell
      * @return Cell\Iface
+     * @since 2.0.68
      */
-    public function addCellBefore($anchorCell, $cell)
+    public function prependCell($cell, $refCell = null)
     {
-        if (is_string($anchorCell)) {
-            $anchorCell = $this->findCell($anchorCell);
-        }
-        $newArr = array();
         $cell->setTable($this);
-        /** @var Cell\Iface $c */
-        foreach ($this->getCellList() as $c) {
-            if ($c === $anchorCell) {
-                $newArr[] = $cell;
+        if (is_string($refCell)) {
+            $refCell = $this->findCell($refCell);
+        }
+        if (!$refCell || !$refCell instanceof Cell\Iface) {    // Prepend to start of list
+            array_unshift($this->cellList, $cell);
+        } else {
+            // TODO: optimise this if possible
+            $newArr = array();
+            /** @var Cell\Iface $c */
+            foreach ($this->getCellList() as $c) {
+                if ($c === $refCell) $newArr[] = $cell;
+                $newArr[] = $c;
             }
-            $newArr[] = $c;
+            $this->setCellList($newArr);
         }
-        $this->setCellList($newArr);
-        return $cell;
-    }
-
-    /**
-     * Add an element after another element
-     *
-     * @param string|Cell\Iface $anchorCell
-     * @param Cell\Iface $cell
-     * @return Cell\Iface
-     */
-    public function addCellAfter($anchorCell, $cell)
-    {
-        if (is_string($anchorCell)) {
-            $anchorCell = $this->findCell($anchorCell);
-        }
-        $newArr = array();
-        $cell->setTable($this);
-        /** @var Cell\Iface $c */
-        foreach ($this->getCellList() as $c) {
-            $newArr[] = $c;
-            if ($c === $anchorCell) {
-                $newArr[] = $cell;
-            }
-        }
-        $this->setCellList($newArr);
         return $cell;
     }
 
@@ -549,22 +501,73 @@ class Table implements \Tk\InstanceKey
     }
 
     /**
-     * Add an action to this table
-     *
      * @param Action\Iface $action
+     * @param null|Action\Iface|string $refAction
      * @return Action\Iface
+     * @since 2.0.68
      */
-    public function addAction($action)
+    public function appendAction(Action\Iface $action, $refAction = null)
     {
         $action->setTable($this);
-        $this->actionList[$action->getName()] = $action;
+        if (is_string($refAction)) {
+            $refAction = $this->findAction($refAction);
+        }
+        if (!$refAction) {
+            $this->actionList[$action->getName()] = $action;
+        } else {
+            $newArr = array();
+            foreach ($this->actionList as $a) {
+                $newArr[$a->getName()] = $a;
+                if ($a === $refAction) $newArr[$action->getName()] = $action;
+            }
+            $this->actionList = $newArr;
+        }
         return $action;
+    }
+
+    /**
+     * @param Action\Iface $action
+     * @param null|Action\Iface|string $refAction
+     * @return Action\Iface
+     * @since 2.0.68
+     */
+    public function prependAction(Action\Iface $action, $refAction = null)
+    {
+        $action->setTable($this);
+        if (is_string($refAction)) {
+            $refAction = $this->findAction($refAction);
+        }
+        if (!$refAction) {
+            $this->actionList = array($action->getName() => $action) + $this->actionList;
+        } else {
+            $newArr = array();
+            foreach ($this->actionList as $a) {
+                if ($a === $refAction) $newArr[$action->getName()] = $action;
+                $newArr[$a->getName()] = $a;
+            }
+            $this->actionList = $newArr;
+        }
+        return $action;
+    }
+
+    /**
+     * @param string $name
+     * @return null|Action\Iface
+     */
+    public function findAction($name)
+    {
+        foreach ($this->getActionList() as $a) {
+            if ($a->getName() == $name) {
+                return $a;
+            }
+        }
+        return null;
     }
 
     /**
      * Get the action list array
      *
-     * @return array
+     * @return array|Action\Iface[]
      */
     public function getActionList()
     {
@@ -572,7 +575,6 @@ class Table implements \Tk\InstanceKey
     }
 
     /**
-     *
      * @return Form
      */
     public function getFilterForm()
@@ -581,24 +583,32 @@ class Table implements \Tk\InstanceKey
     }
 
     /**
-     * Add a field to the filter form
-     *
      * @param \Tk\Form\Field\Iface $field
+     * @param null|\Tk\Form\Field\Iface|string $refField
      * @return \Tk\Form\Field\Iface
-     * @throws Form\Exception
+     * @since 2.0.68
      */
-    public function addFilter($field)
+    public function appendFilter(\Tk\Form\Field\Iface $field, $refField = null)
     {
-        if (!$field instanceof \Tk\Form\Event\Iface && !count($this->getFilterForm()->getFieldList())) {
-            $this->initFilterForm();
-        }
-        $field->setLabel(null);
-        return $this->getFilterForm()->addField($field);
+        if (!$field instanceof \Tk\Form\Event\Iface) $this->initFilterForm();
+        $field->setShowLabel(false);
+        return $this->getFilterForm()->appendField($field, $refField);
     }
 
     /**
-     * getFilterValues
-     *
+     * @param \Tk\Form\Field\Iface $field
+     * @param null|\Tk\Form\Field\Iface|string $refField
+     * @return \Tk\Form\Field\Iface
+     * @since 2.0.68
+     */
+    public function prependFilter(\Tk\Form\Field\Iface $field, $refField = null)
+    {
+        if (!$field instanceof \Tk\Form\Event\Iface) $this->initFilterForm();
+        $field->setShowLabel(false);
+        return $this->getFilterForm()->prependField($field, $refField);
+    }
+
+    /**
      * @param null|array|string $regex A regular expression or array of field names to get
      * @return array
      * @throws \Exception
@@ -826,5 +836,128 @@ class Table implements \Tk\InstanceKey
         return $this->getId() . '_' . $key;
     }
 
+
+
+
+    /**
+     * @param Cell\Iface $cell
+     * @return Cell\Iface
+     * @deprecated Use appendCell($cell)
+     * @remove 2.4.0
+     */
+    public function addCell($cell)
+    {
+        return $this->appendCell($cell);
+    }
+
+    /**
+     * Add a field element before another element
+     *
+     * @param string|Cell\Iface $refCell
+     * @param Cell\Iface $cell
+     * @return Cell\Iface
+     * @deprecated use prependCell($cell, $refCell)
+     * @remove 2.4.0
+     */
+    public function addCellBefore($refCell, $cell)
+    {
+        return $this->prependCell($cell, $refCell);
+    }
+
+    /**
+     * Add an element after another element
+     *
+     * @param string|Cell\Iface $refCell
+     * @param Cell\Iface $cell
+     * @return Cell\Iface
+     * @deprecated Use appendCell($cell, $refCell)
+     * @remove 2.4.0
+     */
+    public function addCellAfter($refCell, $cell)
+    {
+        return $this->prependCell($cell, $refCell);
+    }
+
+    /**
+     * @param Action\Iface $action
+     * @return Action\Iface
+     * @deprecated use prependAction($action)
+     * @remove 2.4.0
+     */
+    public function addAction($action)
+    {
+        return $this->appendAction($action);
+    }
+
+    /**
+     * Add a field to the filter form
+     *
+     * @param \Tk\Form\Field\Iface $field
+     * @return \Tk\Form\Field\Iface
+     * @deprecated use appendFilter($field)
+     * @remove 2.4.0
+     */
+    public function addFilter($field)
+    {
+        return $this->appendFilter($field);
+    }
+
+    /**
+     * Use for your own table parent objects
+     * @deprecated
+     * @remove 2.4.0
+     */
+    public function initCells() {}
+
+
+    // TODO: I do not think this is used enough to keep, if it is then wew need to find an external solution I think...
+    /**
+     * @param $name
+     * @return string|mixed
+     * @deprecated
+     * @remove 2.4.0
+     */
+    public function getParam($name)
+    {
+        if (!empty($this->paramList[$name])) {
+            return $this->paramList[$name];
+        }
+        return '';
+    }
+
+    /**
+     * @param string $name
+     * @param mixed $value
+     * @return $this
+     * @deprecated
+     * @remove 2.4.0
+     */
+    public function setParam($name, $value)
+    {
+        $this->paramList[$name] = $value;
+        return $this;
+    }
+
+    /**
+     * @return array
+     * @deprecated
+     * @remove 2.4.0
+     */
+    public function getParamList()
+    {
+        return $this->paramList;
+    }
+
+    /**
+     * @param array $params
+     * @return $this
+     * @deprecated
+     * @remove 2.4.0
+     */
+    public function setParamList($params)
+    {
+        $this->paramList = $params;
+        return $this;
+    }
 
 }
