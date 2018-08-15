@@ -25,7 +25,7 @@ class Button extends Iface
      * @param string $name
      * @param string $icon
      * @param string|\Tk\Uri $url
-     * @throws \Tk\Exception
+     * @throws \Exception
      */
     public function __construct($name, $icon, $url = null)
     {
@@ -41,7 +41,7 @@ class Button extends Iface
      * @param string $icon
      * @param string|\Tk\Uri $url
      * @return Button
-     * @throws \Tk\Exception
+     * @throws \Exception
      */
     static function createButton($name, $icon, $url = null)
     {
@@ -71,7 +71,7 @@ class Button extends Iface
 
         if ($this->icon) {
             $template->addCss('icon', $this->icon);
-            $template->setChoice('icon');
+            $template->show('icon');
         }
         $template->appendHtml('btnTitle', $this->getLabel());
 

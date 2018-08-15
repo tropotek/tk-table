@@ -1,12 +1,8 @@
 <?php
 namespace Tk\Table\Action;
 
-use \Tk\Table\Cell;
 
 /**
- *
- *
- *
  * @author Michael Mifsud <info@tropotek.com>
  * @see http://www.tropotek.com/
  * @license Copyright 2015 Michael Mifsud
@@ -34,7 +30,7 @@ class ColumnSelect extends Button
      * @param string $name
      * @param string $icon
      * @param null $url
-     * @throws \Tk\Exception
+     * @throws \Exception
      */
     public function __construct($name = 'columns', $icon = 'fa fa-list-alt', $url = null)
     {
@@ -52,7 +48,7 @@ class ColumnSelect extends Button
      * @param string $icon
      * @param null $url
      * @return ColumnSelect
-     * @throws \Tk\Exception
+     * @throws \Exception
      */
     static function create($name = 'columns', $icon = 'fa fa-columns', $url = null)
     {
@@ -61,8 +57,7 @@ class ColumnSelect extends Button
 
     /**
      * @return string
-     * @throws \Tk\Db\Exception
-     * @throws \Tk\Exception
+     * @throws \Exception
      */
     public function getSid()
     {
@@ -241,8 +236,7 @@ class ColumnSelect extends Button
      *
      * @param bool $b
      * @return $this
-     * @throws \Tk\Db\Exception
-     * @throws \Tk\Exception
+     * @throws \Exception
      */
     public function reset($b = true)
     {
@@ -283,9 +277,7 @@ class ColumnSelect extends Button
 
     /**
      * @return string|\Dom\Template
-     * @throws \Dom\Exception
-     * @throws \Tk\Db\Exception
-     * @throws \Tk\Exception
+     * @throws \Exception
      */
     public function show()
     {
@@ -299,7 +291,7 @@ class ColumnSelect extends Button
 
         $this->getTable()->setAttr('data-sid', $this->getSid());
         $this->getTable()->setAttr('data-button-id', $this->getTable()->makeInstanceKey($this->getName()));
-        $this->getTable()->setAttr('data-disabled-hidden', '['.$disabledStr.']');
+        $this->getTable()->setAttr('data-disabled', '['.$disabledStr.']');
         $this->getTable()->setAttr('data-default-selected', '['.$selectedStr.']');
         $this->getTable()->setAttr('data-default-unselected', '['.$unselectedStr.']');
 

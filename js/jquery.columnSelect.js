@@ -1,8 +1,5 @@
 /*
  * Copyright (c) 2017 Tropotek (www.tropotek.com)
- */
-
-/**
  * Created by mifsudm on 18/01/17.
  */
 
@@ -213,7 +210,6 @@ if (typeof (String.prototype.hashCode) === 'undefined') {
       // user-provided options (if any)
       plugin.settings = $.extend({}, defaults, $element.data(), options);
       //plugin.settings = $.extend({}, defaults, options);
-
 
       if (plugin.settings.sid === '') {
         plugin.settings.sid = document.location.pathname.hashCode() + table.attr('id')

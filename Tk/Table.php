@@ -109,7 +109,8 @@ class Table implements \Tk\InstanceKey
      */
     public function __construct($tableId = 'table')
     {
-        $this->id = $tableId.'_'.$this->getInstanceId();
+        //$this->id = $tableId.'-'.$this->getInstanceId();
+        $this->id = $tableId;
         $this->setAttr('id', $this->getId());
         $this->form = $this->makeForm();
         $this->initCells();
@@ -129,12 +130,12 @@ class Table implements \Tk\InstanceKey
     }
 
     /**
-     * @param $id
+     * @param string $tableId
      * @return static
      */
-    public static function create($id = '')
+    public static function create($tableId = '')
     {
-        $obj = new static($id);
+        $obj = new static($tableId);
 
 //        if (is_array($params)) {
 //            \Tk\Log::warning('\Tk\Table::create(): Deprecated parameter $params being used...');
@@ -851,7 +852,7 @@ class Table implements \Tk\InstanceKey
      */
     public function makeInstanceKey($key)
     {
-        return $this->getId() . '_' . $key;
+        return $this->getId() . '-' . $key;
     }
 
 
