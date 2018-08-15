@@ -618,7 +618,7 @@ class Table implements \Tk\InstanceKey
 
     /**
      * @param \Tk\Form\Field\Iface $field
-     * @return null|\Tk\Form\Field\Iface
+     * @return null|string|\Tk\Form\Field\Iface
      * @since 2.0.68
      */
     public function removeFilter($field)

@@ -23,7 +23,11 @@ class Date extends Text
      */
     protected $rawFormat = 'Y-m-d h:i:s';
 
-
+    /**
+     * @param string $property
+     * @param null|string $format
+     * @return Date
+     */
     public static function createDate($property, $format = null)
     {
         $obj = new self($property);
