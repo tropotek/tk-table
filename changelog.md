@@ -1,5 +1,10 @@
 #CHANGELOG#
 
+Ver 2.0.70 [2018-08-16]:
+-------------------------------
+  - Merge branch 'master' of https://github.com/tropotek/tk-table
+
+
 Ver 2.0.68 [2018-08-16]:
 -------------------------------
   - Updated form and table add cell, field, action method names to append and prepend type names
