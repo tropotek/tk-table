@@ -295,11 +295,12 @@ class ColumnSelect extends Button
         $this->setAttr('data-default-selected', '['.$selectedStr.']');
         $this->setAttr('data-default-unselected', '['.$unselectedStr.']');
 
-//        $this->getTable()->setAttr('data-sid', $this->getSid());
-//        $this->getTable()->setAttr('data-button-id', $this->getTable()->makeInstanceKey($this->getName()));
-//        $this->getTable()->setAttr('data-disabled', '['.$disabledStr.']');
-//        $this->getTable()->setAttr('data-default-selected', '['.$selectedStr.']');
-//        $this->getTable()->setAttr('data-default-unselected', '['.$unselectedStr.']');
+        // TODO: rewrite and remove
+        $this->getTable()->setAttr('data-sid', $this->getSid());
+        $this->getTable()->setAttr('data-button-id', $this->getTable()->makeInstanceKey($this->getName()));
+        $this->getTable()->setAttr('data-disabled', '['.$disabledStr.']');
+        $this->getTable()->setAttr('data-default-selected', '['.$selectedStr.']');
+        $this->getTable()->setAttr('data-default-unselected', '['.$unselectedStr.']');
 
 
 
