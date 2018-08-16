@@ -288,6 +288,10 @@ class ColumnSelect extends Button
         $selectedStr =  implode(', ', $this->propsToCols($this->selected));
         $unselectedStr =  implode(', ', $this->propsToCols($this->unselected));
 
+
+
+        // TODO: rewrite, this javascript is messy
+
         $this->addCss('tk-column-select-btn');
         $this->setAttr('data-sid', $this->getSid());
         $this->setAttr('data-button-id', $this->getTable()->makeInstanceKey($this->getName()));
@@ -302,12 +306,6 @@ class ColumnSelect extends Button
         $this->getTable()->setAttr('data-default-selected', '['.$selectedStr.']');
         $this->getTable()->setAttr('data-default-unselected', '['.$unselectedStr.']');
 
-
-
-
-
-
-        // TODO: rewrite, this javascript is messy
         $js = <<<JS
 jQuery(function ($) {
   
