@@ -291,7 +291,7 @@ class ColumnSelect extends Button
 
 
 
-        // TODO: rewrite, this javascript is messy
+        // TODO: rewrite, this javascript is messy [jquery.columnSelect.js]
 
 //        $this->setAttr('data-sid', $this->getSid());
 //        $this->setAttr('data-button-id', $this->getTable()->makeInstanceKey($this->getName()));
