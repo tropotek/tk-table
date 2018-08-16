@@ -109,6 +109,7 @@ class Table implements \Tk\InstanceKey
      */
     public function __construct($tableId = 'table')
     {
+        $this->getInstanceId(); // Init the instance ID so is can be used if needed
         //$this->id = $tableId.'-'.$this->getInstanceId();
         $this->id = $tableId;
         $this->setAttr('id', $this->getId());
@@ -120,7 +121,7 @@ class Table implements \Tk\InstanceKey
      * get the unique table instance ID
      * @return int|null
      */
-    protected function getInstanceId()
+    public function getInstanceId()
     {
         static $count = 1;
         if ($this->instanceId === null) {
@@ -430,22 +431,30 @@ class Table implements \Tk\InstanceKey
      * Remove a cell from the table
      *
      * @param string|Cell\Iface $cell
-     * @return $this
+     * @return array|Cell\Iface
      */
     public function removeCell($cell)
     {
-        if (is_string($cell)) {
-            $cell = $this->findCell($cell);
+        $cells = $cell;
+        if (is_string($cells)) {
+            $cells = $this->findCells($cells);
         }
-        /** @var Cell\Iface $c */
-        foreach ($this->getCellList() as $i => $c) {
-            if ($c === $cell) {
-                unset($this->cellList[$i]);
-                $this->cellList = array_values($this->cellList);
-                break;
+        if ($cells) {
+            if (!is_array($cells)) $cells = array($cells);
+            $arr = array();
+            /** @var Cell\Iface $c */
+            foreach ($this->getCellList() as $i => $c) {
+                $found = false;
+                foreach ($cells as $cell) {
+                    if ($c === $cell) {
+                        $found = true;
+                    }
+                }
+                if (!$found) $arr[] = $c;
             }
+            $this->cellList = $arr;
         }
-        return $this;
+        return $cell;
     }
 
     /**
@@ -453,7 +462,7 @@ class Table implements \Tk\InstanceKey
      *
      * @param string $property
      * @param null|string $label
-     * @return array|Cell\Iface
+     * @return Cell\Iface
      */
     public function findCell($property, $label = null)
     {
@@ -466,7 +475,7 @@ class Table implements \Tk\InstanceKey
      *
      * @param string $property
      * @param null|string $label
-     * @return array
+     * @return array|Cell\Iface[]
      */
     public function findCells($property, $label = null)
     {
@@ -557,6 +566,29 @@ class Table implements \Tk\InstanceKey
             $this->actionList = $newArr;
         }
         return $action;
+    }
+
+    /**
+     * @param Action\Iface|string $action
+     * @since 2.0.68
+     * @return null|Action\Iface
+     */
+    public function removeAction($action)
+    {
+        if (is_string($action)) {
+            $action = $this->findAction($action);
+        }
+        if ($action) {
+            /** @var Action\Iface $c */
+            foreach ($this->getActionList() as $i => $a) {
+                if ($a === $action) {
+                    unset($this->actionList[$i]);
+                    $this->actionList = array_values($this->actionList);
+                    return $action;
+                }
+            }
+        }
+        return null;
     }
 
     /**

@@ -35,7 +35,6 @@ class ColumnSelect extends Button
     public function __construct($name = 'columns', $icon = 'fa fa-list-alt', $url = null)
     {
         parent::__construct($name, $icon, $url);
-        $this->addCss('tk-action-column-select');
 
         $request = \Tk\Config::getInstance()->getRequest();
         if ($request->has('action') && preg_match('/^session\.([a-z]+)/', $request->get('action'), $regs)) {
@@ -61,7 +60,7 @@ class ColumnSelect extends Button
      */
     public function getSid()
     {
-        return $this->getTable()->getId().'-'.\App\Config::getInstance()->getProfileId();
+        return $this->getTable()->getId().'-'.$this->getTable()->getInstanceId();
     }
 
     /**
@@ -289,16 +288,34 @@ class ColumnSelect extends Button
         $selectedStr =  implode(', ', $this->propsToCols($this->selected));
         $unselectedStr =  implode(', ', $this->propsToCols($this->unselected));
 
-        $this->getTable()->setAttr('data-sid', $this->getSid());
-        $this->getTable()->setAttr('data-button-id', $this->getTable()->makeInstanceKey($this->getName()));
-        $this->getTable()->setAttr('data-disabled', '['.$disabledStr.']');
-        $this->getTable()->setAttr('data-default-selected', '['.$selectedStr.']');
-        $this->getTable()->setAttr('data-default-unselected', '['.$unselectedStr.']');
+        $this->addCss('tk-column-select-btn');
+        $this->setAttr('data-sid', $this->getSid());
+        $this->setAttr('data-button-id', $this->getTable()->makeInstanceKey($this->getName()));
+        $this->setAttr('data-disabled', '['.$disabledStr.']');
+        $this->setAttr('data-default-selected', '['.$selectedStr.']');
+        $this->setAttr('data-default-unselected', '['.$unselectedStr.']');
 
+//        $this->getTable()->setAttr('data-sid', $this->getSid());
+//        $this->getTable()->setAttr('data-button-id', $this->getTable()->makeInstanceKey($this->getName()));
+//        $this->getTable()->setAttr('data-disabled', '['.$disabledStr.']');
+//        $this->getTable()->setAttr('data-default-selected', '['.$selectedStr.']');
+//        $this->getTable()->setAttr('data-default-unselected', '['.$unselectedStr.']');
+
+
+
+
+
+
+        // TODO: rewrite, this javascript is messy
         $js = <<<JS
 jQuery(function ($) {
-  var table = $('.tk-action-column-select').closest('.tk-table');
-  table.columnSelect(table.find('table').data());
+  
+  $('.tk-column-select-btn').columnSelect({});
+  
+  // $('.tk-table').each(function () {
+  //   $(this).columnSelect($(this).find('table').data());    
+  // });
+  
 });
 JS;
         $template->appendJs($js);
