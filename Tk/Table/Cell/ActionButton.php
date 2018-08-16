@@ -82,12 +82,14 @@ class ActionButton
     public function __construct($title, $url = null, $icon = '', $css = '', $attr = array(), $onShow = null)
     {
         $this->id = self::$idx++;
-        $this->title = $title;
-        $this->url = $url;
-        $this->icon = $icon;
+        $this->setTitle($title);
+        if ($url)
+            $this->setUrl($url);
+        if ($icon)
+            $this->setIcon($icon);
         $this->addCss($css);
         $this->setAttr($attr);
-        $this->onShow = $onShow;
+        $this->setOnShow($onShow);
     }
 
     /**

@@ -164,7 +164,7 @@ class Actions extends Text
             $row->setAttr('btn', 'title', $btn->getTitle());
             if ($btn->isShowLabel()) {
                 $row->insertText('label', $btn->getTitle());
-                $row->setChoice('label');
+                $row->show('label');
             }
 
             $css = $btn->getCssString();

@@ -29,8 +29,10 @@ class Link extends Iface
     public function __construct($name, $url = null, $icon = null)
     {
         parent::__construct($name);
-        $this->setIcon($icon);
-        if ($url) $this->setUrl($url);
+        if ($url)
+            $this->setUrl($url);
+        if ($icon)
+            $this->setIcon($icon);
     }
 
     /**
