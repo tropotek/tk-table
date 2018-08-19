@@ -1,5 +1,10 @@
 #CHANGELOG#
 
+Ver 2.0.72 [2018-08-20]:
+-------------------------------
+  - Added manuall enrollment email notifications
+
+
 Ver 2.0.70 [2018-08-16]:
 -------------------------------
   - Merge branch 'master' of https://github.com/tropotek/tk-table
