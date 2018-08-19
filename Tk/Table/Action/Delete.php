@@ -128,8 +128,9 @@ class Delete extends Button
      */
     public function execute()
     {
+        $reqName = $this->getTable()->makeInstanceKey($this->getName());
         $request = $this->getTable()->getRequest();
-        if (empty($request[$this->checkboxName])) {
+        if (empty($request[$reqName])) {
             return;
         }
         $selected = $request[$this->checkboxName];
@@ -145,12 +146,12 @@ class Delete extends Button
         if ($propagate) {
             /* @var \Tk\Db\Map\Model $obj */
             foreach($this->getTable()->getList() as $obj) {
-                if (!$obj instanceof \Tk\Db\Map\Model) continue;
-                $keyValue = $obj->getId();
+                if (!is_object($obj)) continue;
+                $keyValue = 0;
                 if (property_exists($obj, $this->checkboxName)) {
                     $keyValue = $obj->{$this->checkboxName};
                 }
-                if (in_array($keyValue, $selected) && !in_array($obj->getId(), $this->getExcludeIdList())) {
+                if (in_array($keyValue, $selected) && !in_array($keyValue, $this->getExcludeIdList())) {
                     $propagate = true;
                     if (is_callable($this->onDelete)) {
                         $p = call_user_func_array($this->onDelete, array($this, $obj));
@@ -195,7 +196,7 @@ class Delete extends Button
      * @param string $confirmStr
      * @return Delete
      */
-    public function setConfirmStr(string $confirmStr)
+    public function setConfirmStr($confirmStr)
     {
         $this->confirmStr = $confirmStr;
         return $this;
