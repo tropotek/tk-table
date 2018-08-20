@@ -1,5 +1,9 @@
 #CHANGELOG#
 
+Ver 2.0.74 [2018-08-20]:
+-------------------------------
+
+
 Ver 2.0.72 [2018-08-20]:
 -------------------------------
   - Added manuall enrollment email notifications
