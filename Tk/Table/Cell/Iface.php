@@ -279,9 +279,9 @@ abstract class Iface
         $url = $this->getUrl();
         if (is_callable($url)) {
             $url = call_user_func_array($this->getUrl(), array($this, $obj));
-        }
-        if (!$url && !is_callable($this->url)) {
-            $url = \Tk\Uri::create($this->url);
+            if (!$url && !is_callable($this->url)) {
+                $url = \Tk\Uri::create($this->url);
+            }
         }
 
         if (!$url) {
