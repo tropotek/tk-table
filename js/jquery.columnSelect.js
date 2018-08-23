@@ -94,16 +94,18 @@ if (typeof (String.prototype.hashCode) === 'undefined') {
         topRow.each(function (i) {
           var row = tpl.clone();
           var label = 'Column ' + i;
-          var rowId = 'column_'+i;
+          var name  = plugin.settings.sid;
+          var rowId = name + '-' + i;
+
           if($(this).attr('data-label')) {
             label = $(this).attr('data-label');
           }
           row.find('input').attr('id', rowId);
-          row.find('input').attr('name', 'columnSelect');
+          row.find('input').attr('name', name);
           row.find('input').attr('value', i);
           row.find('span').text(decodeHTMLEntities(label));
           row.find('input').prop('checked', true);
-          row.find('label').attr('for', row.find('input').attr('id'));
+          row.find('label').attr('for', rowId);
 
           if (isArray(plugin.settings.disabled) && $.inArray(i+'', plugin.settings.disabled) !== -1) {
             row.addClass('disabled');
@@ -190,8 +192,9 @@ if (typeof (String.prototype.hashCode) === 'undefined') {
     // to avoid confusions, use "plugin" to reference the
     // current instance of the object
     var plugin = this;
-
+    var $element = $(element); // reference to the jQuery version of DOM element
     var table = null;
+    var form = null;
     var topRow = null;
 
     // this will hold the merged default, and user-provided options
@@ -201,7 +204,6 @@ if (typeof (String.prototype.hashCode) === 'undefined') {
     // where "element" is the element the plugin is attached to;
     plugin.settings = {};
 
-    var $element = $(element); // reference to the jQuery version of DOM element
 
     // the "constructor" method that gets called when the object is created
     plugin.init = function() {
@@ -209,7 +211,6 @@ if (typeof (String.prototype.hashCode) === 'undefined') {
       // the plugin's final properties are the merged default and
       // user-provided options (if any)
       plugin.settings = $.extend({}, defaults, $element.data(), options);
-      //plugin.settings = $.extend({}, defaults, options);
 
       if (plugin.settings.sid === '') {
         plugin.settings.sid = document.location.pathname.hashCode() + table.attr('id')
@@ -231,25 +232,20 @@ if (typeof (String.prototype.hashCode) === 'undefined') {
         });
       }
 
-      var form = $element.find('form').first();
+      // locate table
+      table = $element.closest('.tk-table').find('table');
+      if (table.length === 0) {
+        console.error('jquery.columnSelect Error: No valid table found!');
+        return;
+      }
+
+      // Locate form
+      form = $element.closest('form');
       if (form.length && $(form).prop('action')) {
         plugin.settings.ajaxUrl = $(form).prop('action');
       }
       // This is required so the crumbs are not messed up...
       plugin.settings.ajaxUrl = addParam(plugin.settings.ajaxUrl, 'crumb_ignore', 'crumb_ignore');
-
-
-      // get the main table element in the block
-      if (element.nodeName === 'TABLE') {
-        table = $element;
-      } else {
-        table = $element.find('table').first();
-      }
-
-      if (!table) {
-        console.error('jquery.columnSelect Error: No valid table found!');
-        return;
-      }
 
 
       // Get the first row that we will use to setup the column selector

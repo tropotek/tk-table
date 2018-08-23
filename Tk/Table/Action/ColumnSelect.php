@@ -281,40 +281,23 @@ class ColumnSelect extends Button
      */
     public function show()
     {
-        $template = parent::show();
-
-        $template->appendJsUrl(\Tk\Uri::create('/vendor/ttek/tk-table/js/jquery.columnSelect.js'));
-
         $disabledStr = implode(', ', $this->propsToCols($this->disabled));
         $selectedStr =  implode(', ', $this->propsToCols($this->selected));
         $unselectedStr =  implode(', ', $this->propsToCols($this->unselected));
+        $this->setAttr('data-sid', $this->getSid());
+        $this->setAttr('data-button-id', $this->getTable()->makeInstanceKey($this->getName()));
+        $this->setAttr('data-disabled', '['.$disabledStr.']');
+        $this->setAttr('data-default-selected', '['.$selectedStr.']');
+        $this->setAttr('data-default-unselected', '['.$unselectedStr.']');
 
-
-
-        // TODO: rewrite, this javascript is messy [jquery.columnSelect.js]
-
-//        $this->setAttr('data-sid', $this->getSid());
-//        $this->setAttr('data-button-id', $this->getTable()->makeInstanceKey($this->getName()));
-//        $this->setAttr('data-disabled', '['.$disabledStr.']');
-//        $this->setAttr('data-default-selected', '['.$selectedStr.']');
-//        $this->setAttr('data-default-unselected', '['.$unselectedStr.']');
-
-        // TODO: rewrite and remove
-        $this->getTable()->setAttr('data-sid', $this->getSid());
-        $this->getTable()->setAttr('data-button-id', $this->getTable()->makeInstanceKey($this->getName()));
-        $this->getTable()->setAttr('data-disabled', '['.$disabledStr.']');
-        $this->getTable()->setAttr('data-default-selected', '['.$selectedStr.']');
-        $this->getTable()->setAttr('data-default-unselected', '['.$unselectedStr.']');
+        $template = parent::show();
+        
+        $template->appendJsUrl(\Tk\Uri::create('/vendor/ttek/tk-table/js/jquery.columnSelect.js'));
 
         $js = <<<JS
 jQuery(function ($) {
   
-  // TODO: do it this way
-  //$('.tk-column-select-btn').columnSelect({});
-  
-  $('.tk-table').each(function () {
-    $(this).columnSelect($(this).find('table').data());    
-  });
+  $('.tk-column-select-btn').columnSelect({});
   
 });
 JS;
