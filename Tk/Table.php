@@ -887,9 +887,6 @@ class Table implements \Tk\InstanceKey
         return $this->getId() . '-' . $key;
     }
 
-
-
-
     /**
      * @param Cell\Iface $cell
      * @return Cell\Iface

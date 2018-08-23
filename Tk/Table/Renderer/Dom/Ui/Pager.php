@@ -166,7 +166,7 @@ class Pager extends Iface
             }
 
             $pageUrl = $this->pageUrl;
-            $pageUrl->setFragment(substr($this->makeInstanceKey(''), 0, -1));       // TODO: can cause conflicts with javasacript, keep testing, remove if required
+//            $pageUrl->setFragment(substr($this->makeInstanceKey(''), 0, -1));  // TODO: can cause conflicts with javasacript, keep testing, remove if required
             $pageUrl->remove($this->makeInstanceKey(self::PARAM_OFFSET));
             if ($this->enablePageButtons) {
                 for ($i = $startPage; $i < $endPage; $i++) {
