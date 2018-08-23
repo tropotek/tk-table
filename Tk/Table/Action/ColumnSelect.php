@@ -291,7 +291,7 @@ class ColumnSelect extends Button
         $this->setAttr('data-default-unselected', '['.$unselectedStr.']');
 
         $template = parent::show();
-        
+
         $template->appendJsUrl(\Tk\Uri::create('/vendor/ttek/tk-table/js/jquery.columnSelect.js'));
 
         $js = <<<JS
