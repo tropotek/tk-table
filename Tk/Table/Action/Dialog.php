@@ -28,7 +28,6 @@ class Dialog extends Button
     /**
      * @param string $name
      * @param string $icon
-     * @throws \Tk\Exception
      */
     public function __construct($name = 'dialog', $icon = 'fa fa-file-o')
     {
@@ -40,7 +39,6 @@ class Dialog extends Button
     /**
      * @param string $name
      * @return Dialog
-     * @throws \Tk\Exception
      */
     static function create($name = 'dialog')
     {
@@ -127,7 +125,6 @@ class Dialog extends Button
 
     /**
      * @return string|\Dom\Template
-     * @throws \Dom\Exception
      */
     public function show()
     {

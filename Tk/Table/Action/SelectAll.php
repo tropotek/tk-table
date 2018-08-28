@@ -16,12 +16,9 @@ class SelectAll extends Button
 
 
     /**
-     * Create
-     *
      * @param string $name
      * @param string $checkboxName The checkbox name to get the selected id's from
      * @param string $icon
-     * @throws \Tk\Exception
      */
     public function __construct($name = 'selectAll', $checkboxName = 'id', $icon = 'fa fa-square-o')
     {
@@ -32,13 +29,10 @@ class SelectAll extends Button
     }
 
     /**
-     * Create
-     *
      * @param string $name
      * @param string $checkboxName
      * @param string $icon
      * @return SelectAll
-     * @throws \Tk\Exception
      */
     static function create($name = 'selectAll', $checkboxName = 'id', $icon = 'fa fa-square-o')
     {
@@ -56,7 +50,6 @@ class SelectAll extends Button
 
     /**
      * @return string|\Dom\Template
-     * @throws \Dom\Exception
      */
     public function show()
     {

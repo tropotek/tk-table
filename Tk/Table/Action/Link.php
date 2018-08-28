@@ -33,6 +33,7 @@ class Link extends Iface
             $this->setUrl($url);
         if ($icon)
             $this->setIcon($icon);
+        $this->addCss('btn btn-default btn-sm btn-xs');
     }
 
     /**
@@ -133,13 +134,12 @@ class Link extends Iface
     }
 
     /**
-     *
      * @return \Dom\Template
      */
     public function __makeTemplate()
     {
         $xhtml = <<<XHTML
-<a class="btn btn-default btn-sm btn-xs" href="javascript:;" var="btn"><i var="icon"></i> <span var="btnTitle"></span></a>
+<a class="" href="javascript:;" var="btn"><i var="icon"></i> <span var="btnTitle"></span></a>
 XHTML;
         return \Dom\Loader::load($xhtml);
     }

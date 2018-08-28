@@ -30,7 +30,6 @@ class ColumnSelect extends Button
      * @param string $name
      * @param string $icon
      * @param null $url
-     * @throws \Exception
      */
     public function __construct($name = 'columns', $icon = 'fa fa-list-alt', $url = null)
     {
@@ -48,7 +47,6 @@ class ColumnSelect extends Button
      * @param string $icon
      * @param null $url
      * @return ColumnSelect
-     * @throws \Exception
      */
     static function create($name = 'columns', $icon = 'fa fa-columns', $url = null)
     {
@@ -57,7 +55,6 @@ class ColumnSelect extends Button
 
     /**
      * @return string
-     * @throws \Exception
      */
     public function getSid()
     {
@@ -236,7 +233,6 @@ class ColumnSelect extends Button
      *
      * @param bool $b
      * @return $this
-     * @throws \Exception
      */
     public function reset($b = true)
     {
@@ -277,7 +273,6 @@ class ColumnSelect extends Button
 
     /**
      * @return string|\Dom\Template
-     * @throws \Exception
      */
     public function show()
     {

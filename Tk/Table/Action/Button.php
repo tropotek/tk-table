@@ -25,7 +25,6 @@ class Button extends Iface
      * @param string $name
      * @param string $icon
      * @param string|\Tk\Uri $url
-     * @throws \Exception
      */
     public function __construct($name, $icon, $url = null)
     {
@@ -34,6 +33,7 @@ class Button extends Iface
         if ($url)
             $this->url = \Tk\Uri::create($url);
         $this->setAttr('type', 'submit');
+        $this->addCss('btn btn-default btn-sm btn-xs');
     }
 
     /**
@@ -41,7 +41,6 @@ class Button extends Iface
      * @param string $icon
      * @param string|\Tk\Uri $url
      * @return Button
-     * @throws \Exception
      */
     static function createButton($name, $icon, $url = null)
     {
@@ -110,7 +109,7 @@ class Button extends Iface
     public function __makeTemplate()
     {
         $xhtml = <<<XHTML
-<button class="btn btn-default btn-sm btn-xs" var="btn"><i var="icon" choice="icon"></i> <span var="btnTitle"></span></button>
+<button class="" var="btn"><i var="icon" choice="icon"></i> <span var="btnTitle"></span></button>
 XHTML;
         return \Dom\Loader::load($xhtml);
     }
