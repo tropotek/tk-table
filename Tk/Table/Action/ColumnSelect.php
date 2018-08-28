@@ -126,7 +126,11 @@ class ColumnSelect extends Button
      */
     public function addDisabled($selector)
     {
-        $this->disabled[$selector] = $selector;
+        $selector = $this->toMap($selector);
+        if (is_array($selector))
+            $this->disabled = array_merge($this->disabled, $selector);
+        else
+            $this->disabled[$selector] = $selector;
         return $this;
     }
 
@@ -154,7 +158,7 @@ class ColumnSelect extends Button
      */
     public function setSelected($arr)
     {
-        if(!empty($arr[0])) $arr = array_combine($arr, $arr);
+        $arr = $this->toMap($arr);
         $this->selected = $arr;
         return $this;
     }
@@ -167,7 +171,11 @@ class ColumnSelect extends Button
      */
     public function addSelected($selector)
     {
-        $this->selected[$selector] = $selector;
+        $selector = $this->toMap($selector);
+        if (is_array($selector))
+            $this->selected = array_merge($this->selected, $selector);
+        else
+            $this->selected[$selector] = $selector;
         return $this;
     }
 
@@ -192,12 +200,10 @@ class ColumnSelect extends Button
      *
      * @param $arr
      * @return $this
-     * @todo: We need a setDefaultSelected(array) method instead of this one, think of it for the future
-     * @todo:  If there is no default then all should show by default.
      */
     public function setUnselected($arr)
     {
-        if(!empty($arr[0])) $arr = array_combine($arr, $arr);
+        $arr = $this->toMap($arr);
         $this->unselected = $arr;
         return $this;
     }
@@ -205,12 +211,16 @@ class ColumnSelect extends Button
     /**
      * Setup the default hidden columns using their property name
      *
-     * @param $selector
+     * @param string|array $selector
      * @return $this
      */
     public function addUnselected($selector)
     {
-        $this->unselected[$selector] = $selector;
+        $selector = $this->toMap($selector);
+        if (is_array($selector))
+            $this->unselected = array_merge($this->unselected, $selector);
+        else
+            $this->unselected[$selector] = $selector;
         return $this;
     }
 
@@ -241,7 +251,6 @@ class ColumnSelect extends Button
         }
         return $this;
     }
-
 
     /**
      * Use this method to convert a property array to an array
@@ -299,6 +308,20 @@ JS;
         $template->appendJs($js);
 
         return $template;
+    }
+
+    /**
+     * ensure the array is a map and and the keys = values
+     *
+     * @param string|array $arr
+     * @return array|string
+     */
+    private function toMap($arr)
+    {
+        if (is_array($arr)) {
+            if (!empty($arr[0])) $arr = array_combine($arr, $arr);
+        }
+        return $arr;
     }
 
 }
