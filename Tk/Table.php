@@ -661,6 +661,16 @@ class Table implements \Tk\InstanceKey
     }
 
     /**
+     * @param array $array
+     * @return $this
+     */
+    public function setFilterList($array = array())
+    {
+        $this->getFilterForm()->setFieldList($array);
+        return $this;
+    }
+
+    /**
      * @param null|array|string $regex A regular expression or array of field names to get
      * @return array
      * @throws \Exception
