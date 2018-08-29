@@ -11,9 +11,6 @@ use \Tk\Form\Event;
  * @author Michael Mifsud <info@tropotek.com>
  * @see http://www.tropotek.com/
  * @license Copyright 2015 Michael Mifsud
- * TODO: Thinking of moving the filter form and actions out to their own objects so we
- * TODO: can remove the responsibility from the Table ????
- * TODO: Then I think we can remove the need for a session and request from the Table Object ?? ;-)
  */
 class Table implements \Tk\InstanceKey
 {
