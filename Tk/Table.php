@@ -647,7 +647,7 @@ class Table implements \Tk\InstanceKey
     }
 
     /**
-     * @param \Tk\Form\Field\Iface $field
+     * @param string|\Tk\Form\Field\Iface $field
      * @return null|string|\Tk\Form\Field\Iface
      * @since 2.0.68
      */
