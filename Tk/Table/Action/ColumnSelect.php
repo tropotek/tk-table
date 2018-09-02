@@ -30,7 +30,6 @@ class ColumnSelect extends Button
      * @param string $name
      * @param string $icon
      * @param null $url
-     * @throws \Exception
      */
     public function __construct($name = 'columns', $icon = 'fa fa-list-alt', $url = null)
     {
@@ -48,7 +47,6 @@ class ColumnSelect extends Button
      * @param string $icon
      * @param null $url
      * @return ColumnSelect
-     * @throws \Exception
      */
     static function create($name = 'columns', $icon = 'fa fa-columns', $url = null)
     {
@@ -57,7 +55,6 @@ class ColumnSelect extends Button
 
     /**
      * @return string
-     * @throws \Exception
      */
     public function getSid()
     {
@@ -129,7 +126,11 @@ class ColumnSelect extends Button
      */
     public function addDisabled($selector)
     {
-        $this->disabled[$selector] = $selector;
+        $selector = $this->toMap($selector);
+        if (is_array($selector))
+            $this->disabled = array_merge($this->disabled, $selector);
+        else
+            $this->disabled[$selector] = $selector;
         return $this;
     }
 
@@ -157,7 +158,7 @@ class ColumnSelect extends Button
      */
     public function setSelected($arr)
     {
-        if(!empty($arr[0])) $arr = array_combine($arr, $arr);
+        $arr = $this->toMap($arr);
         $this->selected = $arr;
         return $this;
     }
@@ -170,7 +171,11 @@ class ColumnSelect extends Button
      */
     public function addSelected($selector)
     {
-        $this->selected[$selector] = $selector;
+        $selector = $this->toMap($selector);
+        if (is_array($selector))
+            $this->selected = array_merge($this->selected, $selector);
+        else
+            $this->selected[$selector] = $selector;
         return $this;
     }
 
@@ -195,12 +200,10 @@ class ColumnSelect extends Button
      *
      * @param $arr
      * @return $this
-     * @todo: We need a setDefaultSelected(array) method instead of this one, think of it for the future
-     * @todo:  If there is no default then all should show by default.
      */
     public function setUnselected($arr)
     {
-        if(!empty($arr[0])) $arr = array_combine($arr, $arr);
+        $arr = $this->toMap($arr);
         $this->unselected = $arr;
         return $this;
     }
@@ -208,12 +211,16 @@ class ColumnSelect extends Button
     /**
      * Setup the default hidden columns using their property name
      *
-     * @param $selector
+     * @param string|array $selector
      * @return $this
      */
     public function addUnselected($selector)
     {
-        $this->unselected[$selector] = $selector;
+        $selector = $this->toMap($selector);
+        if (is_array($selector))
+            $this->unselected = array_merge($this->unselected, $selector);
+        else
+            $this->unselected[$selector] = $selector;
         return $this;
     }
 
@@ -236,7 +243,6 @@ class ColumnSelect extends Button
      *
      * @param bool $b
      * @return $this
-     * @throws \Exception
      */
     public function reset($b = true)
     {
@@ -245,7 +251,6 @@ class ColumnSelect extends Button
         }
         return $this;
     }
-
 
     /**
      * Use this method to convert a property array to an array
@@ -277,50 +282,46 @@ class ColumnSelect extends Button
 
     /**
      * @return string|\Dom\Template
-     * @throws \Exception
      */
     public function show()
     {
+        $disabledStr = implode(', ', $this->propsToCols($this->disabled));
+        $selectedStr =  implode(', ', $this->propsToCols($this->selected));
+        $unselectedStr =  implode(', ', $this->propsToCols($this->unselected));
+        $this->setAttr('data-sid', $this->getSid());
+        $this->setAttr('data-button-id', $this->getTable()->makeInstanceKey($this->getName()));
+        $this->setAttr('data-disabled', '['.$disabledStr.']');
+        $this->setAttr('data-default-selected', '['.$selectedStr.']');
+        $this->setAttr('data-default-unselected', '['.$unselectedStr.']');
+
         $template = parent::show();
 
         $template->appendJsUrl(\Tk\Uri::create('/vendor/ttek/tk-table/js/jquery.columnSelect.js'));
 
-        $disabledStr = implode(', ', $this->propsToCols($this->disabled));
-        $selectedStr =  implode(', ', $this->propsToCols($this->selected));
-        $unselectedStr =  implode(', ', $this->propsToCols($this->unselected));
-
-
-
-        // TODO: rewrite, this javascript is messy [jquery.columnSelect.js]
-
-//        $this->setAttr('data-sid', $this->getSid());
-//        $this->setAttr('data-button-id', $this->getTable()->makeInstanceKey($this->getName()));
-//        $this->setAttr('data-disabled', '['.$disabledStr.']');
-//        $this->setAttr('data-default-selected', '['.$selectedStr.']');
-//        $this->setAttr('data-default-unselected', '['.$unselectedStr.']');
-
-        // TODO: rewrite and remove
-        $this->getTable()->setAttr('data-sid', $this->getSid());
-        $this->getTable()->setAttr('data-button-id', $this->getTable()->makeInstanceKey($this->getName()));
-        $this->getTable()->setAttr('data-disabled', '['.$disabledStr.']');
-        $this->getTable()->setAttr('data-default-selected', '['.$selectedStr.']');
-        $this->getTable()->setAttr('data-default-unselected', '['.$unselectedStr.']');
-
         $js = <<<JS
 jQuery(function ($) {
   
-  // TODO: do it this way
-  //$('.tk-column-select-btn').columnSelect({});
-  
-  $('.tk-table').each(function () {
-    $(this).columnSelect($(this).find('table').data());    
-  });
+  $('.tk-column-select-btn').columnSelect({});
   
 });
 JS;
         $template->appendJs($js);
 
         return $template;
+    }
+
+    /**
+     * ensure the array is a map and and the keys = values
+     *
+     * @param string|array $arr
+     * @return array|string
+     */
+    private function toMap($arr)
+    {
+        if (is_array($arr)) {
+            if (!empty($arr[0])) $arr = array_combine($arr, $arr);
+        }
+        return $arr;
     }
 
 }

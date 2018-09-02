@@ -43,7 +43,6 @@ class Div extends Table
      * @param Cell\Iface $cell
      * @param mixed $obj
      * @return mixed
-     * @throws \Dom\Exception
      */
     protected function showCell(Cell\Iface $cell, $obj)
     {

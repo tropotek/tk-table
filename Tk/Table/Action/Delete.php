@@ -40,12 +40,9 @@ class Delete extends Button
 
 
     /**
-     * Create
-     *
      * @param string $name
      * @param string $checkboxName The checkbox name to get the selected id's from
      * @param string $icon
-     * @throws \Exception
      */
     public function __construct($name = 'delete', $checkboxName = 'id', $icon = 'fa fa-times')
     {
@@ -55,13 +52,10 @@ class Delete extends Button
     }
 
     /**
-     * Create
-     *
      * @param string $name
      * @param string $checkboxName
      * @param string $icon
      * @return static
-     * @throws \Exception
      */
     static function create($name = 'delete', $checkboxName = 'id', $icon = 'fa fa-times')
     {

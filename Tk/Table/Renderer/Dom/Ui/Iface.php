@@ -42,7 +42,7 @@ abstract class Iface extends \Dom\Renderer\Renderer implements \Tk\InstanceKey, 
      */
     public function makeInstanceKey($key)
     {
-        return $this->instanceId . '_' . $key;
+        return $this->instanceId . '-' . $key;
     }
 
     /**

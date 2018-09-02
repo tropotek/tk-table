@@ -37,8 +37,6 @@ class Table extends Iface
 
 
     /**
-     * Create a new Renderer.
-     *
      * @param \Tk\Table $table
      * @return Table
      */
@@ -160,7 +158,6 @@ class Table extends Iface
      * Render header row and any filters, etc....
      *
      * @return mixed
-     * @throws \Dom\Exception
      */
     protected function showHeader()
     {
@@ -215,7 +212,6 @@ class Table extends Iface
     /**
      * Render the table body
      *
-     * @throws \Dom\Exception
      */
     protected function showBody()
     {
@@ -241,7 +237,6 @@ class Table extends Iface
      * Render the table row
      *
      * @param mixed $obj
-     * @throws \Dom\Exception
      */
     protected function showRow($obj)
     {
@@ -272,7 +267,6 @@ class Table extends Iface
      *
      * @param Cell\Iface $cell
      * @param mixed $obj
-     * @throws \Dom\Exception
      */
     protected function showCell(Cell\Iface $cell, $obj)
     {
