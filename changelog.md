@@ -1,9 +1,15 @@
 #CHANGELOG#
 
-<<<<<<< HEAD
-Ver 2.0.74 [2018-08-20]:
+
+Ver 2.0.86 [2018-08-31]:
 -------------------------------
-=======
+  - Merge branch 'master' of https://github.com/tropotek/tk-table
+
+
+Ver 2.0.84 [2018-08-29]:
+-------------------------------
+
+
 Ver 2.0.82 [2018-08-29]:
 -------------------------------
   - adding ros/cols layout manager to form renderer
@@ -25,7 +31,6 @@ Ver 2.0.74 [2018-08-23]:
 -------------------------------
   - Added PageLoading to tk2uni project
   - Created new dynamic menu system
->>>>>>> 2e2adf319c4dc5340f268967e57a327bb4412508
 
 
 Ver 2.0.72 [2018-08-20]:

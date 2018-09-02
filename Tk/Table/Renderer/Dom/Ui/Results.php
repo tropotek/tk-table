@@ -107,7 +107,7 @@ class Results extends Iface
     {
         $xhtml = <<<XHTML
 <div class="tk-results" var="tk-results">
-  Showing <span var="from"></span>-<span var="to"></span> of <span var="total"></span> entries
+  <span var="from"></span>-<span var="to"></span> of <span var="total"></span>
 </div>
 XHTML;
         return \Dom\Loader::load($xhtml);

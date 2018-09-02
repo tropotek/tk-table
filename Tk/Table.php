@@ -11,9 +11,6 @@ use \Tk\Form\Event;
  * @author Michael Mifsud <info@tropotek.com>
  * @see http://www.tropotek.com/
  * @license Copyright 2015 Michael Mifsud
- * TODO: Thinking of moving the filter form and actions out to their own objects so we
- * TODO: can remove the responsibility from the Table ????
- * TODO: Then I think we can remove the need for a session and request from the Table Object ?? ;-)
  */
 class Table implements \Tk\InstanceKey
 {
@@ -650,7 +647,7 @@ class Table implements \Tk\InstanceKey
     }
 
     /**
-     * @param \Tk\Form\Field\Iface $field
+     * @param string|\Tk\Form\Field\Iface $field
      * @return null|string|\Tk\Form\Field\Iface
      * @since 2.0.68
      */
@@ -658,6 +655,16 @@ class Table implements \Tk\InstanceKey
     {
         $this->initFilterForm();
         return $this->getFilterForm()->removeField($field);
+    }
+
+    /**
+     * @param array $array
+     * @return $this
+     */
+    public function setFilterList($array = array())
+    {
+        $this->getFilterForm()->setFieldList($array);
+        return $this;
     }
 
     /**
