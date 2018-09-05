@@ -83,7 +83,6 @@ class Table extends Iface
      * the output.
      *
      * @return \Dom\Template
-     * @throws \Dom\Exception
      */
     public function show()
     {

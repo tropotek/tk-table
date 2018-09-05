@@ -559,6 +559,7 @@ abstract class Iface
      *
      * @param callable|null $onPropertyValue
      * @return $this
+     * @todo: There is an issue here if we want more than one event, may need to use the dispatcher
      */
     public function setOnPropertyValue($onPropertyValue)
     {
@@ -581,6 +582,7 @@ abstract class Iface
      *
      * @param callable|null $onCellHtml
      * @return $this
+     * @todo: There is an issue here if we want more than one event, may need to use the dispatcher
      */
     public function setOnCellHtml($onCellHtml)
     {
