@@ -123,14 +123,14 @@ class Table extends Iface
             // Results UI
             $results = Ui\Results::createFromDbTool($tool, $countAll);
             $results->setInstanceId($this->getTable()->getId());
-            $results->addCss('col-sm-2');
+            $results->addCss('col-2 col-sm-2');
             $this->appendFootRenderer($results);
 
             // Render Pager
             $pager = Ui\Pager::createFromDbTool($tool, $countAll);
             $pager->setEnablePageButtons($this->pageButtons);
             $pager->setInstanceId($this->getTable()->getId());
-            $pager->addCss('col-sm-8 text-center');
+            $pager->addCss('col-8 col-sm-8 text-center');
             $this->appendFootRenderer($pager);
 
             // Limit UI
@@ -140,7 +140,7 @@ class Table extends Iface
             }
             $limit = new Ui\Limit($tool->getLimit(), $limitList);
             $limit->setInstanceId($this->getTable()->getId());
-            $limit->addCss('col-sm-2');
+            $limit->addCss('col-2 col-sm-2');
             $this->appendFootRenderer($limit);
         }
 
