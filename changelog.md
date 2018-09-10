@@ -1,5 +1,12 @@
 #CHANGELOG#
 
+Ver 2.0.88 [2018-09-11]:
+-------------------------------
+  - Fixed most of it now
+  - Still updating new-template branch
+  - Preparing branch master for new release
+
+
 
 Ver 2.0.86 [2018-08-31]:
 -------------------------------
