@@ -204,7 +204,7 @@ class Table implements \Tk\InstanceKey
     {
         if (!$this->formInit) {
             $this->appendFilter(new Event\Submit($this->makeInstanceKey('search'), array($this, 'doSearch')))
-                ->setAttr('value', $this->makeInstanceKey('search'))->addCss('btn-primary')->setLabel('Search');
+                ->setAttr('value', $this->makeInstanceKey('search'))->setLabel('Search');
             $this->appendFilter(new Event\Submit($this->makeInstanceKey('clear'), array($this, 'doClear')))
                 ->setAttr('value', $this->makeInstanceKey('clear'))->setLabel('Clear');
             $this->formInit = true;
