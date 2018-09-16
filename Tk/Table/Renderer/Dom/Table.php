@@ -35,6 +35,11 @@ class Table extends Iface
      */
     protected $pageButtons = true;
 
+    /**
+     * @var null|\Tk\Form\Renderer\Dom
+     */
+    protected $formRenderer = null;
+
 
     /**
      * @param \Tk\Table $table
@@ -51,14 +56,14 @@ class Table extends Iface
     /**
      * Get the default form renderer object
      * 
-     * @return Form\Renderer\Dom
+     * @return Form\Renderer\Dom|Form\Renderer\Iface
      */
     public function getFormRenderer()
     {
-        static $ren = null;
-        if (!$ren)
-            $ren = \Tk\Form\Renderer\Dom::create($this->getTable()->getFilterForm());
-        return $ren;
+        if (!$this->getTable()->getFilterForm()->getRenderer()) {
+            $this->getTable()->getFilterForm()->setRenderer(\Tk\Form\Renderer\Dom::create($this->getTable()->getFilterForm()));
+        }
+        return $this->getTable()->getFilterForm()->getRenderer();
     }
 
     /**
