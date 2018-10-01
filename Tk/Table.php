@@ -144,27 +144,6 @@ class Table implements \Tk\InstanceKey
     }
 
     /**
-     * @param array|\ArrayAccess|\Iterator $list
-     * @return $this
-     */
-    public function setList($list)
-    {
-        $this->list = $list;
-
-        $e = new \Tk\Event\TableEvent($this);
-        if ($this->dispatcher) {
-            $this->dispatcher->dispatch(\Tk\Table\TableEvents::TABLE_INIT, $e);
-        }
-
-        $this->execute();
-
-        if ($this->dispatcher) {
-            $this->dispatcher->dispatch(\Tk\Table\TableEvents::TABLE_EXECUTE, $e);
-        }
-        return $this;
-    }
-
-    /**
      * Execute the table
      * Generally called in the renderer`s show() method
      */
@@ -184,6 +163,35 @@ class Table implements \Tk\InstanceKey
             }
             $this->hasExecuted = true;
         }
+    }
+
+    /**
+     * @param array|\ArrayAccess|\Iterator|\Tk\Db\Map\ArrayObject $list
+     * @return $this
+     */
+    public function setList($list)
+    {
+        $this->list = $list;
+        if ($list instanceof \Tk\Db\Map\ArrayObject) {
+            if($list->countAll() < $this->getTool()->getOffset()) {
+                // not the best solution because it requires the page to be reloaded,
+                //  but it usually only happens on developer error or testing.
+                $this->resetSessionOffset();
+                //$this->resetSessionTool();
+            }
+        }
+
+        $e = new \Tk\Event\TableEvent($this);
+        if ($this->dispatcher) {
+            $this->dispatcher->dispatch(\Tk\Table\TableEvents::TABLE_INIT, $e);
+        }
+
+        $this->execute();
+
+        if ($this->dispatcher) {
+            $this->dispatcher->dispatch(\Tk\Table\TableEvents::TABLE_EXECUTE, $e);
+        }
+        return $this;
     }
 
     /**
