@@ -71,7 +71,7 @@ class Delete extends Button
      */
     public function setOnExecute($onExecute)
     {
-        \Tk\Log::warning('Deprecated function ');
+        \Tk\Log::warning('Deprecated function use setOnDelete()');
         $this->onExecute = $onExecute;
         return $this;
     }
