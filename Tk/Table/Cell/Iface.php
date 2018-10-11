@@ -126,7 +126,7 @@ abstract class Iface
         $url = $this->getOrderUrl();
         if ($url && $this->getTable()->getStaticOrderBy() === null) {
             $str = sprintf('<a href="%s" class="noblock" title="Click to order by: %s">%s</a>',
-                htmlentities($url->toString()), $this->getOrderProperty(), $this->getLabel());
+                htmlentities($url->toString()), $this->getLabel(), $this->getLabel());
         }
         return $str;
     }
