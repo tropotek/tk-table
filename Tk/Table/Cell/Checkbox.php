@@ -64,7 +64,7 @@ JS;
     {
         $prop = $this->getProperty();
         $propValue = $this->getPropertyValue($obj);
-        $str = sprintf('<input type="checkbox" name="%s[]" value="%s" class="tk-tcb" />', $prop, htmlentities($propValue));
+        $str = sprintf('<input type="checkbox" name="%s[]" value="%s" class="tk-tcb" title="%s: %s" />', $prop, htmlentities($propValue), $prop, htmlentities($propValue));
         return $str;
     }
 
