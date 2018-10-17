@@ -1,10 +1,17 @@
 TODO:
 -----
 
- - [ ] IMPORTANT: Create usage documentation
- - [ ] Make unit test classes
- - [ ] Look at creating a Html Renderer that works without the Dom\Template lib ????
- - [ ] Separate out all calls to \Tk\Db namespaces object into their own area. 
+ - Remove the $property param from methods Field\Iface::getPropertyValue() and Field\Iface::getRawValue()
+ - Refactor the method Field\Iface::getPropertyValue() to get its value from Field\Iface::getRawValue()
+   who in turn get its value from Field\Iface::getObjectPropertyValue(). Check your code as this may cause it to break.
+ 
+
+
+
+
+
+
+ 
 
 
 

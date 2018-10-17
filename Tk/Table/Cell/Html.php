@@ -3,8 +3,6 @@ namespace Tk\Table\Cell;
 
 
 /**
- * Class Text
- *
  * @author Michael Mifsud <info@tropotek.com>
  * @see http://www.tropotek.com/
  * @license Copyright 2015 Michael Mifsud
@@ -39,7 +37,7 @@ class Html extends Text
      */
     public function getCellHtml($obj, $rowIdx = null)
     {
-        $propValue = $this->getPropertyValue($obj, $this->getProperty());
+        $propValue = $this->getPropertyValue($obj);
         if ($this->getHtml()) $propValue = $this->getHtml();
         $str = $propValue;
         $url = $this->getCellUrl($obj);
@@ -49,13 +47,5 @@ class Html extends Text
         return $str;
     }
 
-    /**
-     * @param mixed $obj
-     * @return string
-     */
-    public function getRawValue($obj)
-    {
-        return $this->getPropertyValue($obj, $this->getProperty());
-    }
 
 }

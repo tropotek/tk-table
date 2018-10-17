@@ -47,7 +47,8 @@ class Text extends Iface
      */
     public function getCellHtml($obj, $rowIdx = null)
     {
-        $value = $propValue = $this->getPropertyValue($obj, $this->getProperty());
+        $value = $propValue = $this->getPropertyValue($obj);
+
         if ($this->charLimit && strlen($propValue) > $this->charLimit) {
             $propValue = \Tk\Str::wordcat($propValue, $this->charLimit - 3, '...');
         }
@@ -62,5 +63,7 @@ class Text extends Iface
         }
         return $str;
     }
+
+
 
 }

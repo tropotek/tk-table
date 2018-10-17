@@ -19,7 +19,7 @@ class Email extends Text
      */
     public function getCellHtml($obj, $rowIdx = null)
     {
-        $propValue = $this->getPropertyValue($obj, $this->getProperty());
+        $propValue = $this->getPropertyValue($obj);
         $str = sprintf('<a href="mailto:%s" title="Compose an email to this address.">%s</a>', $propValue, $propValue);
         return $str;
     }

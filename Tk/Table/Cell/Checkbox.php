@@ -63,7 +63,7 @@ JS;
     public function getCellHtml($obj, $rowIdx = null)
     {
         $prop = $this->getProperty();
-        $propValue = $this->getPropertyValue($obj, $this->getProperty());
+        $propValue = $this->getPropertyValue($obj);
         $str = sprintf('<input type="checkbox" name="%s[]" value="%s" class="tk-tcb" />', $prop, htmlentities($propValue));
         return $str;
     }

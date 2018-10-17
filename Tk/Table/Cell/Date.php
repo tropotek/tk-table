@@ -3,8 +3,6 @@ namespace Tk\Table\Cell;
 
 
 /**
- * Class Text
- *
  * @author Michael Mifsud <info@tropotek.com>
  * @see http://www.tropotek.com/
  * @license Copyright 2015 Michael Mifsud
@@ -65,22 +63,22 @@ class Date extends Text
      * @param string $property
      * @return string
      */
-    public function getPropertyValue($obj, $property)
-    {
-        $value = parent::getPropertyValue($obj, $property);
-        if ($value && !$value instanceof \DateTime) {
-            $value = \Tk\Date::create($value);
-        }
-        
-        if ($value instanceof \DateTime) {
-            if ($this->format == self::FORMAT_RELATIVE) {
-                return \Tk\Date::toRelativeString($value);
-            } else {
-                return $value->format($this->format);
-            }
-        }
-        return $value;
-    }
+//    public function getPropertyValue($obj, $property = null)
+//    {
+//        $value = parent::getPropertyValue($obj);
+//        if ($value && !$value instanceof \DateTime) {
+//            $value = \Tk\Date::create($value);
+//        }
+//
+//        if ($value instanceof \DateTime) {
+//            if ($this->format == self::FORMAT_RELATIVE) {
+//                return \Tk\Date::toRelativeString($value);
+//            } else {
+//                return $value->format($this->format);
+//            }
+//        }
+//        return $value;
+//    }
 
 
     /**
@@ -92,7 +90,7 @@ class Date extends Text
      */
     public function getRawValue($obj)
     {
-        $value = parent::getPropertyValue($obj, $this->getProperty());
+        $value = parent::getRawValue($obj);
 
         if ($value && !$value instanceof \DateTime) {
             $value = \Tk\Date::create($value);

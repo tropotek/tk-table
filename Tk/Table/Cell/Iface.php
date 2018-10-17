@@ -5,7 +5,7 @@ use Tk\Table;
 use Tk\Uri;
 
 /**
- * The interface for a table Cell
+ * Tk\Table\Cell Interface
  *
  *
  * @author Michael Mifsud <info@tropotek.com>
@@ -177,8 +177,23 @@ abstract class Iface
 
     // -------------------------------------------------------------------
 
+
     /**
-     * Get the raw string property value.
+     * Get the property value from the object that is to be displayed
+     * to the table cell.
+     *
+     * @param object $obj
+     * @param string $property   (deprecated)
+     * @return mixed
+     */
+    public function getPropertyValue($obj)
+    {
+        $value = $this->getRawValue($obj);
+        return $value;
+    }
+
+    /**
+     * Get the raw string property value with no formatting.
      * This call can be used for exporting data into a csv, json, xml format
      *
      * @param mixed $obj
@@ -186,22 +201,7 @@ abstract class Iface
      */
     public function getRawValue($obj)
     {
-        return $this->getPropertyValue($obj, $this->getProperty());
-    }
-
-    /**
-     * Get the property value from the object
-     * This should be the clean property data with no HTML or rendering attached,
-     * unless the rendering code is part of the value as it will be called for
-     * outputting to other files like XML or CSV.
-     *
-     * @param object $obj
-     * @param string $property
-     * @return mixed
-     */
-    public function getPropertyValue($obj, $property)
-    {
-        $value = $this->getObjectPropertyValue($obj, $property);
+        $value = $this->getObjectPropertyValue($obj);
         return $value;
     }
 
@@ -212,13 +212,16 @@ abstract class Iface
      * outputting to other files like XML or CSV.
      *
      * @param object $obj
-     * @param string $property
-     * @param bool $withCallable
+     * @param string $property      (Optional)
+     * @param bool $withCallable    (Optional)
      * @return mixed
+     * @todo: This method seems a bit bulky in params, look to refactor it at some point.
      */
-    protected function getObjectPropertyValue($obj, $property, $withCallable = true)
+    protected function getObjectPropertyValue($obj, $property = null, $withCallable = true)
     {
-
+        if ($property === null) {
+            $property = $this->getProperty();
+        }
         $value = '';
         if (is_array($obj)) {
             if (isset($obj[$property]))

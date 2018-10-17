@@ -17,7 +17,7 @@ class Link extends Text
      */
     public function getCellHtml($obj, $rowIdx = null)
     {
-        $propValue = $this->getPropertyValue($obj, $this->getProperty());
+        $propValue = $this->getPropertyValue($obj);
         $str = sprintf('<a href="%s" target="_blank">%s</a>', $propValue, $propValue);
         return $str;
     }

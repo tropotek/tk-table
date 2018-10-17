@@ -109,8 +109,12 @@ class Table extends Iface
         $this->showHeader();
         $this->showBody();
 
-        $count = count($this->getTable()->getList());
-        $countAll = count($this->getTable()->getList());
+        $count = 0;
+        $countAll = 0;
+        if ($this->getTable()->getList()) {
+            $count = count($this->getTable()->getList());
+            $countAll = count($this->getTable()->getList());
+        }
         $tool = $this->getTable()->getTool();
         if ($tool) {
             $countAll = $tool->getFoundRows();

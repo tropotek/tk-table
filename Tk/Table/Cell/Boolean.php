@@ -12,9 +12,9 @@ namespace Tk\Table\Cell;
 class Boolean extends Text
 {
 
-    public function getPropertyValue($obj, $property)
+    public function getPropertyValue($obj, $property = null)
     {
-        $value = parent::getPropertyValue($obj, $property);
+        $value = parent::getPropertyValue($obj);
 
         if ($value === null) return '';
 
