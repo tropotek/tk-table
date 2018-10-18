@@ -11,9 +11,9 @@ class ArrayObject extends Text
 {
 
 
-    public function getPropertyValue($obj, $property)
+    public function getPropertyValue($obj)
     {
-        $value = $this->getObjectPropertyValue($obj, $property);
+        $value = $this->getObjectPropertyValue($obj);
         if (is_array($value)) {
             $value = implode(', ', $value);
         }
