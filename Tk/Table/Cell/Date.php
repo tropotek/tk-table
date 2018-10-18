@@ -63,22 +63,22 @@ class Date extends Text
      * @param string $property
      * @return string
      */
-//    public function getPropertyValue($obj, $property = null)
-//    {
-//        $value = parent::getPropertyValue($obj);
-//        if ($value && !$value instanceof \DateTime) {
-//            $value = \Tk\Date::create($value);
-//        }
-//
-//        if ($value instanceof \DateTime) {
-//            if ($this->format == self::FORMAT_RELATIVE) {
-//                return \Tk\Date::toRelativeString($value);
-//            } else {
-//                return $value->format($this->format);
-//            }
-//        }
-//        return $value;
-//    }
+    public function getPropertyValue($obj)
+    {
+        $value = parent::getPropertyValue($obj);
+        if ($value && !$value instanceof \DateTime) {
+            $value = \Tk\Date::create($value);
+        }
+
+        if ($value instanceof \DateTime) {
+            if ($this->format == self::FORMAT_RELATIVE) {
+                return \Tk\Date::toRelativeString($value);
+            } else {
+                return $value->format($this->format);
+            }
+        }
+        return $value;
+    }
 
 
     /**

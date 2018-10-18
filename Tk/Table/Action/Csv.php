@@ -39,7 +39,7 @@ class Csv extends Button
         parent::__construct($name, $icon);
         $this->db = $db;
         $this->checkboxName = $checkboxName;
-        $this->addCss('tk-action-csv');
+        $this->addCss('tk-action-csv btn-no-unload');
     }
 
     /**
@@ -137,6 +137,15 @@ class Csv extends Button
         $this->setAttr('title', 'Export records as a CSV file.');
 
         $template = parent::show();
+
+        $js = <<<JS
+jQuery(function ($) {
+  $('.tk-action-csv').each(function () {
+    
+  });
+});
+JS;
+        $template->appendJs($js);
 
         return $template;
     }
