@@ -1,5 +1,9 @@
 #CHANGELOG#
 
+Ver 2.1.2 [2018-10-26]:
+-------------------------------
+
+
 Ver 2.1.0 [2018-10-19]:
 -------------------------------
   - Merge branch 'master' of https://github.com/tropotek/tk-table
