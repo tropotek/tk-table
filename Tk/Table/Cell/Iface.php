@@ -183,7 +183,6 @@ abstract class Iface
      * to the table cell.
      *
      * @param object $obj
-     * @param string $property   (deprecated)
      * @return mixed
      */
     public function getPropertyValue($obj)
