@@ -41,6 +41,15 @@ class Text extends Iface
     }
 
     /**
+     * @return int
+     */
+    public function getCharLimit()
+    {
+        return $this->charLimit;
+    }
+
+
+    /**
      * @param mixed $obj
      * @param int|null $rowIdx The current row being rendered (0-n) If null no rowIdx available.
      * @return string
