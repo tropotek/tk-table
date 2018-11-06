@@ -1,5 +1,10 @@
 #CHANGELOG#
 
+Ver 2.1.4 [2018-11-07]:
+-------------------------------
+  - Rearanged a lot of javascript files to make it more maintainable
+
+
 Ver 2.1.2 [2018-10-26]:
 -------------------------------
 
