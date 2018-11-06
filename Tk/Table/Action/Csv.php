@@ -111,7 +111,6 @@ class Csv extends Button
             if ($this->ignoreCell($cell)) continue;
             $arr[] = $cell->getLabel();
         }
-
         fputcsv($out, $arr);
         if ($fullList) {
             foreach ($fullList as $obj) {
@@ -145,7 +144,7 @@ jQuery(function ($) {
   });
 });
 JS;
-        $template->appendJs($js);
+        //$template->appendJs($js);
 
         return $template;
     }
