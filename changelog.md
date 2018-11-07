@@ -1,5 +1,9 @@
 #CHANGELOG#
 
+Ver 2.1.6 [2018-11-07]:
+-------------------------------
+
+
 Ver 2.1.4 [2018-11-07]:
 -------------------------------
   - Rearanged a lot of javascript files to make it more maintainable
