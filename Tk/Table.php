@@ -833,7 +833,8 @@ class Table implements \Tk\InstanceKey
             $dbToolSession = $this->getDbToolSession();
             $this->tool->updateFromArray($dbToolSession->all());
 
-            $isRequest = $this->tool->updateFromArray(\Tk\Uri::create()->all());  // Use GET params only
+            $a = \Tk\Uri::create()->all();
+            $isRequest = $this->tool->updateFromArray($a);  // Use GET params only
             if ($this->getStaticOrderBy() !== null) {
                 $this->tool->setOrderBy($this->getStaticOrderBy());
             }
@@ -892,7 +893,7 @@ class Table implements \Tk\InstanceKey
     /**
      * Create request keys with prepended string
      *
-     * returns: `{instanceId}_{$key}`
+     * returns: `{instanceId}-{$key}`
      *
      * @param $key
      * @return string

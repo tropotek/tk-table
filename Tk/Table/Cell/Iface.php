@@ -344,7 +344,8 @@ abstract class Iface
         
         $key = $this->getTable()->makeInstanceKey(Table::PARAM_ORDER_BY);
         $pre = $this->getOrderProperty() . ' ';
-        $url = Uri::create();
+        $url = Uri::create()->remove($key);
+
         if ($order == Table::ORDER_ASC) {
             $url->set($key, $pre . Table::ORDER_DESC);
         } else if ($order == Table::ORDER_DESC) {
