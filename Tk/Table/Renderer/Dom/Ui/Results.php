@@ -83,7 +83,8 @@ class Results extends Iface
             $from = $this->offset+1;
         }
         $to = $this->offset + $this->limit;
-        if ($to > $this->total) {
+
+        if ($to > $this->total || $to == 0) {
             $to = $this->total;
         }
 

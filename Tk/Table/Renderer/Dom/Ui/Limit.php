@@ -66,26 +66,7 @@ class Limit extends Iface
 
         $js = <<<JS
 jQuery(function($) {
-
-    function setUrlParam(url, name, value)
-    {
-        url = url.substring(0, url.indexOf('#'));
-        if (url.indexOf(name + "=") >= 0) {
-            var prefix = url.substring(0, url.indexOf(name));
-            var suffix = url.substring(url.indexOf(name));
-            suffix = suffix.substring(suffix.indexOf("=") + 1);
-            suffix = (suffix.indexOf("&") >= 0) ? suffix.substring(suffix.indexOf("&")) : "";
-            url = prefix + name + "=" + value + suffix;
-        } else {
-            if (url.indexOf("?") < 0) {
-                url += "?" + name + "=" + value;
-            } else {
-                url += "&" + name + "=" + value;
-            }
-        }
-        return url;
-    }
-
+  
     // Limit onchange event
     $('.tk-limit select').change(function(e) {
         if ($(this).val() === 0) {
@@ -93,9 +74,9 @@ jQuery(function($) {
                 return false;
             }
         }
-        
-        window.location.href = setUrlParam(window.location.href, $(this).data('name'), $(this).val());
-        // window.location.replace(url);
+        var url = new Uri();
+        url.set($(this).data('name'), $(this).val())
+        url.redirect();
         return false;
     });
 
