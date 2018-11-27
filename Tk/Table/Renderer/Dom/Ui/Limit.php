@@ -32,7 +32,7 @@ class Limit extends Iface
     {
         $this->limit = $limit;
         if (!$limitList) {
-            $limitList = array(10, 25, 50, 100, 250);
+            $limitList = array(10, 25, 50, 100, 250, 500);
         }
         $this->limitList = $limitList;
     }
