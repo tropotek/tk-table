@@ -794,7 +794,8 @@ class Table implements \Tk\InstanceKey
     private function getOrderStatus()
     {
         $o = array();
-        if ($this->getList() instanceof \Tk\Db\Map\ArrayObject) {
+        //if ($this->getList() instanceof \Tk\Db\Map\ArrayObject) {
+        if ($this->getTool()) {
             $o = explode(' ', $this->getTool()->getOrderBy());
         }
         return $o;

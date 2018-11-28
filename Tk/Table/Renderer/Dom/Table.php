@@ -120,7 +120,6 @@ class Table extends Iface
             $countAll = $tool->getFoundRows();
         }
 
-
         // TODO: this could be unrequired since we added $tool->getFoundRows()
         if ($this->getTable()->getList() instanceof \Tk\Db\Map\ArrayObject) {
             $countAll = $this->getTable()->getList()->countAll();
@@ -227,9 +226,13 @@ class Table extends Iface
         $template = $this->getTemplate();
         $this->rowClassArr = array();
         $this->rowId = 0;
-        if ($this->getTable()->getList() instanceof \Tk\Db\Map\ArrayObject) {
-            $this->rowId = $this->getTable()->getList()->getTool()->getOffset();
+        if ($this->getTable()->getTool()) {
+            $this->rowId = $this->getTable()->getTool()->getOffset();
+            //$this->rowId = $this->getTable()->getList()->getTool()->getOffset();
         }
+//        if ($this->getTable()->getList() instanceof \Tk\Db\Map\ArrayObject) {
+//            $this->rowId = $this->getTable()->getList()->getTool()->getOffset();
+//        }
 
         if (!$template || !$template->keyExists('repeat', 'tr')) return;
         if (!$this->getTable()->getList()) return;
