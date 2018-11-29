@@ -134,12 +134,6 @@ class Table implements \Tk\InstanceKey
     public static function create($tableId = '')
     {
         $obj = new static($tableId);
-
-//        if (is_array($params)) {
-//            \Tk\Log::warning('\Tk\Table::create(): Deprecated parameter $params being used...');
-//            $obj->replace($params);
-//        }
-
         return $obj;
     }
 
