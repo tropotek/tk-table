@@ -226,6 +226,7 @@ abstract class Iface
             if (isset($obj[$property]))
                 $value = $obj[$property];
         } else {
+
             if ($this->propertyExists($obj, $property)) {
                 $value = $obj->{$property};
             } else {
@@ -267,6 +268,7 @@ abstract class Iface
         } catch (\Exception $e) {
             $exists = property_exists($obj, $property);
         }
+        //vd($obj, $exists);
         return $exists;
     }
 
