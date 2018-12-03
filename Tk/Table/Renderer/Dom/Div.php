@@ -28,13 +28,21 @@ class Div extends Table
      * the output.
      *
      * @return mixed
-     * @throws \Dom\Exception
      */
     public function show()
     {
         $template = parent::show();
 
         return $template;
+    }
+
+    /**
+     * @param \Dom\Template $template
+     */
+    protected function showAttributes($template)
+    {
+        $template->addCss('table-body', $this->getTable()->getCssString());
+        $template->setAttr('table-body', $this->getTable()->getAttrList());
     }
 
     /**

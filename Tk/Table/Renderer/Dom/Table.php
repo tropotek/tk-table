@@ -48,6 +48,7 @@ class Table extends Iface
     static function create($table = null)
     {
         $obj = new static($table);
+        // TODO: remove this from here as it is not the right place for it
         $table->addCss('table table-bordered table-striped table-hover');
         return $obj;
     }
@@ -155,11 +156,20 @@ class Table extends Iface
 
         $this->showFooter();
 
-        $template->addCss('table', $this->getTable()->getCssString());
-        $template->setAttr('table', $this->getTable()->getAttrList());
+        $this->showAttributes($template);
 
         return $template;
     }
+
+    /**
+     * @param \Dom\Template $template
+     */
+    protected function showAttributes($template)
+    {
+        $template->addCss('table', $this->getTable()->getCssString());
+        $template->setAttr('table', $this->getTable()->getAttrList());
+    }
+
 
     /**
      * Render the table header
