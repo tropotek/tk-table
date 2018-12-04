@@ -111,6 +111,8 @@ class Table implements \Tk\InstanceKey
         $this->id = $tableId;
         $this->setAttr('id', $this->getId());
         $this->form = $this->makeForm();
+
+        // TODO: Re-think this, we need to look at both the tables and forms create/init/execute/show logic so they work together.
         $this->initCells();
     }
 
