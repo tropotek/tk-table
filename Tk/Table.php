@@ -309,7 +309,7 @@ class Table implements \Tk\InstanceKey
     }
 
     /**
-     * @return array|\ArrayAccess
+     * @return \Tk\Request|array|\ArrayAccess
      */
     public function &getRequest()
     {
@@ -880,8 +880,19 @@ class Table implements \Tk\InstanceKey
     public function resetSessionTool()
     {
         $sesh = $this->getDbToolSession();
-        //$sesh->remove($this->getId());
         $sesh->clear();
+        return $this;
+    }
+
+    /**
+     * Reset the table session values
+     *
+     * @return $this
+     */
+    public function resetSession()
+    {
+        $this->resetSessionOffset();
+        $this->resetSessionTool();
         return $this;
     }
 
