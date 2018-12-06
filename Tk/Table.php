@@ -223,8 +223,8 @@ class Table implements \Tk\InstanceKey
     {
         $form = new Form($this->id . 'Filter');
         $form->setDispatcher($this->getDispatcher());
-        $form->setParamList($this->all());
-        $form->addCss('tk-table-filter-form form-inline');
+        $form->setParamList($this->all());      // TODO: remove by v2.4.0
+        $form->addCss('tk-table-filter-form form-inline');      // TODO: move to a table form renderer, this is the wrong place to set the classes?
         return $form;
     }
 
@@ -790,7 +790,6 @@ class Table implements \Tk\InstanceKey
     private function getOrderStatus()
     {
         $o = array();
-        //if ($this->getList() instanceof \Tk\Db\Map\ArrayObject) {
         if ($this->getTool()) {
             $o = explode(' ', $this->getTool()->getOrderBy());
         }
@@ -806,6 +805,7 @@ class Table implements \Tk\InstanceKey
         $tableSession = $this->getTableSession();
         $dbToolSession = $tableSession->get($key);
         if (!$dbToolSession instanceof Collection) {
+            vd('- Create DB Tool');
             $dbToolSession = new Collection();
             $tableSession->set($key, $dbToolSession);
         }
@@ -824,6 +824,7 @@ class Table implements \Tk\InstanceKey
     public function getTool($defaultOrderBy = '', $defaultLimit = 25)
     {
         if (!$this->tool) {
+
             $this->tool = Tool::create($defaultOrderBy, $defaultLimit);
             $this->tool->setInstanceId($this->getId());
 
