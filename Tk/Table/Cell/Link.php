@@ -9,6 +9,15 @@ namespace Tk\Table\Cell;
  */
 class Link extends Text
 {
+    /**
+     * @param string $property
+     * @param string $label If null the property name is used EG: 'propName' = 'Prop Name'
+     */
+    public function __construct($property, $label = null)
+    {
+        parent::__construct($property, $label);
+        $this->setOrderProperty('');
+    }
 
     /**
      * @param mixed $obj
