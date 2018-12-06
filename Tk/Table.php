@@ -805,7 +805,6 @@ class Table implements \Tk\InstanceKey
         $tableSession = $this->getTableSession();
         $dbToolSession = $tableSession->get($key);
         if (!$dbToolSession instanceof Collection) {
-            vd('- Create DB Tool');
             $dbToolSession = new Collection();
             $tableSession->set($key, $dbToolSession);
         }
