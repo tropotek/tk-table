@@ -26,7 +26,7 @@ class Date extends Text
      * @param null|string $format
      * @return Date
      */
-    public static function createDate($property, $format = null)
+    public static function createDate($property, $format = 'Y-m-d')
     {
         $obj = new self($property);
         if ($format)
