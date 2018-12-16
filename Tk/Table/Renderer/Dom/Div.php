@@ -2,7 +2,6 @@
 namespace Tk\Table\Renderer\Dom;
 
 use \Tk\Table\Cell;
-use Tk\Form;
 
 /**
  * @author Michael Mifsud <info@tropotek.com>
