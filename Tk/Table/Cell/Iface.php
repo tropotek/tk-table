@@ -98,7 +98,8 @@ abstract class Iface
         $this->property = $property;
         if (!$label) {
             $label = preg_replace('/Id$/', '', $property);
-            $label = ucfirst(preg_replace('/[A-Z]/', ' $0', $label));
+            $label = str_replace(array('_', '-'), ' ', $label);
+            $label = ucwords(preg_replace('/[A-Z]/', ' $0', $label));
         }
         $this->label = $label;
         $this->row = new \Tk\Table\Row();
