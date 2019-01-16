@@ -39,7 +39,7 @@ class Csv extends Button
         parent::__construct($name, $icon);
         $this->db = $db;
         $this->checkboxName = $checkboxName;
-        $this->addCss('tk-action-csv btn-no-unload');
+        $this->addCss('tk-action-csv no-loader');
     }
 
     /**
