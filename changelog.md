@@ -1,5 +1,10 @@
 #CHANGELOG#
 
+Ver 2.1.26 [2019-01-16]:
+-------------------------------
+  - fixed the PageLoadHandler to not fire for data files and csv downloads.
+
+
 Ver 2.1.24 [2018-12-19]:
 -------------------------------
 
