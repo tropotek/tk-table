@@ -1,5 +1,10 @@
 #CHANGELOG#
 
+Ver 2.1.28 [2019-01-22]:
+-------------------------------
+  - Added print styles
+
+
 Ver 2.1.26 [2019-01-16]:
 -------------------------------
   - fixed the PageLoadHandler to not fire for data files and csv downloads.
