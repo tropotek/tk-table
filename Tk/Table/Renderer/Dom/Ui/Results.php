@@ -96,6 +96,7 @@ class Results extends Iface
         $template->insertText('from', $from);
         $template->insertText('to', $to);
         $template->insertText('total', $this->total);
+
         $template->show('tk-results');
     }
 
