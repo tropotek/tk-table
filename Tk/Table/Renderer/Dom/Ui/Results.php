@@ -74,7 +74,7 @@ class Results extends Iface
         }
 
         if (!$this->total) {
-            $template->insertText('tk-results', 'No Results Found.');
+//            $template->insertText('tk-results', 'No Results Found.');
             return;
         }
 
@@ -96,7 +96,7 @@ class Results extends Iface
         $template->insertText('from', $from);
         $template->insertText('to', $to);
         $template->insertText('total', $this->total);
-
+        $template->show('tk-results');
     }
 
     /**
@@ -108,7 +108,9 @@ class Results extends Iface
     {
         $xhtml = <<<XHTML
 <div class="tk-results" var="tk-results">
-  <span var="from"></span>-<span var="to"></span> of <span var="total"></span>
+  <span choice="tk-results">
+    <span var="from"></span>-<span var="to"></span> of <span var="total"></span>
+  </span>
 </div>
 XHTML;
         return \Dom\Loader::load($xhtml);
