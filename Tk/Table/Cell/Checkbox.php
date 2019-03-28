@@ -9,15 +9,19 @@ namespace Tk\Table\Cell;
  */
 class Checkbox extends Iface
 {
+    /**
+     * If true the checkbox is set to checked if the property value evaluates to true
+     * @var bool
+     */
+    protected $useValue = false;
 
     /**
-     * Create
-     *
      * @param string $property
      */
     public function __construct($property)
     {
         parent::__construct($property, ucfirst(preg_replace('/[A-Z]/', ' $0', $property)));
+        $this->setLabel('');
     }
 
     /**
@@ -25,6 +29,8 @@ class Checkbox extends Iface
      */
     public function getCellHeader()
     {
+        if ($this->getLabel()) return parent::getCellHeader();
+
         $xhtml = sprintf('<span><input type="checkbox" name="%s_all" title="Select All" class="tk-tcb-head" /></span>', $this->getProperty());
         $template = \Dom\Loader::load($xhtml);
 
@@ -64,8 +70,30 @@ JS;
     {
         $prop = $this->getProperty();
         $propValue = $this->getPropertyValue($obj);
-        $str = sprintf('<input type="checkbox" name="%s[]" value="%s" class="tk-tcb" title="%s: %s" />', $prop, htmlentities($propValue), $prop, htmlentities($propValue));
+
+        $checked = '';
+        if ($this->useValue && ($propValue == $prop || $propValue === 1 || strtolower($propValue) === 'true' || strtolower($propValue) === 'yes' || $propValue === true))
+            $checked = ' checked="checked"';
+        $str = sprintf('<input type="checkbox" name="%s[]" value="%s" class="tk-tcb" title="%s: %s" %s/>', $prop, htmlentities($propValue), $prop, htmlentities($propValue), $checked);
         return $str;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isUseValue()
+    {
+        return $this->useValue;
+    }
+
+    /**
+     * @param bool $useValue
+     * @return Checkbox
+     */
+    public function setUseValue($useValue)
+    {
+        $this->useValue = $useValue;
+        return $this;
     }
 
 }
