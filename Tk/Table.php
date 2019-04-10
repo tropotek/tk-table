@@ -14,6 +14,7 @@ use \Tk\Form\Event;
  */
 class Table implements \Tk\InstanceKey
 {
+
     use \Tk\Dom\AttributesTrait;
     use \Tk\Dom\CssTrait;
     use \Tk\CollectionTrait;
