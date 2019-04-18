@@ -1,5 +1,9 @@
 #CHANGELOG#
 
+Ver 2.1.36 [2019-04-18]:
+-------------------------------
+
+
 Ver 2.1.34 [2019-04-01]:
 -------------------------------
   - Reverted and updated the Rules plugin to use profileId
