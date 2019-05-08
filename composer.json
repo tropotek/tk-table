@@ -2,13 +2,10 @@
     "name": "ttek/tk-table",
     "type": "library",
     "description": "A dynamic table lib to manage table rendering",
-    "keywords":  [
-        "tropotek",
-        "Table"
-    ],
-    "time": "2018-09-11",
+    "keywords":  ["tropotek", "Table"],
+    "time": "2019-04-09",
     "license": "MIT",
-    "version": "2.0.88",
+    "version": "3.0.0",
     "authors":  [
          {
             "name": "Michael Mifsud",
@@ -22,14 +19,11 @@
         }
     },
     "require":  {
-        "ttek/tk-framework": "~2.0",
-        "ttek/tk-database": "~2.0",
-        "ttek/tk-domtemplate": "~2.0",
-        "ttek/tk-mvc": "~2.0"
+        "ttek/tk-framework": "~3.0"
     },
     "extra":  {
         "branch-alias":  {
-            "dev-master": "2.1.x-dev"
+            "dev-master": "3.0.x-dev"
         }
     }
 }
