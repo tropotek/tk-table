@@ -82,7 +82,7 @@ abstract class Iface extends \Dom\Renderer\Renderer implements \Dom\Renderer\Dis
     public function hasTriggered()
     {
         $request = $this->getTable()->getRequest();
-        return !empty($request[$this->getTable()->makeInstanceKey($this->getName())]);
+        return $request->has($this->getTable()->makeInstanceKey($this->getName()));
     }
 
     /**
