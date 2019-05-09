@@ -1,7 +1,6 @@
-# Tk Table :boom: 
+# Tk Table
 
-__Project:__ [ttek/tk-table](http://packagist.org/packages/ttek/tk-table)  
-__Published:__ 01 Nov 2015
+__Project:__ [ttek/tk-table](http://packagist.org/packages/ttek/tk-table)
 __Web:__ <http://www.tropotek.com/>  
 __Authors:__ Michael Mifsud <http://www.tropotek.com/>  
   
@@ -25,7 +24,7 @@ composer require ttek/tk-table
 Or add the following to your composer.json file:
 
 ```json
-"ttek/tk-table": "~2.0"
+"ttek/tk-table": "~3.0"
 ```
 
 If you do not use Composer, you can grab the code from GitHub, and use any
