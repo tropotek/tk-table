@@ -68,7 +68,7 @@ class Csv extends Button
         ini_set('max_execution_time', 0);
 
         $file = $this->getTable()->getId() . '_' . date('Ymd') . '.csv';
-        if (isset($request['csv_name'])) {
+        if ($request->has('csv_name')) {
             $file = preg_replace('/[^a-z0-9_\.-]/i', '_', basename(strip_tags(trim($request['csv_name']))));
         }
 
@@ -76,10 +76,10 @@ class Csv extends Button
         $list = $this->getTable()->getList();
 
         $fullList = $list;
-        if (isset($request[$this->checkboxName]) && is_array($request[$this->checkboxName])) {
+        if ($request->has($this->checkboxName) && is_array($request->get($this->checkboxName))) {
             $fullList = array();
             foreach($list as $obj) {
-                if (in_array($obj->getId(), $request[$this->checkboxName])) {
+                if (in_array($obj->getId(), $request->get($this->checkboxName))) {
                     $fullList[] = $obj;
                 }
             }

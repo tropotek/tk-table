@@ -312,7 +312,7 @@ class Table implements \Tk\InstanceKey
     }
 
     /**
-     * @return \Tk\Request|array|\ArrayAccess
+     * @return \Tk\Request
      */
     public function &getRequest()
     {

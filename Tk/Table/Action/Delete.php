@@ -124,10 +124,10 @@ class Delete extends Button
     {
         $reqName = $this->getTable()->makeInstanceKey($this->getName());
         $request = $this->getTable()->getRequest();
-        if (empty($request[$reqName])) {
+        if (empty($request->get($reqName))) {
             return;
         }
-        $selected = $request[$this->checkboxName];
+        $selected = $request->get($this->checkboxName);
         if (!is_array($selected)) return;
 
         // TODO: This is deprecated delete in the future
