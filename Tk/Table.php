@@ -178,8 +178,8 @@ class Table implements \Tk\InstanceKey
             }
         }
 
-        $e = new \Tk\Event\TableEvent($this);
         if ($this->dispatcher) {
+            $e = new \Tk\Event\TableEvent($this);
             $this->dispatcher->dispatch($e, \Tk\Table\TableEvents::TABLE_INIT);
         }
 
