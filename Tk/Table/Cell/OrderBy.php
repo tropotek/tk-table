@@ -74,7 +74,7 @@ class OrderBy extends Text
             $this->className = get_class($obj);
         }
         /* @var \Tk\Request $request */
-        $request = $this->getTable()->getRequest();
+        $request = $this->getTable()->getRequest()->all();
         if (isset($request[$this->getTable()->makeInstanceKey('orderSwp')])) {
             if (isset($request['newOrder'])) {
                 $this->doOrderUpdate($request);
