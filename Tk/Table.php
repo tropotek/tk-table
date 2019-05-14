@@ -180,13 +180,13 @@ class Table implements \Tk\InstanceKey
 
         if ($this->dispatcher) {
             $e = new \Tk\Event\TableEvent($this);
-            $this->dispatcher->dispatch($e, \Tk\Table\TableEvents::TABLE_INIT);
+            $this->dispatcher->dispatch(\Tk\Table\TableEvents::TABLE_INIT, $e);
         }
 
         $this->execute();
 
         if ($this->dispatcher) {
-            $this->dispatcher->dispatch($e, \Tk\Table\TableEvents::TABLE_EXECUTE);
+            $this->dispatcher->dispatch(\Tk\Table\TableEvents::TABLE_EXECUTE, $e);
         }
         return $this;
     }
