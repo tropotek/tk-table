@@ -27,6 +27,11 @@ class Csv extends Button
         'Tk\Table\Cell\Actions'
     );
 
+    /**
+     * @var string
+     */
+    protected $filename = '';
+
 
     /**
      * @param \Tk\Db\Pdo $db
@@ -68,6 +73,9 @@ class Csv extends Button
         ini_set('max_execution_time', 0);
 
         $file = $this->getTable()->getId() . '_' . date('Ymd') . '.csv';
+        if ($this->getFilename()) {
+            $file = $this->getFilename() . '_' . date('Ymd') . '.csv';
+        }
         if ($request->has('csv_name')) {
             $file = preg_replace('/[^a-z0-9_\.-]/i', '_', basename(strip_tags(trim($request['csv_name']))));
         }
@@ -147,6 +155,24 @@ JS;
         //$template->appendJs($js);
 
         return $template;
+    }
+
+    /**
+     * @return string
+     */
+    public function getFilename()
+    {
+        return $this->filename;
+    }
+
+    /**
+     * @param string $filename
+     * @return $this
+     */
+    public function setFilename($filename)
+    {
+        $this->filename = $filename;
+        return $this;
     }
 
     /**
