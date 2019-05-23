@@ -105,16 +105,21 @@ class Table implements \Tk\InstanceKey
      *
      * @param string $tableId
      */
-    public function __construct($tableId = 'table')
+    public function __construct($tableId = '')
     {
-        $this->getInstanceId(); // Init the instance ID so is can be used if needed
-        //$this->id = $tableId.'-'.$this->getInstanceId();
+        if (!$tableId) {
+            $uri = \Tk\Uri::create();
+            $uri = str_replace('.'.$uri->getExtension(), '', $uri->basename());
+            $tableId = trim(strtolower(preg_replace('/[A-Z]/', '-$0', $uri . \Tk\ObjectUtil::basename(get_class($this)) )), '-');
+        }
+
         $this->id = $tableId;
         $this->setAttr('id', $this->getId());
+        $this->getInstanceId(); // Init the instance ID so is can be used if needed
         $this->form = $this->makeForm();
 
         // TODO: Re-think this, we need to look at both the tables and forms create/init/execute/show logic so they work together.
-        $this->initCells();
+        //$this->initCells();
     }
 
     /**
@@ -980,7 +985,7 @@ class Table implements \Tk\InstanceKey
      * @deprecated
      * @remove 2.4.0
      */
-    public function initCells() {}
+    //public function initCells() {}
 
 
     // TODO: I do not think this is used enough to keep, if it is then wew need to find an external solution I think...
