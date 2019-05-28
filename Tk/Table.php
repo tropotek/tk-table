@@ -85,7 +85,7 @@ class Table implements \Tk\InstanceKey
     protected $hasExecuted = false;
 
     /**
-     * @var null|\Tk\Event\Dispatcher
+     * @var null|\Symfony\Component\EventDispatcher\EventDispatcherInterface
      */
     protected $dispatcher = null;
 
@@ -257,7 +257,7 @@ class Table implements \Tk\InstanceKey
     }
 
     /**
-     * @return null|\Tk\Event\Dispatcher
+     * @return null|\Symfony\Component\EventDispatcher\EventDispatcherInterface
      */
     public function getDispatcher()
     {
@@ -265,7 +265,7 @@ class Table implements \Tk\InstanceKey
     }
 
     /**
-     * @param null|\Tk\Event\Dispatcher $dispatcher
+     * @param null|\Symfony\Component\EventDispatcher\EventDispatcherInterface $dispatcher
      */
     public function setDispatcher($dispatcher)
     {
