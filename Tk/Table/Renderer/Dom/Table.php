@@ -98,7 +98,7 @@ class Table extends Iface
         if ($template->keyExists('var', 'filters')) {
             if (count($this->getTable()->getFilterForm()->getFieldList()) > 2) {
                 $template->appendTemplate('filters', $this->getFormRenderer()->show());
-                $template->setChoice('filters');
+                $template->setVisible('filters');
             }
         }
 
@@ -192,7 +192,7 @@ class Table extends Iface
                 } else {
                     $template->appendHtml('actions', $html);
                 }
-                $template->setChoice('actions');
+                $template->setVisible('actions');
             }
         }
 
@@ -335,7 +335,7 @@ class Table extends Iface
             } else {
                 $this->cellRepeat->appendHtml('foot', $renderer);
             }
-            $template->setChoice('foot');
+            $template->setVisible('foot');
         }
     }
 

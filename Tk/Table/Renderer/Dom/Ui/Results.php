@@ -97,7 +97,7 @@ class Results extends Iface
         $template->insertText('to', $to);
         $template->insertText('total', $this->total);
 
-        $template->show('tk-results');
+        $template->setVisible('tk-results');
     }
 
     /**

@@ -162,7 +162,7 @@ class Pager extends Iface
             }
 
             if ($numPages > 0) {
-                $template->setChoice('Pager');
+                $template->setVisible('Pager');
             }
 
             $pageUrl = $this->pageUrl;

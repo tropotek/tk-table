@@ -70,7 +70,7 @@ class Button extends Iface
 
         if ($this->icon) {
             $template->addCss('icon', $this->icon);
-            $template->show('icon');
+            $template->setVisible('icon');
         }
         $template->appendHtml('btnTitle', $this->getLabel());
 
