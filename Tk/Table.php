@@ -989,6 +989,11 @@ class Table implements \Tk\InstanceKey
 
 
     // TODO: I do not think this is used enough to keep, if it is then wew need to find an external solution I think...
+    // TODO:   - It seems to be used in the VOCE site to update the limit list in the renderer, this is not a good way to update it
+    // TODO:   Find a new way to pass these params around to those objects, probably better to use the renderer
+    // TODO:
+    // TODO:
+    // TODO:
     /**
      * @param $name
      * @return string|mixed
