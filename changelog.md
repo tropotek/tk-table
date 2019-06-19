@@ -1,5 +1,10 @@
 #CHANGELOG#
 
+Ver 3.0.12 [2019-06-19]:
+-------------------------------
+  - Upgraded all table, forms and mappers
+
+
 Ver 3.0.10 [2019-06-17]:
 -------------------------------
   - Cleaning up a lot of managers and editors
