@@ -1,5 +1,10 @@
 #CHANGELOG#
 
+Ver 3.0.14 [2019-09-24]:
+-------------------------------
+  - Updated dialogs and fixed Minutes cell
+
+
 Ver 3.0.12 [2019-06-19]:
 -------------------------------
   - Upgraded all table, forms and mappers
