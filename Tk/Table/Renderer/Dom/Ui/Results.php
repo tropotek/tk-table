@@ -110,7 +110,7 @@ class Results extends Iface
         $xhtml = <<<XHTML
 <div class="tk-results" var="tk-results">
   <span choice="tk-results">
-    <span var="from"></span>-<span var="to"></span> of <span var="total"></span>
+    <span var="from"></span>-<span var="to"></span> of <span var="total"></span> rows
   </span>
 </div>
 XHTML;
