@@ -1,5 +1,11 @@
 #CHANGELOG#
 
+Ver 3.0.16 [2019-10-04]:
+-------------------------------
+  - Fixed Skills links in the placement manager
+  - Added supervisor fields to the company/placement report
+
+
 Ver 3.0.14 [2019-09-24]:
 -------------------------------
   - Updated dialogs and fixed Minutes cell
