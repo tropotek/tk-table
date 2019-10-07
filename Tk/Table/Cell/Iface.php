@@ -352,13 +352,25 @@ abstract class Iface
         $pre = $this->getOrderProperty() . ' ';
         $url = Uri::create()->remove($key);
 
+
+
+        // DESC first
         if ($order == Table::ORDER_ASC) {
-            $url->set($key, $pre . Table::ORDER_DESC);
-        } else if ($order == Table::ORDER_DESC) {
             $url->set($key, Table::ORDER_NONE);
-        } else if ($order == Table::ORDER_NONE) {
+        } else if ($order == Table::ORDER_DESC) {
             $url->set($key, $pre . Table::ORDER_ASC);
+        } else if ($order == Table::ORDER_NONE) {
+            $url->set($key, $pre . Table::ORDER_DESC);
         }
+
+        // ASC first
+//        if ($order == Table::ORDER_ASC) {
+//            $url->set($key, $pre . Table::ORDER_DESC);
+//        } else if ($order == Table::ORDER_DESC) {
+//            $url->set($key, Table::ORDER_NONE);
+//        } else if ($order == Table::ORDER_NONE) {
+//            $url->set($key, $pre . Table::ORDER_ASC);
+//        }
         return $url;
     }
 
