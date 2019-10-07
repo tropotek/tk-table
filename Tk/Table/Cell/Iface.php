@@ -294,6 +294,7 @@ abstract class Iface
         }
         $url = Uri::create($url);
         if ($this->getUrlProperty()) {
+            vd($this->getUrlProperty(), $this->getRowPropVal($obj, $this->getUrlProperty()));
             list($prop, $val) = $this->getRowPropVal($obj, $this->getUrlProperty());
             $url->set($prop, $val);
         }
@@ -374,10 +375,11 @@ abstract class Iface
      * @return $this
      * @note When using a callable do not call $cell->setUrl($url) within the function or else you overwrite the callable method
      */
-    public function setUrl($url, $urlProperty = 'id')
+    public function setUrl($url, $urlProperty = '')
     {
         $this->url = $url;
-        $this->urlProperty = $urlProperty;
+        if ($urlProperty)
+            $this->urlProperty = $urlProperty;
         return $this;
     }
 
