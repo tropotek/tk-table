@@ -57,7 +57,7 @@ abstract class Iface
     /**
      * @var string
      */
-    protected $urlProperty = '';
+    protected $urlProperty = 'id';
 
     /**
      * @var Table
