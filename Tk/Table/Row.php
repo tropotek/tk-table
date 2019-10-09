@@ -61,10 +61,17 @@ class Row
         return $this;
     }
 
+    /**
+     * reset all the attrs and css and data back to its default state
+     * @todo: Look into if this could replace the Cell hack to add css and attrs to the row.
+     *
+     * @return $this
+     */
     public function resetRow()
     {
         $this->setAttrList();
         $this->setCssList();
         $this->getCollection()->clear();
+        return $this;
     }
 }

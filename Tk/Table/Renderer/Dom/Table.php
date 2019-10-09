@@ -267,7 +267,7 @@ class Table extends Iface
         $rowCssList = array();
         $rowAttrList = array();
         $row = $this->getTable()->getRow();
-        $row->setRowId($this->rowId)->resetRow();
+        $row->resetRow()->setRowId($this->rowId);
 
         if (!$this->rowRepeat || !$this->rowRepeat->keyExists('repeat', 'td')) return;
 
