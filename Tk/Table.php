@@ -6,6 +6,7 @@ use Tk\Table\Action;
 use Tk\Table\Cell;
 use Tk\Db\Tool;
 use \Tk\Form\Event;
+use Tk\Table\Row;
 
 /**
  * @author Michael Mifsud <info@tropotek.com>
@@ -99,6 +100,11 @@ class Table implements \Tk\InstanceKey
      */
     private $renderer = null;
 
+    /**
+     * @var Row
+     */
+    private $row = null;
+
     
     /**
      * Create a table object
@@ -114,6 +120,7 @@ class Table implements \Tk\InstanceKey
         }
 
         $this->id = $tableId;
+        $this->row = new Row();
         $this->setAttr('id', $this->getId());
         $this->getInstanceId(); // Init the instance ID so is can be used if needed
         $this->form = $this->makeForm();
@@ -390,6 +397,7 @@ class Table implements \Tk\InstanceKey
     public function appendCell($cell, $refCell = null)
     {
         $cell->setTable($this);
+        $cell->setRow($this->row);
         if (is_string($refCell)) {
             $refCell = $this->findCell($refCell);
         }
@@ -416,6 +424,7 @@ class Table implements \Tk\InstanceKey
     public function prependCell($cell, $refCell = null)
     {
         $cell->setTable($this);
+        $cell->setRow($this->row);
         if (is_string($refCell)) {
             $refCell = $this->findCell($refCell);
         }
@@ -510,6 +519,7 @@ class Table implements \Tk\InstanceKey
     {
         foreach ($array as $cell) {
             $cell->setTable($this);
+            $cell->setRow($this->row);
         }
         $this->cellList = $array;
         return $this;
@@ -978,6 +988,14 @@ class Table implements \Tk\InstanceKey
     public function addFilter($field)
     {
         return $this->appendFilter($field);
+    }
+
+    /**
+     * @return Row
+     */
+    public function getRow(): Row
+    {
+        return $this->row;
     }
 
     /**

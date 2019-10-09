@@ -237,6 +237,7 @@ class Table extends Iface
         $template = $this->getTemplate();
         $this->rowClassArr = array();
         $this->rowId = 0;
+
         if ($this->getTable()->getTool()) {
             $this->rowId = $this->getTable()->getTool()->getOffset();
             //$this->rowId = $this->getTable()->getList()->getTool()->getOffset();
@@ -265,6 +266,8 @@ class Table extends Iface
     {
         $rowCssList = array();
         $rowAttrList = array();
+        $row = $this->getTable()->getRow();
+        $row->setRowId($this->rowId)->resetRow();
 
         if (!$this->rowRepeat || !$this->rowRepeat->keyExists('repeat', 'td')) return;
 
@@ -274,14 +277,19 @@ class Table extends Iface
             $cell->storeProperties();
             $this->cellRepeat = $this->rowRepeat->getRepeat('td');
             $this->showCell($cell, $obj);
-            $rowCssList = array_merge($rowCssList, $cell->getRow()->getCssList());
-            $rowAttrList = array_merge($rowAttrList, $cell->getRow()->getAttrList());
+//            $rowCssList = array_merge($rowCssList, $cell->getRow()->getCssList());
+//            $rowAttrList = array_merge($rowAttrList, $cell->getRow()->getAttrList());
             $this->cellRepeat->appendRepeat();
             $cell->resetProperties();
         }
-        $this->rowRepeat->addCss('tr', trim(implode(' ', $rowCssList)) );
-        foreach ($rowAttrList as $k => $v) {
-            $this->rowRepeat->setAttr('tr', $k, $v);
+        if ($cell && $cell->getRow()) {
+            $row = $cell->getRow();
+            $rowCssList = array_merge($rowCssList, $row->getCssList());
+            $rowAttrList = array_merge($rowAttrList, $row->getAttrList());
+            $this->rowRepeat->addCss('tr', trim(implode(' ', $rowCssList)));
+            foreach ($rowAttrList as $k => $v) {
+                $this->rowRepeat->setAttr('tr', $k, $v);
+            }
         }
     }
 

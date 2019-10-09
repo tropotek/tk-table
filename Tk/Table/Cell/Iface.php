@@ -102,7 +102,7 @@ abstract class Iface
             $label = ucwords(preg_replace('/[A-Z]/', ' $0', $label));
         }
         $this->label = $label;
-        $this->row = new \Tk\Table\Row();
+        //$this->row = new \Tk\Table\Row();
         $this->setOrderProperty($property);
     }
 
@@ -175,6 +175,7 @@ abstract class Iface
         $this->store['rowCssList'] = $this->getRow()->getCssList();
         $this->store['rowAttrList'] = $this->getRow()->getAttrList();
     }
+
 
     // -------------------------------------------------------------------
 
@@ -294,7 +295,6 @@ abstract class Iface
         }
         $url = Uri::create($url);
         if ($this->getUrlProperty()) {
-            vd($this->getUrlProperty(), $this->getRowPropVal($obj, $this->getUrlProperty()));
             list($prop, $val) = $this->getRowPropVal($obj, $this->getUrlProperty());
             $url->set($prop, $val);
         }
@@ -538,6 +538,16 @@ abstract class Iface
     public function getProperty()
     {
         return $this->property;
+    }
+
+    /**
+     * @param Table\Row $row
+     * @return Iface
+     */
+    public function setRow($row = null)
+    {
+        $this->row = $row;
+        return $this;
     }
 
     /**
