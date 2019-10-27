@@ -1,5 +1,11 @@
 #CHANGELOG#
 
+Ver 3.0.28 [2019-10-28]:
+-------------------------------
+  - Had to remove the subject as the main feature of a placement. All projects are now shown based
+   on their dates
+
+
 Ver 3.0.26 [2019-10-15]:
 -------------------------------
 
