@@ -62,7 +62,8 @@ class Text extends Iface
             $propValue = \Tk\Str::wordcat($propValue, $this->charLimit - 3, '...');
         }
         if (!$this->hasAttr('title')) {
-            $this->setAttr('title', htmlentities($propValue));
+            //$this->setAttr('title', htmlentities($propValue));
+            $this->setAttr('title', htmlentities($value));
         }
 
         $str = htmlentities($propValue);
