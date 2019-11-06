@@ -23,6 +23,11 @@ class OrderBy extends Text
      */
     protected $onUpdate = null;
 
+    /**
+     * @var bool
+     */
+    protected $iconOnly = false;
+
 
     /**
      * OrderBy constructor.
@@ -42,6 +47,26 @@ class OrderBy extends Text
     public function setOnUpdate($onUpdate)
     {
         $this->onUpdate = $onUpdate;
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isIconOnly()
+    {
+        return $this->iconOnly;
+    }
+
+    /**
+     * @param bool $iconOnly
+     * @return OrderBy
+     */
+    public function setIconOnly($iconOnly = true)
+    {
+        if ($iconOnly)
+            $this->setLabel('');
+        $this->iconOnly = $iconOnly;
         return $this;
     }
 
@@ -175,7 +200,10 @@ class OrderBy extends Text
     public function getCellHtml($obj, $rowIdx = null)
     {
         $template = $this->__makeTemplate();
+        if ($this->isIconOnly())
+            $this->addCss('icon-only');
         $this->setAttr('data-objectid', $obj->id);
+        $this->setAttr('title', 'Click and drag to change order');
         $this->addCss('tk-orderBy');
 //        $value = $this->getPropertyValue($obj, $this->getProperty());
         //vd($value);
@@ -304,7 +332,6 @@ JS;
         return $mapper->getDb()->exec($query);
     }
 
-
     /**
      * makeTemplate
      *
@@ -318,7 +345,9 @@ JS;
     <a href="javascript:;" title="Move Order Up" rel="nofollow" class="btn btn-default btn-sm btn-xs" var="upUrl"><i class="fa fa-caret-up" var="upIcon"></i></a>
     <a href="javascript:;" title="Move Order Down" rel="nofollow" class="btn btn-default btn-sm btn-xs" var="dnUrl"><i class="fa fa-caret-down" var="dnIcon"></i></a>
   </div>  
-  <a href="javascript:;" title="Click And Drag" rel="nofollow" class="drag"><i class="fa fa-ellipsis-v"></i></a>
+  <a href="javascript:;" title="Click And Drag" rel="nofollow" class="drag">
+    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA8AAAAPAgMAAABGuH3ZAAAACVBMVEX///8AAAAAM8wY6EL2AAAAAXRSTlMAQObYZgAAAAFiS0dEAIgFHUgAAAAJcEhZcwAACxMAAAsTAQCanBgAAAAHdElNRQfjCwYAHAmRFEi4AAAAH0lEQVQI12NgAANGEMHqACREA2Bc/ARYHVgHI8QIBgAy+QFeo6/RgQAAAABJRU5ErkJggg==" alt="Drag"/>
+  </a>
 </div>
 HTML;
         return \Dom\Loader::load($html);
