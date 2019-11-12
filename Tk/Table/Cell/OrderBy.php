@@ -209,10 +209,12 @@ class OrderBy extends Text
         //vd($value);
 
         $template->appendJsUrl(\Tk\Uri::create('/vendor/ttek/tk-table/js/jquery.tableOrderBy.js'));
+        $handle = $this->isIconOnly() ? 'td.tk-orderBy' : '';
         $js = <<<JS
 jQuery(function($) {
   $('.tk-sortable tbody').tableOrderBy({
-      selector: '.tk-sortable tbody'
+      selector: '.tk-sortable tbody',
+      handle: '$handle'
   });
 });
 JS;

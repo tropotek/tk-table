@@ -25,13 +25,13 @@
  * </code>
  */
 (function($) {
+
   /**
    *
    * @param element
    * @param options
    */
   var tableOrderBy = function(element, options) {
-
 
     // Current instance of the object
     var plugin = this;
@@ -42,6 +42,7 @@
 
     var defaults = {
       selector: '.tk-sortable tbody',
+      handle: '',
       sortableOptions: {
         helper: function(e, ui) {
           return plugin.sortableHelper.call(this, e, ui);
@@ -66,7 +67,7 @@
           console.error('Error: Sortable Jquery UI (http://jqueryui.com/) required for tableOrderBy plugin.');
         return;
       }
-      $element.sortable(plugin.settings.sortableOptions).disableSelection();
+      $element.sortable($.extend({}, plugin.settings.sortableOptions, {handle: plugin.settings.handle})).disableSelection();
     };
 
     // -- Private Methods --
