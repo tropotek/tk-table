@@ -1,5 +1,10 @@
 #CHANGELOG#
 
+Ver 3.0.30 [2019-11-12]:
+-------------------------------
+  - Updated subject enrollments to be more intellegant when importing CSV
+
+
 Ver 3.0.28 [2019-10-28]:
 -------------------------------
   - Had to remove the subject as the main feature of a placement. All projects are now shown based
