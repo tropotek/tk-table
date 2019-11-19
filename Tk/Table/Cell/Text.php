@@ -63,13 +63,13 @@ class Text extends Iface
         }
         if (!$this->hasAttr('title')) {
             //$this->setAttr('title', htmlentities($propValue));
-            $this->setAttr('title', htmlentities($value));
+            $this->setAttr('title', htmlspecialchars($value));
         }
 
-        $str = htmlentities($propValue);
+        $str = htmlspecialchars($propValue);
         $url = $this->getCellUrl($obj);
         if ($url) {
-            $str = sprintf('<a href="%s">%s</a>', htmlentities($url->toString()), htmlentities($propValue));
+            $str = sprintf('<a href="%s">%s</a>', htmlentities($url->toString()), htmlspecialchars($propValue));
         }
         return $str;
     }
