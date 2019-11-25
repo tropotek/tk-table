@@ -126,7 +126,10 @@ class Csv extends Button
                 /* @var $cell Cell\Iface */
                 foreach ($this->table->getCellList() as $cell) {
                     if ($this->ignoreCell($cell)) continue;
-                    $arr[$cell->getLabel()] = $cell->getRawValue($obj);
+                    $value = $cell->getRawValue($obj);
+
+
+                    $arr[$cell->getLabel()] = $value;
                 }
                 fputcsv($out, $arr);
             }
