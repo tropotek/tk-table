@@ -1,5 +1,9 @@
 #CHANGELOG#
 
+Ver 3.0.36 [2019-11-25]:
+-------------------------------
+
+
 Ver 3.0.34 [2019-11-25]:
 -------------------------------
   - Updated status emails and notices for the new Assessment plugin
