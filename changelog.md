@@ -1,5 +1,10 @@
 #CHANGELOG#
 
+Ver 3.0.38 [2019-12-04]:
+-------------------------------
+  - Added time breakdowns for all tasks on dashboard
+
+
 Ver 3.0.36 [2019-11-25]:
 -------------------------------
 
