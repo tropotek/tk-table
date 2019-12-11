@@ -79,6 +79,8 @@ class Delete extends Button
     /**
      * EG:  function (\Tk\Table\Action\Delete $action, $obj) { }
      *
+     * Return false from the callback to stop the call to $obj->delete()
+     *
      * @param callable $callable
      * @return $this
      */
