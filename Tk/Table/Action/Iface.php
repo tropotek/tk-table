@@ -1,6 +1,9 @@
 <?php
 namespace Tk\Table\Action;
 
+use Tk\ConfigTrait;
+use Tk\Dom\AttributesTrait;
+use Tk\Dom\CssTrait;
 use Tk\Table;
 
 /**
@@ -14,8 +17,9 @@ use Tk\Table;
 abstract class Iface extends \Dom\Renderer\Renderer implements \Dom\Renderer\DisplayInterface
 {
 
-    use \Tk\Dom\AttributesTrait;
-    use \Tk\Dom\CssTrait;
+    use AttributesTrait;
+    use CssTrait;
+    use ConfigTrait;
 
 
     /**

@@ -2,6 +2,8 @@
 
 namespace Tk;
 
+use Tk\Dom\AttributesTrait;
+use Tk\Dom\CssTrait;
 use Tk\Table\Action;
 use Tk\Table\Cell;
 use Tk\Db\Tool;
@@ -16,9 +18,10 @@ use Tk\Table\Row;
 class Table implements \Tk\InstanceKey
 {
 
-    use \Tk\Dom\AttributesTrait;
-    use \Tk\Dom\CssTrait;
-    use \Tk\CollectionTrait;
+    use AttributesTrait;
+    use CssTrait;
+    use CollectionTrait;
+    use ConfigTrait;
 
     const PARAM_ORDER_BY = 'orderBy';
     const ORDER_NONE = '';
