@@ -277,19 +277,16 @@ class Table extends Iface
             $cell->storeProperties();
             $this->cellRepeat = $this->rowRepeat->getRepeat('td');
             $this->showCell($cell, $obj);
-//            $rowCssList = array_merge($rowCssList, $cell->getRow()->getCssList());
-//            $rowAttrList = array_merge($rowAttrList, $cell->getRow()->getAttrList());
+            $rowCssList = array_merge($rowCssList, $cell->getRow()->getCssList());
+            $rowAttrList = array_merge($rowAttrList, $cell->getRow()->getAttrList());
             $this->cellRepeat->appendRepeat();
             $cell->resetProperties();
         }
+
         if ($cell && $cell->getRow()) {
-            $row = $cell->getRow();
-            $rowCssList = array_merge($rowCssList, $row->getCssList());
-            $rowAttrList = array_merge($rowAttrList, $row->getAttrList());
-            $this->rowRepeat->addCss('tr', trim(implode(' ', $rowCssList)));
-            foreach ($rowAttrList as $k => $v) {
-                $this->rowRepeat->setAttr('tr', $k, $v);
-            }
+            $this->rowRepeat->addCss('tr', $rowCssList);
+            $this->rowRepeat->setAttr('tr', $rowAttrList);
+
         }
     }
 
