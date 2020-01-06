@@ -636,6 +636,16 @@ class Table implements \Tk\InstanceKey
     }
 
     /**
+     * @param array $array
+     * @return $this
+     */
+    public function setActionList($array = array())
+    {
+        $this->actionList = $array;
+        return $this;
+    }
+
+    /**
      * @return Form
      */
     public function getFilterForm()
