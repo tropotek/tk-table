@@ -1,5 +1,11 @@
 #CHANGELOG#
 
+Ver 3.0.40 [2020-01-07]:
+-------------------------------
+  - Added CA buttons to student placement list as requested.
+  - Added new course record to the tk-unk lib for ver 3.2
+
+
 Ver 3.0.38 [2019-12-04]:
 -------------------------------
   - Added time breakdowns for all tasks on dashboard
