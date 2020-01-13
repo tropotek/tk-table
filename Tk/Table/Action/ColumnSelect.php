@@ -2,6 +2,8 @@
 namespace Tk\Table\Action;
 
 
+use Tk\Collection;
+
 /**
  * @author Michael Mifsud <info@tropotek.com>
  * @see http://www.tropotek.com/
@@ -36,10 +38,6 @@ class ColumnSelect extends Button
         parent::__construct($name, $icon, $url);
         $this->setAttr('type', 'button');
         $this->addCss('tk-column-select-btn');
-        $request = \Tk\Config::getInstance()->getRequest();
-        if ($request->has('action') && preg_match('/^session\.([a-z]+)/', $request->get('action'), $regs)) {
-            $this->doAction($request, $regs[1]);
-        }
     }
 
     /**
@@ -58,7 +56,48 @@ class ColumnSelect extends Button
      */
     public function getSid()
     {
-        return $this->getTable()->getId().'-'.$this->getTable()->getInstanceId();
+        return $this->getTable()->getId() . '-' . $this->getName().'-'.$this->getTable()->getInstanceId();
+    }
+
+    public function init()
+    {
+        parent::init();
+        $request = $this->getRequest();
+        if ($request->has('action') && preg_match('/^session\.([a-z]+)/', $request->get('action'), $regs)) {
+            $this->doAction($request, $regs[1]);
+        }
+    }
+
+    /**
+     * @return mixed|void
+     */
+    public function execute()
+    {
+        parent::execute();
+    }
+
+    /**
+     * @return mixed|Collection
+     */
+    public function getColumnSession()
+    {
+        $tableSession = $session = $this->getTable()->getTableSession();
+        $columnSession = new Collection();
+        if ($tableSession->has($this->getSid())) {
+            $columnSession = $tableSession->get($this->getSid());
+        }
+        $tableSession->set($this->getSid(), $columnSession);
+        return $columnSession;
+    }
+
+    /**
+     * @return $this
+     */
+    public function resetColumnSession()
+    {
+        $sesh = $this->getColumnSession();
+        $sesh->clear();
+        return $this;
     }
 
     /**
@@ -67,40 +106,42 @@ class ColumnSelect extends Button
      */
     public function doAction(\Tk\Request $request, $action)
     {
-        $session = \Tk\Config::getInstance()->getSession();
+        $session = $this->getColumnSession();
         $data = array();
+        $name = $request->get('name');
+        $value = $request->get('value');
         try {
             switch ($action) {
                 case 'set':
-                    if (!$request->get('name') || !$request->get('value'))
+                    if (!$name|| !$value)
                         throw new \Tk\Exception('Invalid parameter name or value');
-                    $session->set($request->get('name'), $request->get('value'));
-                    $data['name'] = $request->get('name');
-                    $data['value'] = $request->get('value');
+                    $session->set($name, $value);
+                    $data['name'] = $name;
+                    $data['value'] = $value;
                     break;
                 case 'get':
-                    if (!$request->get('name'))
+                    if (!$name)
                         throw new \Tk\Exception('Invalid parameter name');
-                    $data['name'] = $request->get('name');
-                    $data['value'] = $session->get($request->get('name'));
+                    $data['name'] = $name;
+                    $data['value'] = $session->get($name);
                     break;
                 case 'remove':
-                    if (!$request->get('name'))
+                    if (!$name)
                         throw new \Tk\Exception('Invalid parameter name');
-                    $data['name'] = $request->get('name');
-                    $data['value'] = $session->get($request->get('name'));
-                    $session->remove($request->get('name'));
+                    $data['name'] = $name;
+                    $data['value'] = $session->get($name);
+                    $session->remove($name);
                     break;
             }
             $response = \Tk\ResponseJson::createJson($data);
             $response->send();
         } catch (\Exception $e) {
+            $data['error'] = $e->getMessage();
             $response = \Tk\ResponseJson::createJson($data, \Tk\Response::HTTP_INTERNAL_SERVER_ERROR);
             $response->send();
         }
         exit();
     }
-
 
     /**
      * Setup the disabled columns using their property name
@@ -145,7 +186,6 @@ class ColumnSelect extends Button
         }
         return $this;
     }
-
 
     /**
      * Setup the default shown columns using their property name
@@ -247,7 +287,7 @@ class ColumnSelect extends Button
     public function reset($b = true)
     {
         if ($b) {
-            \Tk\Config::getInstance()->getSession()->remove($this->getSid());
+            $this->getTable()->getSession()->remove($this->getSid());
         }
         return $this;
     }
@@ -270,14 +310,6 @@ class ColumnSelect extends Button
             $i++;
         }
         return $nums;
-    }
-
-    /**
-     * @return mixed|void
-     */
-    public function execute()
-    {
-        parent::execute();
     }
 
     /**

@@ -126,8 +126,8 @@ class Table implements \Tk\InstanceKey
         $this->row = new Row();
         $this->setAttr('id', $this->getId());
         $this->getInstanceId(); // Init the instance ID so is can be used if needed
+        $this->getTableSession();       // init Table Session
         $this->form = $this->makeForm();
-
         // TODO: Re-think this, we need to look at both the tables and forms create/init/execute/show logic so they work together.
         //$this->initCells();
     }
@@ -316,47 +316,47 @@ class Table implements \Tk\InstanceKey
         return $uri;
     }
 
-    /**
-     * @param \Tk\Request|array|\ArrayAccess $request
-     * @return $this
-     * @deprecated
-     */
-    public function setRequest($request)
-    {
-        return $this;
-    }
+//    /**
+//     * @param \Tk\Request|array|\ArrayAccess $request
+//     * @return $this
+//     * @deprecated
+//     */
+//    public function setRequest($request)
+//    {
+//        return $this;
+//    }
 
-    /**
-     * @return \Tk\Request
-     */
-    public function &getRequest()
-    {
-        $request = $_REQUEST;
-        if (class_exists('\Tk\Config'))
-            $request = \Tk\Config::getInstance()->getRequest();
-        return $request;
-    }
+//    /**
+//     * @return \Tk\Request
+//     */
+//    public function &getRequest()
+//    {
+//        $request = $_REQUEST;
+//        if (class_exists('\Tk\Config'))
+//            $request = \Tk\Config::getInstance()->getRequest();
+//        return $request;
+//    }
+//
+//    /**
+//     * @param \Tk\Session|array|\ArrayAccess $session
+//     * @return $this
+//     * @deprecated
+//     */
+//    public function setSession($session)
+//    {
+//        return $this;
+//    }
 
-    /**
-     * @param \Tk\Session|array|\ArrayAccess $session
-     * @return $this
-     * @deprecated
-     */
-    public function setSession($session)
-    {
-        return $this;
-    }
-
-    /**
-     * @return \Tk\Session|array|\ArrayAccess
-     */
-    public function &getSession()
-    {
-        $session = $_SESSION;
-        if (class_exists('\Tk\Config'))
-            $session = \Tk\Config::getInstance()->getSession();
-        return $session;
-    }
+//    /**
+//     * @return \Tk\Session|array|\ArrayAccess
+//     */
+//    public function &getSession()
+//    {
+//        $session = $_SESSION;
+//        if (class_exists('\Tk\Config'))
+//            $session = \Tk\Config::getInstance()->getSession();
+//        return $session;
+//    }
 
     /**
      * All table related data should be save to this object
@@ -368,16 +368,16 @@ class Table implements \Tk\InstanceKey
         $session = $this->getSession();
         $key = 'tables';
         $tableSession = new Collection();
-        if (isset($session[$key])) {
-            $tableSession = $session[$key];
+        if ($session->has($key)) {
+            $tableSession = $session->get($key);
         }
-        $session[$key] = $tableSession;
-
+        $session->set($key, $tableSession);
         $instanceSession = new Collection();
         if ($tableSession->has($this->getId())) {
             $instanceSession = $tableSession->get($this->getId());
         }
         $tableSession->set($this->getId(), $instanceSession);
+
         return $instanceSession;
     }
 
@@ -922,8 +922,9 @@ class Table implements \Tk\InstanceKey
      */
     public function resetSession()
     {
-        $this->resetSessionOffset();
-        $this->resetSessionTool();
+//        $this->resetSessionOffset();
+//        $this->resetSessionTool();
+        $this->getTableSession()->clear();
         return $this;
     }
 
