@@ -9,8 +9,7 @@ namespace Tk\Table\Cell;
 class ButtonCollection extends Text
 {
     use \Tk\Ui\ElementCollectionTrait;
-
-
+    
     /**
      * Actions constructor.
      * @param string $property
@@ -20,7 +19,6 @@ class ButtonCollection extends Text
     {
         parent::__construct($property, $label);
         $this->setOrderProperty('');
-        //$this->setVisible(false);
     }
 
     /**

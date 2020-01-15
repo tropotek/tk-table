@@ -5,6 +5,7 @@ namespace Tk\Table\Action;
  * @author Michael Mifsud <info@tropotek.com>
  * @see http://www.tropotek.com/
  * @license Copyright 2015 Michael Mifsud
+ * @deprecated use \Tk\Ui\Dialog\Dialog
  */
 class Dialog extends Button
 {
@@ -28,6 +29,7 @@ class Dialog extends Button
     /**
      * @param string $name
      * @param string $icon
+     * @deprecated use \Tk\Ui\Dialog\Dialog
      */
     public function __construct($name = 'dialog', $icon = 'fa fa-file-o')
     {
@@ -39,6 +41,7 @@ class Dialog extends Button
     /**
      * @param string $name
      * @return Dialog
+     * @deprecated use \Tk\Ui\Dialog object lib
      */
     static function create($name = 'dialog')
     {

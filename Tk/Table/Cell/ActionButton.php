@@ -2,26 +2,21 @@
 namespace Tk\Table\Cell;
 
 
+use Tk\Ui\Element;
+
 /**
  * @author Michael Mifsud <info@tropotek.com>
  * @see http://www.tropotek.com/
  * @license Copyright 2017 Michael Mifsud
  * @todo Replace this with the \Tk\Ui\Button object
  */
-class ActionButton
+class ActionButton extends Element
 {
-    use \Tk\Dom\AttributesTrait;
-    use \Tk\Dom\CssTrait;
 
     /**
      * @var int
      */
     protected static $idx = 0;
-
-    /**
-     * @var int
-     */
-    protected $id = 0;
 
     /**
      * @var string
@@ -49,16 +44,6 @@ class ActionButton
     protected $attr = array();
 
     /**
-     * @var null|callable
-     */
-    protected $onShow = null;
-
-    /**
-     * @var boolean
-     */
-    protected $visible = true;
-
-    /**
      * @var boolean
      */
     protected $showLabel = false;
@@ -70,8 +55,6 @@ class ActionButton
 
 
     /**
-     * ActionButton constructor.
-     *
      * @param string $title
      * @param null|\Tk\Uri|string $url
      * @param string $icon
@@ -93,8 +76,6 @@ class ActionButton
     }
 
     /**
-     * ActionButton constructor.
-     *
      * @param string $title
      * @param null|\Tk\Uri $url
      * @param string $icon
@@ -108,21 +89,12 @@ class ActionButton
     }
 
     /**
-     * @return int
-     */
-    public function getId()
-    {
-        return $this->id;
-    }
-
-    /**
      * @return string
      */
     public function getTitle()
     {
         return $this->title;
     }
-
 
     /**
      * @return bool
@@ -185,52 +157,6 @@ class ActionButton
     public function setIcon($icon)
     {
         $this->icon = $icon;
-        return $this;
-    }
-
-    /**
-     * @return callable|null
-     */
-    public function getOnShow()
-    {
-        return $this->onShow;
-    }
-
-    /**
-     * Eg: function ($cell, $obj, $btn) {}
-     *
-     * @param callable|null $onShow
-     * @return $this
-     */
-    public function setOnShow($onShow)
-    {
-        $this->onShow = $onShow;
-        return $this;
-    }
-
-    /**
-     * @return bool
-     */
-    public function hasOnShow()
-    {
-        return is_callable($this->getOnShow());
-    }
-
-    /**
-     * @return bool
-     */
-    public function isVisible()
-    {
-        return $this->visible;
-    }
-
-    /**
-     * @param bool $visible
-     * @return $this
-     */
-    public function setVisible($visible)
-    {
-        $this->visible = $visible;
         return $this;
     }
 
