@@ -28,7 +28,6 @@ class ActionButton extends \Tk\Ui\Link
      * @param string $icon
      * @param string $css
      * @return Link
-     * @note this is a helper class to remove the Z
      */
     public static function createBtn($text, $url = null, $icon = '', $css = 'btn btn-default btn-sm btn-xs')
     {
