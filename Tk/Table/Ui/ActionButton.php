@@ -1,6 +1,7 @@
 <?php
 namespace Tk\Table\Ui;
 
+use Tk\Ui\Link;
 
 /**
  * @author Michael Mifsud <info@tropotek.com>
@@ -8,7 +9,7 @@ namespace Tk\Table\Ui;
  * @license Copyright 2017 Michael Mifsud
  * @todo Replace this with the \Tk\Ui\Button object
  */
-class ActionButton extends \Tk\Ui\Link
+class ActionButton extends Link
 {
 
     /**
@@ -36,6 +37,18 @@ class ActionButton extends \Tk\Ui\Link
         return $obj;
     }
 
+
+    /**
+     * function ($cell, $obj, $btn) {}
+     *
+     * @param callable|null $onShow
+     * @return $this
+     */
+    public function setOnShow($onShow)
+    {
+        $this->onShow = $onShow;
+        return $this;
+    }
 
 
     /**

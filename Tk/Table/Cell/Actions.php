@@ -133,7 +133,7 @@ class Actions extends Text
     }
 
     /**
-     * @param \App\Db\User $obj
+     * @param \Tk\Db\ModelInterface $obj
      * @param int|null $rowIdx The current row being rendered (0-n) If null no rowIdx available.
      * @return string|\Dom\Template
      */

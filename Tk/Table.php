@@ -86,7 +86,7 @@ class Table implements \Tk\InstanceKey
     /**
      * @var bool
      */
-    protected $hasExecuted = false;
+    protected $executed = false;
 
     /**
      * @var null|\Symfony\Component\EventDispatcher\EventDispatcherInterface
@@ -156,12 +156,30 @@ class Table implements \Tk\InstanceKey
     }
 
     /**
+     * @return bool
+     */
+    public function isExecuted(): bool
+    {
+        return $this->executed;
+    }
+
+    /**
+     * @param bool $executed
+     * @return Table
+     */
+    protected function setExecuted(bool $executed): Table
+    {
+        $this->executed = $executed;
+        return $this;
+    }
+
+    /**
      * Execute the table
      * Generally called in the renderer`s show() method
      */
     public function execute()
     {
-        if (!$this->hasExecuted) {
+        if (!$this->isExecuted()) {
             /* @var Cell\Iface $cell */
             foreach ($this->getCellList() as $cell) {
                 $cell->execute();
@@ -173,7 +191,7 @@ class Table implements \Tk\InstanceKey
                     $action->execute();
                 }
             }
-            $this->hasExecuted = true;
+            $this->setExecuted(true);
         }
     }
 
