@@ -98,7 +98,7 @@ abstract class Iface extends \Dom\Renderer\Renderer implements \Dom\Renderer\Dis
      * @param array $footRenderList
      * @return $this
      */
-    public function setFooterRenderList($footRenderList)
+    public function setFooterRenderList($footRenderList = array())
     {
         $this->footRenderList = $footRenderList;
         return $this;
