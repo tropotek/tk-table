@@ -60,11 +60,7 @@ class Link extends Iface
     {
         return new static($name, $url, $icon);
     }
-    
-    /**
-     *
-     */
-    public function execute() { }
+
 
     /**
      * @return string|\Dom\Template
@@ -74,11 +70,12 @@ class Link extends Iface
         $btnId = $this->getTable()->makeInstanceKey($this->getName());
         $this->setAttr('id', $btnId);
 
-        $template = $this->getTemplate();
+        $template = parent::show();
+
         if ($this->getIcon()) {
             $template->addCss('icon', $this->getIcon());
         } else {
-            $template->hide('icon');
+            $template->setVisible('icon', false);
         }
         $template->appendHtml('btnTitle', $this->getLabel());
 

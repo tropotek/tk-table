@@ -40,15 +40,6 @@ class SelectAll extends Button
     }
 
     /**
-     * @return mixed
-     */
-    public function execute()
-    {
-        //$request = $this->getTable()->getRequest();
-        //\Tk\Uri::create()->remove($this->getTable()->makeInstanceKey($this->getName()))->redirect();
-    }
-
-    /**
      * @return string|\Dom\Template
      */
     public function show()
@@ -58,6 +49,7 @@ class SelectAll extends Button
         $this->addCss('tk-action-select-all');
 
         $template = parent::show();
+
         $js = <<<JS
 jQuery(function($) {
   $('.tk-action-select-all').on('click', function () {

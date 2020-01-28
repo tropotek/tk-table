@@ -11,16 +11,6 @@ class Dialog extends Button
 {
 
     /**
-     * @var null|callable
-     */
-    public $onShow = null;
-
-    /**
-     * @var null|callable
-     */
-    public $onExecute = null;
-
-    /**
      * @var string
      */
     protected $checkboxName = 'id';
@@ -46,47 +36,6 @@ class Dialog extends Button
     static function create($name = 'dialog')
     {
         return new static($name);
-    }
-
-
-    /**
-     * @return callable|null
-     */
-    public function getOnShow()
-    {
-        return $this->onShow;
-    }
-
-    /**
-     * Eg: function ($dialog) { }
-     *
-     * @param callable|null $onShow
-     * @return $this
-     */
-    public function setOnShow($onShow)
-    {
-        $this->onShow = $onShow;
-        return $this;
-    }
-
-    /**
-     * @return callable|null
-     */
-    public function getOnExecute()
-    {
-        return $this->onExecute;
-    }
-
-    /**
-     * Eg: function ($dialog) { }
-     *
-     * @param callable|null $onExecute
-     * @return $this
-     */
-    public function setOnExecute($onExecute)
-    {
-        $this->onExecute = $onExecute;
-        return $this;
     }
 
     /**
@@ -119,11 +68,7 @@ class Dialog extends Button
      */
     public function execute()
     {
-
-        if ($this->getOnExecute()) {
-            call_user_func_array($this->getOnExecute(), array($this));
-        }
-
+        parent::execute();
     }
 
     /**
@@ -131,12 +76,14 @@ class Dialog extends Button
      */
     public function show()
     {
-        $template = $this->getTemplate();
+
         $dialogId = $this->getDialogId();
 
         $this->setAttr('data-target', '#'.$dialogId);
         $this->setAttr('data-cb-name', $this->getCheckboxName());
+        $this->getOnShow()->setEnabled(false);
         $template = parent::show();
+        $this->getOnShow()->setEnabled(true);
 
         $template->setAttr('dialog', 'id', $dialogId);
         $template->setAttr('dialog', 'aria-labelledby', $dialogId.'Label');
@@ -173,9 +120,7 @@ JS;
         $template->appendJs($js);
 
 
-        if ($this->getOnShow()) {
-            call_user_func_array($this->getOnShow(), array($this));
-        }
+        $this->getOnShow()->execute($this);
         return $template;
     }
 

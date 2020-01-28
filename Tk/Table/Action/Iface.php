@@ -1,6 +1,8 @@
 <?php
 namespace Tk\Table\Action;
 
+
+use Tk\Callback;
 use Tk\ConfigTrait;
 use Tk\Dom\AttributesTrait;
 use Tk\Dom\CssTrait;
@@ -43,12 +45,30 @@ abstract class Iface extends \Dom\Renderer\Renderer implements \Dom\Renderer\Dis
      */
     protected $visible = true;
 
+    /**
+     * @var Callback
+     */
+    public $onInit = null;
+
+    /**
+     * @var Callback
+     */
+    public $onShow = null;
+
+    /**
+     * @var Callback
+     */
+    public $onExecute = null;
+
 
     /**
      * @param string $name The action event name
      */
     public function __construct($name)
     {
+        $this->onInit = Callback::create();
+        $this->onExecute = Callback::create();
+        $this->onShow = Callback::create();
         $this->setName($name);
         $this->setLabel(ucfirst(preg_replace('/[A-Z]/', ' $0', $name)));
         $this->addCss('a'.ucFirst($name));
@@ -58,14 +78,28 @@ abstract class Iface extends \Dom\Renderer\Renderer implements \Dom\Renderer\Dis
      * Use this to init any code. This will be run on every page load.
      * 
      */
-    public function init() {}
+    public function init()
+    {
+        $this->getOnInit()->execute($this);
+    }
 
     /**
-     * Execute the button event. This will only be called if the button name is in the request.
-     * 
-     * @return mixed
+     *
      */
-    abstract public function execute();
+    public function execute()
+    {
+        $this->getOnExecute()->execute($this);
+    }
+
+    /**
+     * @return \Dom\Renderer\Renderer|\Dom\Template|void|null
+     */
+    public function show()
+    {
+        $template = $this->getTemplate();
+        $this->getOnShow()->execute($this);
+        return $template;
+    }
 
 
     /**
@@ -168,6 +202,110 @@ abstract class Iface extends \Dom\Renderer\Renderer implements \Dom\Renderer\Dis
     public function setVisible($visible)
     {
         $this->visible = $visible;
+        return $this;
+    }
+
+
+    /**
+     * @return Callback
+     */
+    public function getOnInit()
+    {
+        return $this->onInit;
+    }
+
+    /**
+     * Eg: function ($dialog) { }
+     *
+     * @param callable|null $onInit
+     * @return $this
+     * @deprecated use addOnInit($callable, Priority)
+     */
+    public function setOnInit($onInit)
+    {
+        $this->addOnInit($onInit);
+        return $this;
+    }
+
+    /**
+     * Eg: function ($dialog) { }
+     *
+     * @param callable $callable
+     * @param int $priority
+     * @return $this
+     */
+    public function addOnInit($callable, $priority = Callback::DEFAULT_PRIORITY)
+    {
+        $this->getOnInit()->append($callable, $priority);
+        return $this;
+    }
+
+
+    /**
+     * @return Callback
+     */
+    public function getOnShow()
+    {
+        return $this->onShow;
+    }
+
+    /**
+     * Eg: function ($dialog) { }
+     *
+     * @param callable|null $onShow
+     * @return $this
+     * @deprecated use addOnShow($callable, Priority)
+     */
+    public function setOnShow($onShow)
+    {
+        $this->addOnShow($onShow);
+        return $this;
+    }
+
+    /**
+     * Eg: function ($dialog) { }
+     *
+     * @param callable $callable
+     * @param int $priority
+     * @return $this
+     */
+    public function addOnShow($callable, $priority = Callback::DEFAULT_PRIORITY)
+    {
+        $this->getOnShow()->append($callable, $priority);
+        return $this;
+    }
+
+    /**
+     * @return Callback
+     */
+    public function getOnExecute()
+    {
+        return $this->onExecute;
+    }
+
+    /**
+     * Eg: function ($dialog) { }
+     *
+     * @param callable|null $onExecute
+     * @return $this
+     * @deprecated use addOnExecute($callable, Priority)
+     */
+    public function setOnExecute($onExecute)
+    {
+        $this->addOnExecute($onExecute);
+        return $this;
+    }
+
+    /**
+     * Eg: function ($dialog) { }
+     *
+     * @param callable $callable
+     * @param int $priority
+     * @return $this
+     */
+    public function addOnExecute($callable, $priority = Callback::DEFAULT_PRIORITY)
+    {
+        $this->getOnExecute()->append($callable, $priority);
         return $this;
     }
 
