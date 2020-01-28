@@ -1,6 +1,8 @@
 <?php
 namespace Tk\Table\Ui;
 
+use Tk\Callback;
+use Tk\Ui\Element;
 use Tk\Ui\Link;
 
 /**
@@ -37,16 +39,16 @@ class ActionButton extends Link
         return $obj;
     }
 
-
     /**
      * function ($cell, $obj, $btn) {}
      *
-     * @param callable|null $onShow
-     * @return $this
+     * @param callable $callable
+     * @param int $priority [optional]
+     * @return Element
      */
-    public function setOnShow($onShow)
+    public function addOnShow($callable, $priority=Callback::DEFAULT_PRIORITY)
     {
-        $this->onShow = $onShow;
+        $this->getOnShow()->append($callable, $priority);
         return $this;
     }
 
@@ -99,11 +101,13 @@ class ActionButton extends Link
     public function show()
     {
         $onShow = $this->getOnShow();
-        $this->setOnShow(null);     // Hide callable from parents
+        //$this->setOnShow(null);     // Hide callable from parents
+        $this->getOnShow()->setEnabled(false);
         if (!$this->isShowLabel()) $this->setText('');
 
         $template = parent::show();
-        $this->setOnShow($onShow);          // replace callable so Collection can call it during rendering
+        //$this->setOnShow($onShow);          // replace callable so Collection can call it during rendering
+        $this->getOnShow()->setEnabled(true);
         return $template;
     }
 }

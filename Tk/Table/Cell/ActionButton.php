@@ -64,7 +64,7 @@ class ActionButton extends Element
      */
     public function __construct($title, $url = null, $icon = '', $css = '', $attr = array(), $onShow = null)
     {
-        $this->id = self::$idx++;
+        parent::__construct();
         $this->setTitle($title);
         if ($url)
             $this->setUrl($url);
@@ -72,7 +72,7 @@ class ActionButton extends Element
             $this->setIcon($icon);
         $this->addCss($css);
         $this->setAttr($attr);
-        $this->setOnShow($onShow);
+        $this->addOnShow($onShow);
     }
 
     /**

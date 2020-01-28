@@ -53,9 +53,10 @@ class ButtonCollection extends Text
         /** @var \Tk\Table\Ui\ActionButton $srcBtn */
         foreach ($this->getElementList() as $srcBtn) {
             $btn = clone $srcBtn;
-            if ($btn->hasOnShow()) {
-                call_user_func_array($btn->getOnShow(), array($this, $obj, $btn));
-            }
+            $btn->getOnShow()->execute($this, $obj, $btn);
+//            if ($btn->hasOnShow()) {
+//                call_user_func_array($btn->getOnShow(), array($this, $obj, $btn));
+//            }
             if (!$btn->isVisible()) continue;
             $url = $btn->getUrl();
             if ($url) {

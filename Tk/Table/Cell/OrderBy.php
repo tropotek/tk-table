@@ -2,6 +2,8 @@
 namespace Tk\Table\Cell;
 
 
+use Tk\Callback;
+
 /**
  * @author Michael Mifsud <info@tropotek.com>
  * @see http://www.tropotek.com/
@@ -17,9 +19,7 @@ class OrderBy extends Text
     protected $className = '';
 
     /**
-     * function ($cell) {}
-     *
-     * @var null|Callable
+     * @var Callback
      */
     protected $onUpdate = null;
 
@@ -38,15 +38,25 @@ class OrderBy extends Text
     public function __construct($property, $label = null)
     {
         parent::__construct($property, $label);
+        $this->onUpdate = Callback::create();
     }
 
     /**
-     * @param Callable|null $onUpdate
-     * @return $this
+     * @return Callback
      */
-    public function setOnUpdate($onUpdate)
+    public function getOnUpdate()
     {
-        $this->onUpdate = $onUpdate;
+        return $this->onUpdate;
+    }
+
+    /**
+     * @param callable|null $callable
+     * @return $this
+     * @deprecated use $this->getOnUpdate()->append($callable, $priority);
+     */
+    public function setOnUpdate($callable)
+    {
+        $this->getOnUpdate()->append($callable);
         return $this;
     }
 
@@ -85,8 +95,7 @@ class OrderBy extends Text
     }
 
     /**
-     * @throws \Tk\Db\Exception
-     * @throws \Tk\Table\Exception
+     *
      */
     public function execute()
     {
@@ -113,8 +122,7 @@ class OrderBy extends Text
      * Swap 2 object orderBy locations
      *
      * @param $request
-     * @throws \Tk\Db\Exception
-     * @throws \Tk\Table\Exception
+     * @throws \Exception
      */
     public function doOrderSwap($request)
     {
@@ -146,9 +154,10 @@ class OrderBy extends Text
 
         $this->orderSwap($mapper, $fromObj, $toObj);
 
-        if (is_callable($this->onUpdate)) {
-            call_user_func_array($this->onUpdate, array($this));
-        }
+        $this->getOnUpdate()->execute($this);
+//        if (is_callable($this->onUpdate)) {
+//            call_user_func_array($this->onUpdate, array($this));
+//        }
 
         \Tk\Uri::create()->remove($this->getTable()->makeInstanceKey('orderSwp'))->redirect();
     }
@@ -157,8 +166,7 @@ class OrderBy extends Text
      * Swap 2 object orderBy locations
      *
      * @param $request
-     * @throws \Tk\Db\Exception
-     * @throws \Tk\Table\Exception
+     * @throws \Exception
      */
     public function doOrderUpdate($request)
     {
@@ -169,9 +177,10 @@ class OrderBy extends Text
         $orderArr = $request['newOrder'];
         $this->orderUpdate($mapper, $orderArr);
 
-        if (is_callable($this->onUpdate)) {
-            call_user_func_array($this->onUpdate, array($this));
-        }
+        $this->getOnUpdate()->execute($this);
+//        if (is_callable($this->onUpdate)) {
+//            call_user_func_array($this->onUpdate, array($this));
+//        }
 
         \Tk\Uri::create()->remove($this->getTable()->makeInstanceKey('orderSwp'))->remove('newOrder')->redirect();
     }

@@ -299,10 +299,11 @@ class Table extends Iface
     protected function showCell(Cell\Iface $cell, $obj)
     {
         $html = $cell->getCellHtml($obj, $this->rowId);
-        if (is_callable($cell->getOnCellHtml())) {
-            $h = call_user_func_array($cell->getOnCellHtml(), array($cell, $obj, $html));
-            if ($h !== null) $html = $h;
-        }
+        //if (is_callable($cell->getOnCellHtml())) {
+            //$r = call_user_func_array($cell->getOnCellHtml(), array($cell, $obj, $html));
+            $r = $cell->getOnCellHtml()->execute($cell, $obj, $html);
+            if ($r !== null) $html = $r;
+        //}
 
         $this->cellRepeat->addCss('td', 'm' . ucfirst($cell->getProperty()));
         $this->cellRepeat->addCss('td', $cell->getCssString());
