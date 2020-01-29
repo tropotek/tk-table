@@ -2,8 +2,11 @@
     "name": "ttek/tk-table",
     "type": "library",
     "description": "A dynamic table lib to manage table rendering",
-    "keywords":  ["tropotek", "Table"],
-    "time": "2019-04-09",
+    "keywords":  [
+        "tropotek",
+        "Table"
+    ],
+    "time": "2020-01-29",
     "license": "MIT",
     "authors":  [
          {
@@ -24,5 +27,6 @@
         "branch-alias":  {
             "dev-master": "3.0.x-dev"
         }
-    }
+    },
+    "version": "3.0.50"
 }
