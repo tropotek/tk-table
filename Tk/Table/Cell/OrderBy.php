@@ -2,6 +2,8 @@
 namespace Tk\Table\Cell;
 
 
+use Tk\Callback;
+
 /**
  * @author Michael Mifsud <info@tropotek.com>
  * @see http://www.tropotek.com/
@@ -17,11 +19,14 @@ class OrderBy extends Text
     protected $className = '';
 
     /**
-     * function ($cell) {}
-     *
-     * @var null|Callable
+     * @var Callback
      */
     protected $onUpdate = null;
+
+    /**
+     * @var bool
+     */
+    protected $iconOnly = false;
 
 
     /**
@@ -33,15 +38,45 @@ class OrderBy extends Text
     public function __construct($property, $label = null)
     {
         parent::__construct($property, $label);
+        $this->onUpdate = Callback::create();
     }
 
     /**
-     * @param Callable|null $onUpdate
-     * @return $this
+     * @return Callback
      */
-    public function setOnUpdate($onUpdate)
+    public function getOnUpdate()
     {
-        $this->onUpdate = $onUpdate;
+        return $this->onUpdate;
+    }
+
+    /**
+     * @param callable|null $callable
+     * @return $this
+     * @deprecated use $this->getOnUpdate()->append($callable, $priority);
+     */
+    public function setOnUpdate($callable)
+    {
+        $this->getOnUpdate()->append($callable);
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isIconOnly()
+    {
+        return $this->iconOnly;
+    }
+
+    /**
+     * @param bool $iconOnly
+     * @return OrderBy
+     */
+    public function setIconOnly($iconOnly = true)
+    {
+        if ($iconOnly)
+            $this->setLabel('');
+        $this->iconOnly = $iconOnly;
         return $this;
     }
 
@@ -60,8 +95,7 @@ class OrderBy extends Text
     }
 
     /**
-     * @throws \Tk\Db\Exception
-     * @throws \Tk\Table\Exception
+     *
      */
     public function execute()
     {
@@ -88,8 +122,7 @@ class OrderBy extends Text
      * Swap 2 object orderBy locations
      *
      * @param $request
-     * @throws \Tk\Db\Exception
-     * @throws \Tk\Table\Exception
+     * @throws \Exception
      */
     public function doOrderSwap($request)
     {
@@ -121,9 +154,10 @@ class OrderBy extends Text
 
         $this->orderSwap($mapper, $fromObj, $toObj);
 
-        if (is_callable($this->onUpdate)) {
-            call_user_func_array($this->onUpdate, array($this));
-        }
+        $this->getOnUpdate()->execute($this);
+//        if (is_callable($this->onUpdate)) {
+//            call_user_func_array($this->onUpdate, array($this));
+//        }
 
         \Tk\Uri::create()->remove($this->getTable()->makeInstanceKey('orderSwp'))->redirect();
     }
@@ -132,8 +166,7 @@ class OrderBy extends Text
      * Swap 2 object orderBy locations
      *
      * @param $request
-     * @throws \Tk\Db\Exception
-     * @throws \Tk\Table\Exception
+     * @throws \Exception
      */
     public function doOrderUpdate($request)
     {
@@ -144,9 +177,10 @@ class OrderBy extends Text
         $orderArr = $request['newOrder'];
         $this->orderUpdate($mapper, $orderArr);
 
-        if (is_callable($this->onUpdate)) {
-            call_user_func_array($this->onUpdate, array($this));
-        }
+        $this->getOnUpdate()->execute($this);
+//        if (is_callable($this->onUpdate)) {
+//            call_user_func_array($this->onUpdate, array($this));
+//        }
 
         \Tk\Uri::create()->remove($this->getTable()->makeInstanceKey('orderSwp'))->remove('newOrder')->redirect();
     }
@@ -175,16 +209,21 @@ class OrderBy extends Text
     public function getCellHtml($obj, $rowIdx = null)
     {
         $template = $this->__makeTemplate();
+        if ($this->isIconOnly())
+            $this->addCss('icon-only');
         $this->setAttr('data-objectid', $obj->id);
+        $this->setAttr('title', 'Click and drag to change order');
         $this->addCss('tk-orderBy');
 //        $value = $this->getPropertyValue($obj, $this->getProperty());
         //vd($value);
 
         $template->appendJsUrl(\Tk\Uri::create('/vendor/ttek/tk-table/js/jquery.tableOrderBy.js'));
+        $handle = $this->isIconOnly() ? 'td.tk-orderBy' : '';
         $js = <<<JS
 jQuery(function($) {
   $('.tk-sortable tbody').tableOrderBy({
-      selector: '.tk-sortable tbody'
+      selector: '.tk-sortable tbody',
+      handle: '$handle'
   });
 });
 JS;
@@ -304,7 +343,6 @@ JS;
         return $mapper->getDb()->exec($query);
     }
 
-
     /**
      * makeTemplate
      *
@@ -318,7 +356,9 @@ JS;
     <a href="javascript:;" title="Move Order Up" rel="nofollow" class="btn btn-default btn-sm btn-xs" var="upUrl"><i class="fa fa-caret-up" var="upIcon"></i></a>
     <a href="javascript:;" title="Move Order Down" rel="nofollow" class="btn btn-default btn-sm btn-xs" var="dnUrl"><i class="fa fa-caret-down" var="dnIcon"></i></a>
   </div>  
-  <a href="javascript:;" title="Click And Drag" rel="nofollow" class="drag"><i class="fa fa-ellipsis-v"></i></a>
+  <a href="javascript:;" title="Click And Drag" rel="nofollow" class="drag">
+    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA8AAAAPAgMAAABGuH3ZAAAACVBMVEX///8AAAAAM8wY6EL2AAAAAXRSTlMAQObYZgAAAAFiS0dEAIgFHUgAAAAJcEhZcwAACxMAAAsTAQCanBgAAAAHdElNRQfjCwYAHAmRFEi4AAAAH0lEQVQI12NgAANGEMHqACREA2Bc/ARYHVgHI8QIBgAy+QFeo6/RgQAAAABJRU5ErkJggg==" alt="Drag"/>
+  </a>
 </div>
 HTML;
         return \Dom\Loader::load($html);

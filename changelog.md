@@ -1,9 +1,67 @@
 #CHANGELOG#
 
+<<<<<<< HEAD
 Ver 3.0.30 [2019-10-28]:
 -------------------------------
 
 
+=======
+Ver 3.0.50 [2020-01-29]:
+-------------------------------
+
+
+Ver 3.0.48 [2020-01-29]:
+-------------------------------
+
+
+Ver 3.0.46 [2020-01-23]:
+-------------------------------
+
+
+Ver 3.0.44 [2020-01-21]:
+-------------------------------
+
+
+Ver 3.0.42 [2020-01-14]:
+-------------------------------
+
+
+Ver 3.0.40 [2020-01-07]:
+-------------------------------
+  - Added CA buttons to student placement list as requested.
+  - Added new course record to the tk-unk lib for ver 3.2
+
+
+Ver 3.0.38 [2019-12-04]:
+-------------------------------
+  - Added time breakdowns for all tasks on dashboard
+
+
+Ver 3.0.36 [2019-11-25]:
+-------------------------------
+
+
+Ver 3.0.34 [2019-11-25]:
+-------------------------------
+  - Updated status emails and notices for the new Assessment plugin
+
+
+Ver 3.0.32 [2019-11-18]:
+-------------------------------
+
+
+Ver 3.0.30 [2019-11-12]:
+-------------------------------
+  - Updated subject enrollments to be more intellegant when importing CSV
+
+
+Ver 3.0.28 [2019-10-28]:
+-------------------------------
+  - Had to remove the subject as the main feature of a placement. All projects are now shown based
+   on their dates
+
+
+>>>>>>> 49002a4fb29ffb4e7358f1d0adaa7bb226bb97f9
 Ver 3.0.26 [2019-10-15]:
 -------------------------------
 

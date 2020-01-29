@@ -22,6 +22,7 @@ class Checkbox extends Iface
     {
         parent::__construct($property, ucfirst(preg_replace('/[A-Z]/', ' $0', $property)));
         $this->setLabel('');
+        $this->addCss('tk-tcb-cell');
     }
 
     /**

@@ -133,7 +133,7 @@ class Actions extends Text
     }
 
     /**
-     * @param \App\Db\User $obj
+     * @param \Tk\Db\ModelInterface $obj
      * @param int|null $rowIdx The current row being rendered (0-n) If null no rowIdx available.
      * @return string|\Dom\Template
      */
@@ -143,10 +143,10 @@ class Actions extends Text
         /** @var ActionButton $srcBtn */
         foreach ($this->buttonList as $srcBtn) {
             $btn = clone $srcBtn;
-            if ($btn->hasOnShow()) {
-                //call_user_func_array($btn->getOnShow(), array($obj, $btn, $this));
-                call_user_func_array($btn->getOnShow(), array($this, $obj, $btn));
-            }
+            $btn->getOnShow()->execute($this, $obj, $btn);
+//            if ($btn->hasOnShow()) {
+//                call_user_func_array($btn->getOnShow(), array($this, $obj, $btn));
+//            }
             if (!$btn->isVisible()) continue;
             $row = $template->getRepeat('btn');
 
@@ -154,7 +154,7 @@ class Actions extends Text
             $url = $btn->getUrl();
             if ($url) {
                 if ($btn->isAppendQuery()) {
-                    $urlProperty = $this->urlProperty ? $this->urlProperty : 'id';
+                    $urlProperty = $this->getUrlProperty() ? $this->getUrlProperty() : 'id';
                     list($prop, $val) = $this->getRowPropVal($obj, $urlProperty);
                     $url = clone $url->set($prop, $val);
                 }

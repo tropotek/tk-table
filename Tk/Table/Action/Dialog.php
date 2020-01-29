@@ -5,19 +5,10 @@ namespace Tk\Table\Action;
  * @author Michael Mifsud <info@tropotek.com>
  * @see http://www.tropotek.com/
  * @license Copyright 2015 Michael Mifsud
+ * @deprecated use \Tk\Ui\Dialog\Dialog
  */
 class Dialog extends Button
 {
-
-    /**
-     * @var null|callable
-     */
-    public $onShow = null;
-
-    /**
-     * @var null|callable
-     */
-    public $onExecute = null;
 
     /**
      * @var string
@@ -28,6 +19,7 @@ class Dialog extends Button
     /**
      * @param string $name
      * @param string $icon
+     * @deprecated use \Tk\Ui\Dialog\Dialog
      */
     public function __construct($name = 'dialog', $icon = 'fa fa-file-o')
     {
@@ -39,51 +31,11 @@ class Dialog extends Button
     /**
      * @param string $name
      * @return Dialog
+     * @deprecated use \Tk\Ui\Dialog object lib
      */
     static function create($name = 'dialog')
     {
         return new static($name);
-    }
-
-
-    /**
-     * @return callable|null
-     */
-    public function getOnShow()
-    {
-        return $this->onShow;
-    }
-
-    /**
-     * Eg: function ($dialog) { }
-     *
-     * @param callable|null $onShow
-     * @return $this
-     */
-    public function setOnShow($onShow)
-    {
-        $this->onShow = $onShow;
-        return $this;
-    }
-
-    /**
-     * @return callable|null
-     */
-    public function getOnExecute()
-    {
-        return $this->onExecute;
-    }
-
-    /**
-     * Eg: function ($dialog) { }
-     *
-     * @param callable|null $onExecute
-     * @return $this
-     */
-    public function setOnExecute($onExecute)
-    {
-        $this->onExecute = $onExecute;
-        return $this;
     }
 
     /**
@@ -116,11 +68,7 @@ class Dialog extends Button
      */
     public function execute()
     {
-
-        if ($this->getOnExecute()) {
-            call_user_func_array($this->getOnExecute(), array($this));
-        }
-
+        parent::execute();
     }
 
     /**
@@ -128,12 +76,14 @@ class Dialog extends Button
      */
     public function show()
     {
-        $template = $this->getTemplate();
+
         $dialogId = $this->getDialogId();
 
         $this->setAttr('data-target', '#'.$dialogId);
         $this->setAttr('data-cb-name', $this->getCheckboxName());
+        $this->getOnShow()->setEnabled(false);
         $template = parent::show();
+        $this->getOnShow()->setEnabled(true);
 
         $template->setAttr('dialog', 'id', $dialogId);
         $template->setAttr('dialog', 'aria-labelledby', $dialogId.'Label');
@@ -170,9 +120,7 @@ JS;
         $template->appendJs($js);
 
 
-        if ($this->getOnShow()) {
-            call_user_func_array($this->getOnShow(), array($this));
-        }
+        $this->getOnShow()->execute($this);
         return $template;
     }
 

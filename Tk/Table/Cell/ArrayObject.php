@@ -9,11 +9,18 @@ namespace Tk\Table\Cell;
  */
 class ArrayObject extends Text
 {
+    // NOTE: This change from getPropertyValue() was made to avoid csv issue with arrays
 
 
-    public function getPropertyValue($obj)
+    /**
+     * @param object $obj
+     * @param null $property
+     * @param bool $withCallable
+     * @return mixed|string
+     */
+    public function getObjectPropertyValue($obj, $property = null, $withCallable = true)
     {
-        $value = $this->getObjectPropertyValue($obj);
+        $value = parent::getObjectPropertyValue($obj, $property, $withCallable);
         if (is_array($value)) {
             $value = implode(', ', $value);
         }

@@ -2,6 +2,8 @@
 namespace Tk\Table\Action;
 
 
+use Tk\Callback;
+
 /**
  * @author Michael Mifsud <info@tropotek.com>
  * @see http://www.tropotek.com/
@@ -21,15 +23,8 @@ class Delete extends Button
     protected $excludeIdList = array();
 
     /**
-     * function (Delete $delete, array $selected)
-     * @var callable
-     * @deprecated
-     */
-    protected $onExecute = null;
-
-    /**
      * function (Delete $delete, $obj)
-     * @var callable
+     * @var Callback
      */
     protected $onDelete = null;
 
@@ -46,6 +41,7 @@ class Delete extends Button
      */
     public function __construct($name = 'delete', $checkboxName = 'id', $icon = 'fa fa-times')
     {
+        $this->onDelete = Callback::create();
         parent::__construct($name, $icon);
         $this->addCss('tk-action-delete');
         $this->checkboxName = $checkboxName;
@@ -63,28 +59,35 @@ class Delete extends Button
     }
 
     /**
-     * EG:  function (Delete $action, array $selected) { }
-     *
-     * @param callable $onExecute
-     * @return $this
-     * @deprecated
+     * @return Callback
      */
-    public function setOnExecute($onExecute)
+    public function getOnDelete()
     {
-        \Tk\Log::warning('Deprecated function use setOnDelete()');
-        $this->onExecute = $onExecute;
+        return $this->onDelete;
+    }
+
+    /**
+     * @param callable $callable
+     * @return $this
+     * @deprecated use addOnDelete()
+     */
+    public function setOnDelete($callable)
+    {
+        $this->addOnDelete($callable);
         return $this;
     }
 
     /**
-     * EG:  function (\Tk\Table\Action\Delete $action, $obj) { }
+     * EG:  function (\Tk\Table\Action\Delete $action, $obj): ?bool { }
+     * Return false from the callback to stop the call to $obj->delete()
      *
      * @param callable $callable
+     * @param int $priority
      * @return $this
      */
-    public function setOnDelete($callable)
+    public function addOnDelete($callable, $priority = Callback::DEFAULT_PRIORITY)
     {
-        $this->onDelete = $callable;
+        $this->getOnDelete()->append($callable, $priority);
         return $this;
     }
 
@@ -116,12 +119,13 @@ class Delete extends Button
         return $this->excludeIdList;
     }
 
-
     /**
      * @return mixed
      */
     public function execute()
     {
+        parent::execute();
+
         $reqName = $this->getTable()->makeInstanceKey($this->getName());
         $request = $this->getTable()->getRequest();
         if (empty($request->get($reqName))) {
@@ -130,30 +134,19 @@ class Delete extends Button
         $selected = $request->get($this->checkboxName);
         if (!is_array($selected)) return;
 
-        // TODO: This is deprecated delete in the future
-        $propagate = true;
-        if (is_callable($this->onExecute)) {
-            $p = call_user_func_array($this->onExecute, array($this, $selected));
-            if ($p !== null && is_bool($p)) $propagate = $p;
-        }
-
-        if ($propagate) {
-            /* @var \Tk\Db\Map\Model $obj */
-            foreach($this->getTable()->getList() as $obj) {
-                if (!is_object($obj)) continue;
-                $keyValue = 0;
-                if (property_exists($obj, $this->checkboxName)) {
-                    $keyValue = $obj->{$this->checkboxName};
-                }
-                if (in_array($keyValue, $selected) && !in_array($keyValue, $this->getExcludeIdList())) {
-                    $propagate = true;
-                    if (is_callable($this->onDelete)) {
-                        $p = call_user_func_array($this->onDelete, array($this, $obj));
-                        if ($p !== null && is_bool($p)) $propagate = $p;
-                    }
-                    if ($propagate) {
-                        $obj->delete();
-                    }
+        /* @var \Tk\Db\Map\Model $obj */
+        foreach($this->getTable()->getList() as $obj) {
+            if (!is_object($obj)) continue;
+            $keyValue = 0;
+            if (property_exists($obj, $this->checkboxName)) {
+                $keyValue = $obj->{$this->checkboxName};
+            }
+            if (in_array($keyValue, $selected) && !in_array($keyValue, $this->getExcludeIdList())) {
+                $propagate = true;
+                $r = $this->getOnDelete()->execute($this, $obj);
+                if ($r !== null && is_bool($r)) $propagate = $r;
+                if ($propagate) {
+                    $obj->delete();
                 }
             }
         }

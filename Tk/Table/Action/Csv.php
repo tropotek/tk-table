@@ -68,6 +68,8 @@ class Csv extends Button
      */
     public function execute()
     {
+        parent::execute();
+
         $request = $this->getTable()->getRequest();
         // Headers for an download:
         ini_set('max_execution_time', 0);
@@ -126,7 +128,10 @@ class Csv extends Button
                 /* @var $cell Cell\Iface */
                 foreach ($this->table->getCellList() as $cell) {
                     if ($this->ignoreCell($cell)) continue;
-                    $arr[$cell->getLabel()] = $cell->getRawValue($obj);
+                    $value = $cell->getRawValue($obj);
+
+
+                    $arr[$cell->getLabel()] = $value;
                 }
                 fputcsv($out, $arr);
             }
@@ -178,7 +183,7 @@ JS;
     /**
      *
      * @param \Tk\Table\Cell\Iface $cell
-     * @return array
+     * @return bool
      */
     private function ignoreCell($cell)
     {

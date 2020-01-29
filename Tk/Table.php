@@ -2,11 +2,14 @@
 
 namespace Tk;
 
+use Tk\Dom\AttributesTrait;
+use Tk\Dom\CssTrait;
 use Tk\Table\Action;
 use Tk\Table\Cell;
 use Tk\Db\Tool;
 use \Tk\Form\Event;
 use Tk\Table\Row;
+
 
 /**
  * @author Michael Mifsud <info@tropotek.com>
@@ -16,9 +19,10 @@ use Tk\Table\Row;
 class Table implements \Tk\InstanceKey
 {
 
-    use \Tk\Dom\AttributesTrait;
-    use \Tk\Dom\CssTrait;
-    use \Tk\CollectionTrait;
+    use AttributesTrait;
+    use CssTrait;
+    use CollectionTrait;
+    use ConfigTrait;
 
     const PARAM_ORDER_BY = 'orderBy';
     const ORDER_NONE = '';
@@ -83,7 +87,7 @@ class Table implements \Tk\InstanceKey
     /**
      * @var bool
      */
-    protected $hasExecuted = false;
+    protected $executed = false;
 
     /**
      * @var null|\Symfony\Component\EventDispatcher\EventDispatcherInterface
@@ -123,8 +127,8 @@ class Table implements \Tk\InstanceKey
         $this->row = new Row();
         $this->setAttr('id', $this->getId());
         $this->getInstanceId(); // Init the instance ID so is can be used if needed
+        $this->getTableSession();       // init Table Session
         $this->form = $this->makeForm();
-
         // TODO: Re-think this, we need to look at both the tables and forms create/init/execute/show logic so they work together.
         //$this->initCells();
     }
@@ -153,12 +157,30 @@ class Table implements \Tk\InstanceKey
     }
 
     /**
+     * @return bool
+     */
+    public function isExecuted(): bool
+    {
+        return $this->executed;
+    }
+
+    /**
+     * @param bool $executed
+     * @return Table
+     */
+    protected function setExecuted(bool $executed): Table
+    {
+        $this->executed = $executed;
+        return $this;
+    }
+
+    /**
      * Execute the table
      * Generally called in the renderer`s show() method
      */
     public function execute()
     {
-        if (!$this->hasExecuted) {
+        if (!$this->isExecuted()) {
             /* @var Cell\Iface $cell */
             foreach ($this->getCellList() as $cell) {
                 $cell->execute();
@@ -170,7 +192,7 @@ class Table implements \Tk\InstanceKey
                     $action->execute();
                 }
             }
-            $this->hasExecuted = true;
+            $this->setExecuted(true);
         }
     }
 
@@ -313,47 +335,47 @@ class Table implements \Tk\InstanceKey
         return $uri;
     }
 
-    /**
-     * @param \Tk\Request|array|\ArrayAccess $request
-     * @return $this
-     * @deprecated
-     */
-    public function setRequest($request)
-    {
-        return $this;
-    }
+//    /**
+//     * @param \Tk\Request|array|\ArrayAccess $request
+//     * @return $this
+//     * @deprecated
+//     */
+//    public function setRequest($request)
+//    {
+//        return $this;
+//    }
 
-    /**
-     * @return \Tk\Request
-     */
-    public function &getRequest()
-    {
-        $request = $_REQUEST;
-        if (class_exists('\Tk\Config'))
-            $request = \Tk\Config::getInstance()->getRequest();
-        return $request;
-    }
+//    /**
+//     * @return \Tk\Request
+//     */
+//    public function &getRequest()
+//    {
+//        $request = $_REQUEST;
+//        if (class_exists('\Tk\Config'))
+//            $request = \Tk\Config::getInstance()->getRequest();
+//        return $request;
+//    }
+//
+//    /**
+//     * @param \Tk\Session|array|\ArrayAccess $session
+//     * @return $this
+//     * @deprecated
+//     */
+//    public function setSession($session)
+//    {
+//        return $this;
+//    }
 
-    /**
-     * @param \Tk\Session|array|\ArrayAccess $session
-     * @return $this
-     * @deprecated
-     */
-    public function setSession($session)
-    {
-        return $this;
-    }
-
-    /**
-     * @return \Tk\Session|array|\ArrayAccess
-     */
-    public function &getSession()
-    {
-        $session = $_SESSION;
-        if (class_exists('\Tk\Config'))
-            $session = \Tk\Config::getInstance()->getSession();
-        return $session;
-    }
+//    /**
+//     * @return \Tk\Session|array|\ArrayAccess
+//     */
+//    public function &getSession()
+//    {
+//        $session = $_SESSION;
+//        if (class_exists('\Tk\Config'))
+//            $session = \Tk\Config::getInstance()->getSession();
+//        return $session;
+//    }
 
     /**
      * All table related data should be save to this object
@@ -365,16 +387,16 @@ class Table implements \Tk\InstanceKey
         $session = $this->getSession();
         $key = 'tables';
         $tableSession = new Collection();
-        if (isset($session[$key])) {
-            $tableSession = $session[$key];
+        if ($session->has($key)) {
+            $tableSession = $session->get($key);
         }
-        $session[$key] = $tableSession;
-
+        $session->set($key, $tableSession);
         $instanceSession = new Collection();
         if ($tableSession->has($this->getId())) {
             $instanceSession = $tableSession->get($this->getId());
         }
         $tableSession->set($this->getId(), $instanceSession);
+
         return $instanceSession;
     }
 
@@ -630,6 +652,16 @@ class Table implements \Tk\InstanceKey
     public function getActionList()
     {
         return $this->actionList;
+    }
+
+    /**
+     * @param array $array
+     * @return $this
+     */
+    public function setActionList($array = array())
+    {
+        $this->actionList = $array;
+        return $this;
     }
 
     /**
@@ -909,8 +941,9 @@ class Table implements \Tk\InstanceKey
      */
     public function resetSession()
     {
-        $this->resetSessionOffset();
-        $this->resetSessionTool();
+//        $this->resetSessionOffset();
+//        $this->resetSessionTool();
+        $this->getTableSession()->clear();
         return $this;
     }
 

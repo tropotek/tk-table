@@ -35,7 +35,7 @@ abstract class Iface extends \Dom\Renderer\Renderer implements \Dom\Renderer\Dis
     protected $rowId = 0;
 
     /**
-     * @var null|\Tk\Event\Dispatcher
+     * @var null|\Tk\EventDispatcher\EventDispatcher
      */
     protected $dispatcher = null;
 
@@ -98,7 +98,7 @@ abstract class Iface extends \Dom\Renderer\Renderer implements \Dom\Renderer\Dis
      * @param array $footRenderList
      * @return $this
      */
-    public function setFooterRenderList($footRenderList)
+    public function setFooterRenderList($footRenderList = array())
     {
         $this->footRenderList = $footRenderList;
         return $this;
@@ -134,7 +134,7 @@ abstract class Iface extends \Dom\Renderer\Renderer implements \Dom\Renderer\Dis
     }
 
     /**
-     * @return null|\Tk\Event\Dispatcher
+     * @return null|\Tk\EventDispatcher\EventDispatcher
      */
     public function getDispatcher()
     {
@@ -142,7 +142,7 @@ abstract class Iface extends \Dom\Renderer\Renderer implements \Dom\Renderer\Dis
     }
 
     /**
-     * @param null|\Tk\Event\Dispatcher $dispatcher
+     * @param null|\Tk\EventDispatcher\EventDispatcher $dispatcher
      */
     public function setDispatcher($dispatcher)
     {

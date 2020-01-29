@@ -52,6 +52,7 @@ class Button extends Iface
      */
     public function execute()
     {
+        parent::execute();
         if ($this->url instanceof \Tk\Uri)
             $this->url->redirect();
     }
@@ -61,7 +62,7 @@ class Button extends Iface
      */
     public function show()
     {
-        $template = $this->getTemplate();
+        $template = parent::show();
 
         $btnId = $this->getTable()->makeInstanceKey($this->getName());
         $this->setAttr('id', $btnId);

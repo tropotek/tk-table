@@ -1,6 +1,7 @@
 <?php
 namespace Tk\Table\Cell;
 
+use Tk\Callback;
 use Tk\Table;
 use Tk\Uri;
 
@@ -76,12 +77,12 @@ abstract class Iface
     protected $visible = true;
 
     /**
-     * @var null|callable
+     * @var Callback
      */
     protected $onPropertyValue = null;
 
     /**
-     * @var null|callable
+     * @var Callback
      */
     protected $onCellHtml = null;
 
@@ -96,6 +97,8 @@ abstract class Iface
      */
     public function __construct($property, $label = null)
     {
+        $this->onPropertyValue = Callback::create();
+        $this->onCellHtml = Callback::create();
         $this->property = $property;
         if (!$label) {
             $label = preg_replace('/Id$/', '', $property);
@@ -249,8 +252,10 @@ abstract class Iface
                 }
             }
         }
-        if ($withCallable && is_callable($this->getOnPropertyValue()) && $this->getProperty() == $property) {
-            return call_user_func_array($this->getOnPropertyValue(), array($this, $obj, $value));
+        if ($withCallable && $this->getOnPropertyValue()->isCallable() && $this->getProperty() == $property) {
+            $r = $this->getOnPropertyValue()->execute($this, $obj, $value);
+            return $r;
+            //return call_user_func_array($this->getOnPropertyValue(), array($this, $obj, $value));
         }
         return $value;
     }
@@ -352,8 +357,6 @@ abstract class Iface
         $key = $this->getTable()->makeInstanceKey(Table::PARAM_ORDER_BY);
         $pre = $this->getOrderProperty() . ' ';
         $url = Uri::create()->remove($key);
-
-
 
         // DESC first
         if ($order == Table::ORDER_ASC) {
@@ -578,7 +581,7 @@ abstract class Iface
     }
 
     /**
-     * @return callable|null
+     * @return Callback
      */
     public function getOnPropertyValue()
     {
@@ -586,22 +589,33 @@ abstract class Iface
     }
 
     /**
-     * set a callback to return a modified property value
-     *
-     * Callback: function ($cell, $obj, $value) { return $value; }
      *
      * @param callable|null $onPropertyValue
      * @return $this
-     * @todo: There is an issue here if we want more than one event, may need to use the dispatcher
+     * @deprecated use $this->getOnShow()->append($callable, $priority) or $this->addOnPropertyValue($callback, $priority);
      */
     public function setOnPropertyValue($onPropertyValue)
     {
-        $this->onPropertyValue = $onPropertyValue;
+        $this->addOnPropertyValue($onPropertyValue);
         return $this;
     }
 
     /**
-     * @return callable|null
+     * Set a callback to return a modified property value
+     * Callback: function ($cell, $obj, $value) { return $value; }
+     *
+     * @param callable $callable
+     * @param int $priority [optional]
+     * @return $this
+     */
+    public function addOnPropertyValue($callable, $priority=Callback::DEFAULT_PRIORITY)
+    {
+        $this->getOnPropertyValue()->append($callable, $priority);
+        return $this;
+    }
+
+    /**
+     * @return Callback
      */
     public function getOnCellHtml()
     {
@@ -609,20 +623,28 @@ abstract class Iface
     }
 
     /**
-     * Set the onShowCell callback
-     *
-     * Callback: function ($cell, $obj, $html) { return $html; }
-     *
      * @param callable|null $onCellHtml
      * @return $this
-     * @todo: There is an issue here if we want more than one event, may need to use the dispatcher
+     * @deprecated use $this->getOnShow()->append($callable, $priority) OR $this->addOnCellHtml($callable)
      */
     public function setOnCellHtml($onCellHtml)
     {
-        $this->onCellHtml = $onCellHtml;
+        $this->addOnCellHtml($onCellHtml);
         return $this;
     }
 
-
+    /**
+     * Set the onShowCell callback
+     * Callback: function ($cell, $obj, $html) { return $html; }
+     *
+     * @param callable $callable
+     * @param int $priority
+     * @return $this
+     */
+    public function addOnCellHtml($callable, $priority=Callback::DEFAULT_PRIORITY)
+    {
+        $this->getOnCellHtml()->append($callable);
+        return $this;
+    }
 
 }
