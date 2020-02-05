@@ -65,7 +65,7 @@ if (typeof (String.prototype.hashCode) === 'undefined') {
       selectors: null,
       disabled : [],
       disabledColor: '#999',
-      disabledHidden: false,
+      disabledHidden: true,
       defaultSelected : [],
       defaultUnselected : [],
 
