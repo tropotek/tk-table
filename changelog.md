@@ -1,5 +1,9 @@
 #CHANGELOG#
 
+Ver 3.0.54 [2020-02-05]:
+-------------------------------
+
+
 Ver 3.0.52 [2020-02-05]:
 -------------------------------
   - Tagging and releasing branch `master` with version `3.0.30`.
