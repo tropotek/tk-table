@@ -335,71 +335,6 @@ class Table implements \Tk\InstanceKey
         return $uri;
     }
 
-//    /**
-//     * @param \Tk\Request|array|\ArrayAccess $request
-//     * @return $this
-//     * @deprecated
-//     */
-//    public function setRequest($request)
-//    {
-//        return $this;
-//    }
-
-//    /**
-//     * @return \Tk\Request
-//     */
-//    public function &getRequest()
-//    {
-//        $request = $_REQUEST;
-//        if (class_exists('\Tk\Config'))
-//            $request = \Tk\Config::getInstance()->getRequest();
-//        return $request;
-//    }
-//
-//    /**
-//     * @param \Tk\Session|array|\ArrayAccess $session
-//     * @return $this
-//     * @deprecated
-//     */
-//    public function setSession($session)
-//    {
-//        return $this;
-//    }
-
-//    /**
-//     * @return \Tk\Session|array|\ArrayAccess
-//     */
-//    public function &getSession()
-//    {
-//        $session = $_SESSION;
-//        if (class_exists('\Tk\Config'))
-//            $session = \Tk\Config::getInstance()->getSession();
-//        return $session;
-//    }
-
-    /**
-     * All table related data should be save to this object
-     *
-     * @return Collection
-     */
-    public function getTableSession()
-    {
-        $session = $this->getSession();
-        $key = 'tables';
-        $tableSession = new Collection();
-        if ($session->has($key)) {
-            $tableSession = $session->get($key);
-        }
-        $session->set($key, $tableSession);
-        $instanceSession = new Collection();
-        if ($tableSession->has($this->getId())) {
-            $instanceSession = $tableSession->get($this->getId());
-        }
-        $tableSession->set($this->getId(), $instanceSession);
-
-        return $instanceSession;
-    }
-
     /**
      * Get the table Id
      *
@@ -735,21 +670,6 @@ class Table implements \Tk\InstanceKey
     }
 
     /**
-     * @param string $key
-     * @return Collection
-     */
-    public function getFilterSession($key = 'filter')
-    {
-        $tableSession = $this->getTableSession();
-        $filterSession = $tableSession->get($key);
-        if (!$filterSession instanceof Collection) {
-            $filterSession = new Collection();
-            $tableSession->set($key, $filterSession);
-        }
-        return $filterSession;
-    }
-
-    /**
      * Clear the filter form session data.
      * This should be called from the clear filter event usually
      *
@@ -845,21 +765,6 @@ class Table implements \Tk\InstanceKey
     }
 
     /**
-     * @param string $key
-     * @return Collection
-     */
-    public function getDbToolSession($key = 'dbTool')
-    {
-        $tableSession = $this->getTableSession();
-        $dbToolSession = $tableSession->get($key);
-        if (!$dbToolSession instanceof Collection) {
-            $dbToolSession = new Collection();
-            $tableSession->set($key, $dbToolSession);
-        }
-        return $dbToolSession;
-    }
-
-    /**
      * Create a DbTool from the request using the table ID and
      * default parameters...
      *
@@ -920,6 +825,75 @@ class Table implements \Tk\InstanceKey
         $sesh = $this->getDbToolSession();
         $sesh->set($this->makeInstanceKey(Tool::PARAM_OFFSET), 0);
         return $this;
+    }
+
+
+    /**
+     * All table related data should be save to this object
+     *
+     * @return Collection
+     */
+    public function getTableSession()
+    {
+        $session = $this->getSession();
+        $key = 'tables';
+        $tableSession = new Collection();
+        if ($session->has($key)) {
+            $tableSession = $session->get($key);
+        }
+        $session->set($key, $tableSession);
+        $instanceSession = new Collection();
+        if ($tableSession->has($this->getId())) {
+            $instanceSession = $tableSession->get($this->getId());
+        }
+        $tableSession->set($this->getId(), $instanceSession);
+
+        return $instanceSession;
+    }
+
+    /**
+     * @param string $key
+     * @return Collection
+     */
+    public function getDbToolSession($key = 'dbTool')
+    {
+        $tableSession = $this->getTableSession();
+        $dbToolSession = $tableSession->get($key);
+        if (!$dbToolSession instanceof Collection) {
+            $dbToolSession = new Collection();
+            $tableSession->set($key, $dbToolSession);
+        }
+        return $dbToolSession;
+    }
+
+    /**
+     * @param string $key
+     * @return Collection
+     */
+    public function getFilterSession($key = 'filter')
+    {
+        $tableSession = $this->getTableSession();
+        $filterSession = $tableSession->get($key);
+        if (!$filterSession instanceof Collection) {
+            $filterSession = new Collection();
+            $tableSession->set($key, $filterSession);
+        }
+        return $filterSession;
+    }
+
+    /**
+     * @param string $key
+     * @return Collection
+     */
+    public function getActionSession($key = 'action')
+    {
+        $tableSession = $this->getTableSession();
+        $filterSession = $tableSession->get($key);
+        if (!$filterSession instanceof Collection) {
+            $filterSession = new Collection();
+            $tableSession->set($key, $filterSession);
+        }
+        return $filterSession;
     }
 
     /**

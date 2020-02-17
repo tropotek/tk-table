@@ -81,12 +81,12 @@ class ColumnSelect extends Button
      */
     public function getColumnSession()
     {
-        $tableSession = $session = $this->getTable()->getTableSession();
+        $actionSession = $this->getTable()->getActionSession();
         $columnSession = new Collection();
-        if ($tableSession->has($this->getSid())) {
-            $columnSession = $tableSession->get($this->getSid());
+        if ($actionSession->has($this->getSid())) {
+            $columnSession = $actionSession->get($this->getSid());
         }
-        $tableSession->set($this->getSid(), $columnSession);
+        $actionSession->set($this->getSid(), $columnSession);
         return $columnSession;
     }
 
