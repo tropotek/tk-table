@@ -2,6 +2,7 @@
 namespace Tk\Table\Cell;
 
 use Tk\Callback;
+use Tk\ConfigTrait;
 use Tk\Table;
 use Tk\Uri;
 
@@ -16,7 +17,7 @@ use Tk\Uri;
  */
 abstract class Iface
 {
-
+    use ConfigTrait;
     use \Tk\Dom\AttributesTrait;
     use \Tk\Dom\CssTrait;
 
@@ -602,7 +603,7 @@ abstract class Iface
 
     /**
      * Set a callback to return a modified property value
-     * Callback: function ($cell, $obj, $value) { return $value; }
+     * Callback: function (\Tk\Table\Cell\Iface $cell, $obj, $value) { return $value; }
      *
      * @param callable $callable
      * @param int $priority [optional]
@@ -635,7 +636,7 @@ abstract class Iface
 
     /**
      * Set the onShowCell callback
-     * Callback: function ($cell, $obj, $html) { return $html; }
+     * Callback: function (\Tk\Table\Cell\Iface $cell, $obj, $html) { return $html; }
      *
      * @param callable $callable
      * @param int $priority
