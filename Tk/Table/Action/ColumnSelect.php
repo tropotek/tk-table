@@ -283,11 +283,12 @@ class ColumnSelect extends Button
      *
      * @param bool $b
      * @return $this
+     * @deprecated use resetColumnSession
      */
     public function reset($b = true)
     {
         if ($b) {
-            $this->getTable()->getSession()->remove($this->getSid());
+            $this->resetColumnSession();
         }
         return $this;
     }
@@ -304,6 +305,8 @@ class ColumnSelect extends Button
         $i = 0;
         /** @var \Tk\Table\Cell\Iface $cell */
         foreach ($this->getTable()->getCellList() as $k => $cell) {
+            if ($cell instanceof \Tk\Table\Cell\Checkbox) continue;
+            if ($cell instanceof \Tk\Table\Cell\Actions) continue;
             if (in_array($cell->getProperty(), $arr)) {
                 $nums[] = $i;   // int not string
             }
