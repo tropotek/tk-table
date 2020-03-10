@@ -27,11 +27,16 @@ class ColumnSelect extends Button
      */
     protected $unselected = array();
 
+    /**
+     * @var array
+     */
+    protected $hidden = array();
+
 
     /**
      * @param string $name
      * @param string $icon
-     * @param null $url
+     * @param null|\Tk\Uri|string $url
      */
     public function __construct($name = 'columns', $icon = 'fa fa-list-alt', $url = null)
     {
@@ -162,7 +167,7 @@ class ColumnSelect extends Button
     /**
      * Setup the disabled columns using their property name
      *
-     * @param $selector
+     * @param string|array $selector
      * @return $this
      */
     public function addDisabled($selector)
@@ -176,7 +181,7 @@ class ColumnSelect extends Button
     }
 
     /**
-     * @param $selector
+     * @param string $selector
      * @return $this
      */
     public function removeDisabled($selector)
@@ -193,7 +198,7 @@ class ColumnSelect extends Button
      * EG:
      *   array('cb_id', 'name', 'username', 'email', 'role', 'active', 'created');
      *
-     * @param $arr
+     * @param array $arr
      * @return $this
      */
     public function setSelected($arr)
@@ -206,7 +211,7 @@ class ColumnSelect extends Button
     /**
      * Setup the default shown columns using their property name
      *
-     * @param $selector
+     * @param string|array $selector
      * @return $this
      */
     public function addSelected($selector)
@@ -220,7 +225,7 @@ class ColumnSelect extends Button
     }
 
     /**
-     * @param $selector
+     * @param string $selector
      * @return $this
      */
     public function removeSelected($selector)
@@ -238,7 +243,7 @@ class ColumnSelect extends Button
      * EG:
      *   array('cb_id', 'name', 'username', 'email', 'role', 'active', 'created');
      *
-     * @param $arr
+     * @param array $arr
      * @return $this
      */
     public function setUnselected($arr)
@@ -267,13 +272,58 @@ class ColumnSelect extends Button
     /**
      * remove the default hidden columns using their property name
      *
-     * @param $selector
+     * @param string $selector
      * @return $this
      */
     public function removeUnselected($selector)
     {
         if(isset($this->unselected[$selector])) {
             unset($this->unselected[$selector]);
+        }
+        return $this;
+    }
+
+
+    /**
+     * Setup the default hidden columns from the column list
+     *
+     * EG:
+     *   array('cb_id', 'actions');
+     *
+     * @param $arr
+     * @return $this
+     */
+    public function setHidden($arr)
+    {
+        $arr = $this->toMap($arr);
+        $this->hidden = $arr;
+        return $this;
+    }
+
+    /**
+     * @param string|array $selector
+     * @return $this
+     */
+    public function addHidden($selector)
+    {
+        $selector = $this->toMap($selector);
+        if (is_array($selector))
+            $this->hidden = array_merge($this->hidden, $selector);
+        else
+            $this->hidden[$selector] = $selector;
+        return $this;
+    }
+
+    /**
+     * remove the default hidden columns using their property name
+     *
+     * @param string|array $selector
+     * @return $this
+     */
+    public function removeHidden($selector)
+    {
+        if(isset($this->hidden[$selector])) {
+            unset($this->hidden[$selector]);
         }
         return $this;
     }
@@ -305,8 +355,6 @@ class ColumnSelect extends Button
         $i = 0;
         /** @var \Tk\Table\Cell\Iface $cell */
         foreach ($this->getTable()->getCellList() as $k => $cell) {
-            if ($cell instanceof \Tk\Table\Cell\Checkbox) continue;
-            if ($cell instanceof \Tk\Table\Cell\Actions) continue;
             if (in_array($cell->getProperty(), $arr)) {
                 $nums[] = $i;   // int not string
             }
@@ -316,18 +364,36 @@ class ColumnSelect extends Button
     }
 
     /**
+     *
+     */
+    protected function initDefaultHidden()
+    {
+        /** @var \Tk\Table\Cell\Iface $cell */
+        foreach ($this->getTable()->getCellList() as $k => $cell) {
+            if ($cell instanceof \Tk\Table\Cell\Checkbox || $cell instanceof \Tk\Table\Cell\Actions)
+                $this->addHidden($cell->getProperty());
+        }
+    }
+
+
+    /**
      * @return string|\Dom\Template
      */
     public function show()
     {
+        $this->initDefaultHidden();
+
         $disabledStr = implode(', ', $this->propsToCols($this->disabled));
         $selectedStr =  implode(', ', $this->propsToCols($this->selected));
         $unselectedStr =  implode(', ', $this->propsToCols($this->unselected));
+        $hiddenStr =  implode(', ', $this->propsToCols($this->hidden));
+
         $this->setAttr('data-sid', $this->getSid());
         $this->setAttr('data-button-id', $this->getTable()->makeInstanceKey($this->getName()));
         $this->setAttr('data-disabled', '['.$disabledStr.']');
         $this->setAttr('data-default-selected', '['.$selectedStr.']');
         $this->setAttr('data-default-unselected', '['.$unselectedStr.']');
+        $this->setAttr('data-default-hidden', '['.$hiddenStr.']');
 
         $template = parent::show();
 
