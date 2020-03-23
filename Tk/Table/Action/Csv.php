@@ -93,7 +93,7 @@ class Csv extends Button
                     $fullList[] = $obj;
                 }
             }
-        } else if ($list && is_object($list) && $list->countAll() > $list->count()) {
+        } else if (is_object($list) && $list->countAll() > $list->count()) {
             $st = $list->getStatement();
             $sql = $st->queryString;
             if (preg_match('/ LIMIT /i', $sql)) {
@@ -107,6 +107,14 @@ class Csv extends Button
             } else {
                 $fullList = \Tk\Db\Map\ArrayObject::create($stmt);
             }
+        } else if (is_array($list)) {
+            $sql = $this->getDb()->getLastQuery();
+            if (preg_match('/ LIMIT /i', $sql)) {
+                $sql = substr($sql, 0, strrpos($sql, 'LIMIT'));
+            }
+            $stmt = $this->getDb()->prepare($sql);
+            $stmt->execute();
+            $fullList = $stmt->fetchAll(\PDO::FETCH_ASSOC);
         }
 
         // Output the CSV data
