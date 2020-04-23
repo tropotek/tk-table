@@ -1,5 +1,9 @@
 #CHANGELOG#
 
+Ver 3.0.68 [2020-04-24]:
+-------------------------------
+
+
 Ver 3.0.66 [2020-03-23]:
 -------------------------------
   - Fixed bug with CSV export action with arrays"
