@@ -903,6 +903,7 @@ class Table implements \Tk\InstanceKey
      */
     public function resetSessionTool()
     {
+        \Tk\Log::notice('Resetting Session Tool.');
         $sesh = $this->getDbToolSession();
         $sesh->clear();
         return $this;
@@ -915,6 +916,7 @@ class Table implements \Tk\InstanceKey
      */
     public function resetSession()
     {
+        \Tk\Log::notice('Resetting Table Session.');
 //        $this->resetSessionOffset();
 //        $this->resetSessionTool();
         $this->getTableSession()->clear();

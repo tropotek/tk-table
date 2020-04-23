@@ -100,6 +100,7 @@ class ColumnSelect extends Button
      */
     public function resetColumnSession()
     {
+        \Tk\Log::notice('Resetting ColumnSelect Session.');
         $sesh = $this->getColumnSession();
         $sesh->clear();
         return $this;
@@ -141,6 +142,7 @@ class ColumnSelect extends Button
             $response = \Tk\ResponseJson::createJson($data);
             $response->send();
         } catch (\Exception $e) {
+            vd($e->__toString());
             $data['error'] = $e->getMessage();
             $response = \Tk\ResponseJson::createJson($data, \Tk\Response::HTTP_INTERNAL_SERVER_ERROR);
             $response->send();
