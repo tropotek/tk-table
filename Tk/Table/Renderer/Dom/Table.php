@@ -264,6 +264,7 @@ class Table extends Iface
      */
     protected function showRow($obj)
     {
+        $cell = null;
         $rowCssList = array();
         $rowAttrList = array();
         $row = $this->getTable()->getRow();
