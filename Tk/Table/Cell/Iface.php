@@ -87,6 +87,11 @@ abstract class Iface
      */
     protected $onCellHtml = null;
 
+    /**
+     * @var string
+     */
+    protected $headTitle = '';
+
     
     
 
@@ -123,6 +128,25 @@ abstract class Iface
     }
 
     /**
+     * @return string
+     */
+    public function getHeadTitle()
+    {
+        return $this->headTitle;
+    }
+
+    /**
+     *
+     * @param string $headTitle
+     * @return $this
+     */
+    public function setHeadTitle(string $headTitle)
+    {
+        $this->headTitle = $headTitle;
+        return $this;
+    }
+
+    /**
      * Return the cell header HTML string
      * @return string
      */
@@ -131,8 +155,12 @@ abstract class Iface
         $str = str_replace(array('id', 'Id'), '', $this->getLabel());
         $url = $this->getOrderUrl();
         if ($url && $this->getTable()->getStaticOrderBy() === null) {
-            $str = sprintf('<a href="%s" class="noblock" title="Click to order by: %s">%s</a>',
-                htmlentities($url->toString()), $this->getLabel(), $this->getLabel());
+            $t = 'Click to order by: ' . $this->getLabel();
+            if ($this->getHeadTitle()) {
+                $t = $this->getHeadTitle();
+            }
+            $str = sprintf('<a href="%s" class="noblock" title="%s">%s</a>',
+                htmlentities($url->toString()), $t, $this->getLabel());
         }
         return $str;
     }
