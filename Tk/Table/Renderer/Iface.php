@@ -1,6 +1,7 @@
 <?php
 namespace Tk\Table\Renderer;
 
+use Tk\ObjectUtil;
 use \Tk\Table;
 use \Tk\Table\Cell;
 
@@ -43,11 +44,14 @@ abstract class Iface extends \Dom\Renderer\Renderer implements \Dom\Renderer\Dis
     /**
      * construct
      *
-     * @param Table $table
+     * @param Table|null $table
      */
     public function __construct($table = null)
     {
         $this->setTable($table);
+        $this->appendFootRenderer(Table\Renderer\Dom\Ui\Results::create(), 'Results');
+        $this->appendFootRenderer(Table\Renderer\Dom\Ui\Pager::create(), 'Pager');
+        $this->appendFootRenderer(Table\Renderer\Dom\Ui\Limit::create(), 'Limit');
     }
 
     /**
@@ -79,11 +83,25 @@ abstract class Iface extends \Dom\Renderer\Renderer implements \Dom\Renderer\Dis
     /**
      * Append a renderer to the footer renderer list
      *
-     * @param mixed $renderer
+     * @param Dom\Ui\Iface $renderer
+     * @param null|string $key If null then class name is used
      */
-    public function appendFootRenderer($renderer)
+    public function appendFootRenderer($renderer, $key = null)
     {
-        $this->footRenderList[] = $renderer;
+        if (!$key)
+            $key = ObjectUtil::basename($renderer);
+        $this->footRenderList[$key] = $renderer;
+        $renderer->setInstanceId($this->getTable()->getInstanceId());
+    }
+
+    /**
+     * @param string $key
+     * @return mixed|null
+     */
+    public function getFootRenderer($key)
+    {
+        if (isset($this->footRenderList[$key]))
+            return $this->footRenderList[$key];
     }
 
     /**

@@ -2,7 +2,6 @@
 namespace Tk\Table\Renderer\Dom\Ui;
 
 /**
- * Class
  *
  * @author Michael Mifsud <info@tropotek.com>
  * @see http://www.tropotek.com/
@@ -26,15 +25,59 @@ class Limit extends Iface
      * Create
      *
      * @param int $limit
-     * @param array $limitList
+     * @param array|null $limitList
      */
     public function __construct($limit = 0, $limitList = null)
     {
-        $this->limit = $limit;
+        $this->setLimit($limit);
         if (!$limitList) {
             $limitList = array(10, 25, 50, 100, 250, 500);
         }
+        $this->setLimitList($limitList);
+    }
+
+    /**
+     * @return Limit
+     */
+    public static function create(): Limit
+    {
+        return new self();
+    }
+
+    /**
+     * @return int
+     */
+    public function getLimit(): int
+    {
+        return $this->limit;
+    }
+
+    /**
+     * @param int $limit
+     * @return Limit
+     */
+    public function setLimit(int $limit): Limit
+    {
+        $this->limit = $limit;
+        return $this;
+    }
+
+    /**
+     * @return array
+     */
+    public function getLimitList(): array
+    {
+        return $this->limitList;
+    }
+
+    /**
+     * @param array $limitList
+     * @return Limit
+     */
+    public function setLimitList(array $limitList): Limit
+    {
         $this->limitList = $limitList;
+        return $this;
     }
 
     /**
