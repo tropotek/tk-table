@@ -133,7 +133,7 @@ class Table extends Iface
             $countAll = $tool->getFoundRows();
         }
 
-        // TODO: this could be unrequired since we added $tool->getFoundRows()
+        // TODO: this could be un-required since we added $tool->getFoundRows()
         if ($this->getTable()->getList() instanceof \Tk\Db\Map\ArrayObject) {
             $countAll = $this->getTable()->getList()->countAll();
             $tool = $this->getTable()->getList()->getTool();
@@ -141,7 +141,6 @@ class Table extends Iface
 
         //if ($this->hasFooter() && $count && $tool && $countAll > $tool->getLimit()) {
         if ($this->hasFooter() && $count && $tool) {
-
             /** @var Results $results */
             $results = $this->getFootRenderer('Results');
             $results->initFromDbTool($tool, $countAll);
@@ -342,7 +341,7 @@ class Table extends Iface
     protected function showFooter()
     {
         $template = $this->getTemplate();
-        if (!$template->keyExists('var', 'foot')) return;
+        if (!$template->keyExists('var', 'foot') || !$this->hasFooter()) return;
 
         // Render any footer widgets filters
         foreach($this->getFooterRenderList() as $renderer) {
