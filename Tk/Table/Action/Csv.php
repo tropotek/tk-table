@@ -127,7 +127,8 @@ class Csv extends Button
         // Write cell labels to first line of csv...
         foreach ($this->table->getCellList() as $i => $cell) {
             if ($this->ignoreCell($cell)) continue;
-            $arr[] = $cell->getLabel();
+            //$arr[] = $cell->getLabel();           // TODO: Check this change does not influence any external functionality
+            $arr[] = $cell->getProperty();
         }
         fputcsv($out, $arr);
         if ($fullList) {
@@ -137,8 +138,6 @@ class Csv extends Button
                 foreach ($this->table->getCellList() as $cell) {
                     if ($this->ignoreCell($cell)) continue;
                     $value = $cell->getRawValue($obj);
-
-
                     $arr[$cell->getLabel()] = $value;
                 }
                 fputcsv($out, $arr);
