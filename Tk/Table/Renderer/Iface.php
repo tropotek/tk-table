@@ -25,7 +25,7 @@ abstract class Iface extends \Dom\Renderer\Renderer implements \Dom\Renderer\Dis
     protected $table = null;
 
     /**
-     * @var array
+     * @var array|\Tk\Table\Renderer\Dom\Ui\Iface
      */
     protected $footRenderList = array();
 
@@ -63,10 +63,8 @@ abstract class Iface extends \Dom\Renderer\Renderer implements \Dom\Renderer\Dis
     public function setTable($table)
     {
         if (!$table instanceof Table) return false;
-
         $this->table = $table;
         $this->table->setRenderer($this);
-
         return true;
     }
 
@@ -90,8 +88,14 @@ abstract class Iface extends \Dom\Renderer\Renderer implements \Dom\Renderer\Dis
     {
         if (!$key)
             $key = ObjectUtil::basename($renderer);
+        if ($this->getTable()) {
+            // TODO: I would have thought to use getInstanceId() from the stable, this is an issue???
+            $renderer->setInstanceId($this->getTable()->getId());
+        } else {
+            \Tk\Log::info('NOTE: Instance ID not set for: ' . \Tk\ObjectUtil::basename($renderer));
+        }
         $this->footRenderList[$key] = $renderer;
-        $renderer->setInstanceId($this->getTable()->getInstanceId());
+        return $this;
     }
 
     /**

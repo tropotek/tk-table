@@ -117,18 +117,19 @@ class Table implements \Tk\InstanceKey
      */
     public function __construct($tableId = '')
     {
+        $this->getInstanceId();             // Init the instance ID so is can be used if needed
         if (!$tableId) {
             $uri = \Tk\Uri::create();
             $uri = str_replace('.'.$uri->getExtension(), '', $uri->basename());
             $tableId = trim(strtolower(preg_replace('/[A-Z]/', '-$0', $uri . \Tk\ObjectUtil::basename(get_class($this)) )), '-');
         }
-
+        
         $this->id = $tableId;
         $this->row = new Row();
         $this->setAttr('id', $this->getId());
-        $this->getInstanceId(); // Init the instance ID so is can be used if needed
-        $this->getTableSession();       // init Table Session
+        $this->getTableSession();           // init Table Session
         $this->form = $this->makeForm();
+        
         // TODO: Re-think this, we need to look at both the tables and forms create/init/execute/show logic so they work together.
         //$this->initCells();
     }
@@ -822,6 +823,7 @@ class Table implements \Tk\InstanceKey
      */
     public function resetSessionOffset()
     {
+        \Tk\Log::warning('Resetting Offset Session.');
         $sesh = $this->getDbToolSession();
         $sesh->set($this->makeInstanceKey(Tool::PARAM_OFFSET), 0);
         return $this;
@@ -903,7 +905,7 @@ class Table implements \Tk\InstanceKey
      */
     public function resetSessionTool()
     {
-        \Tk\Log::notice('Resetting Session Tool.');
+        \Tk\Log::warning('Resetting Session Tool.');
         $sesh = $this->getDbToolSession();
         $sesh->clear();
         return $this;
@@ -916,7 +918,7 @@ class Table implements \Tk\InstanceKey
      */
     public function resetSession()
     {
-        \Tk\Log::notice('Resetting Table Session.');
+        \Tk\Log::warning('Resetting Table Session.');
 //        $this->resetSessionOffset();
 //        $this->resetSessionTool();
         $this->getTableSession()->clear();
@@ -933,6 +935,7 @@ class Table implements \Tk\InstanceKey
      */
     public function makeInstanceKey($key)
     {
+        //return $this->getInstanceId() . '-' . $key;
         return $this->getId() . '-' . $key;
     }
 
