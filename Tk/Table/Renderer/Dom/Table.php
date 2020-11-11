@@ -140,7 +140,8 @@ class Table extends Iface
         }
 
         //if ($this->hasFooter() && $count && $tool && $countAll > $tool->getLimit()) {
-        if ($this->hasFooter() && $count && $tool) {
+        vd($count);
+        if ($this->hasFooter() && $count > 0 && $tool) {
             /** @var Results $results */
             $results = $this->getFootRenderer('Results');
             if ($results) {
@@ -171,9 +172,10 @@ class Table extends Iface
                 $limit->addCss('col-2 col-sm-2');
                 $this->appendFootRenderer($limit);
             }
+            // TODO: Change this out of this condition if not good for all tables.
+            $this->showFooter();
         }
 
-        $this->showFooter();
 
         $this->showAttributes($template);
 
