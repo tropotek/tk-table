@@ -139,9 +139,7 @@ class Table extends Iface
             $tool = $this->getTable()->getList()->getTool();
         }
 
-        //if ($this->hasFooter() && $count && $tool && $countAll > $tool->getLimit()) {
-        vd($count);
-        if ($this->hasFooter() && $count > 0 && $tool) {
+        if ($this->hasFooter() && $count && $tool) {
             /** @var Results $results */
             $results = $this->getFootRenderer('Results');
             if ($results) {
