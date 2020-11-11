@@ -2,6 +2,12 @@
 
 Ver 3.0.74 [2020-11-12]:
 -------------------------------
+  - Merge branch '3.0' of ssh://github.com/tropotek/tk-table into 3.0
+  - Tagging and releasing branch `3.0` with version `3.0.74`.
+
+
+Ver 3.0.74 [2020-11-12]:
+-------------------------------
 
 
 Ver 3.0.72 [2020-10-19]:
