@@ -143,28 +143,34 @@ class Table extends Iface
         if ($this->hasFooter() && $count && $tool) {
             /** @var Results $results */
             $results = $this->getFootRenderer('Results');
-            $results->initFromDbTool($tool, $countAll);
-            //$results->setInstanceId($this->getTable()->getId());
-            $results->addCss('col-2 col-sm-2');
-            $this->appendFootRenderer($results);
+            if ($results) {
+                $results->initFromDbTool($tool, $countAll);
+                //$results->setInstanceId($this->getTable()->getId());
+                $results->addCss('col-2 col-sm-2');
+                $this->appendFootRenderer($results);
+            }
 
             /** @var Pager $pager */
             $pager = $this->getFootRenderer('Pager');
-            $pager->initFromDbTool($tool, $countAll);
-            $pager->setEnablePageButtons($this->pageButtons);
-            //$pager->setInstanceId($this->getTable()->getId());
-            $pager->addCss('col-8 col-sm-8 text-center');
-            $this->appendFootRenderer($pager);
+            if ($pager) {
+                $pager->initFromDbTool($tool, $countAll);
+                $pager->setEnablePageButtons($this->pageButtons);
+                //$pager->setInstanceId($this->getTable()->getId());
+                $pager->addCss('col-8 col-sm-8 text-center');
+                $this->appendFootRenderer($pager);
+            }
 
             /** @var Limit $limit */
             $limit = $this->getFootRenderer('Limit');
-            // deprecated if code remove in the future use ->setLimitList() not params
-            if ($this->getTable()->getParam('limitList')) {
-                $limit->setLimitList($this->getTable()->getParam('limitList'));
+            if ($limit) {
+                // deprecated if code remove in the future use ->setLimitList() not params
+                if ($this->getTable()->getParam('limitList')) {
+                    $limit->setLimitList($this->getTable()->getParam('limitList'));
+                }
+                //$limit->setInstanceId($this->getTable()->getId());
+                $limit->addCss('col-2 col-sm-2');
+                $this->appendFootRenderer($limit);
             }
-            //$limit->setInstanceId($this->getTable()->getId());
-            $limit->addCss('col-2 col-sm-2');
-            $this->appendFootRenderer($limit);
         }
 
         $this->showFooter();
