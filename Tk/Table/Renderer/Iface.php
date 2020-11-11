@@ -25,7 +25,7 @@ abstract class Iface extends \Dom\Renderer\Renderer implements \Dom\Renderer\Dis
     protected $table = null;
 
     /**
-     * @var array|\Tk\Table\Renderer\Dom\Ui\Iface
+     * @var array|\Tk\Table\Renderer\Dom\Ui\Iface[]
      */
     protected $footRenderList = array();
 
@@ -100,7 +100,7 @@ abstract class Iface extends \Dom\Renderer\Renderer implements \Dom\Renderer\Dis
 
     /**
      * @param string $key
-     * @return mixed|null
+     * @return mixed|null|\Tk\Table\Renderer\Dom\Ui\Iface
      */
     public function getFootRenderer($key)
     {
@@ -109,7 +109,29 @@ abstract class Iface extends \Dom\Renderer\Renderer implements \Dom\Renderer\Dis
     }
 
     /**
-     * @return array
+     * @param string $key
+     * @param \Tk\Table\Renderer\Dom\Ui\Iface $renderer
+     * @return $this
+     */
+    public function addFootRenderer($key, $renderer)
+    {
+        $this->footRenderList[$key] = $renderer;
+        return $this;
+    }
+
+    /**
+     * @param string $key
+     * @return $this
+     */
+    public function removeFootRenderer($key)
+    {
+        if (isset($this->footRenderList[$key]))
+            unset($this->footRenderList[$key]);
+        return $this;
+    }
+
+    /**
+     * @return array|\Tk\Table\Renderer\Dom\Ui\Iface[]
      */
     public function getFooterRenderList()
     {
@@ -117,7 +139,7 @@ abstract class Iface extends \Dom\Renderer\Renderer implements \Dom\Renderer\Dis
     }
 
     /**
-     * @param array $footRenderList
+     * @param array|\Tk\Table\Renderer\Dom\Ui\Iface[] $footRenderList
      * @return $this
      */
     public function setFooterRenderList($footRenderList = array())
