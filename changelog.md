@@ -1,5 +1,10 @@
 #CHANGELOG#
 
+Ver 3.0.78 [2020-11-16]:
+-------------------------------
+  - Tagging and releasing branch `3.0` with version `3.0.74`.
+
+
 <<<<<<< HEAD
 Ver 3.0.74 [2020-11-12]:
 =======
