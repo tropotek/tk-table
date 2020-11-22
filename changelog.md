@@ -1,5 +1,21 @@
 #CHANGELOG#
 
+Ver 3.0.82 [2020-11-23]:
+-------------------------------
+  - Tagging and releasing branch `3.0` with version `3.0.78`.
+  - Tagging and releasing branch `3.0` with version `3.0.74`.
+  - Tagging and releasing branch `3.0` with version `3.0.76`.
+  - Merge branch '3.0' of ssh://github.com/tropotek/tk-table into 3.0
+  - Tagging and releasing branch `3.0` with version `3.0.72`.
+  - Tagging and releasing branch `3.0` with version `3.0.70`.
+  - Tagging and releasing branch `3.0` with version `3.0.68`.
+  - Tagging and releasing branch `3.0` with version `3.0.66`.
+  - Fixed bug with CSV export action with arrays"
+  - Tagging and releasing branch `3.0` with version `3.0.64`.
+  - Tagging and releasing branch `3.0` with version `3.0.62`.
+  - Tagging and releasing branch `M	Tk/Table/Cell/Iface.php` with version `3.0.60`.
+
+
 Ver 3.0.78 [2020-11-16]:
 -------------------------------
   - Tagging and releasing branch `3.0` with version `3.0.74`.
