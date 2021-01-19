@@ -91,7 +91,7 @@ class Text extends Iface
         if ($url && $this->isUrlEnabled()) {
             $str = sprintf('<a href="%s">%s</a>', htmlentities($url->toString()), htmlspecialchars($propValue));
         }
-        
+
         $this->setUrlEnabled(true);     // Reset the urlEnabled status
         return $str;
     }
