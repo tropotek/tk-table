@@ -404,8 +404,10 @@ class ColumnSelect extends Button
         $js = <<<JS
 jQuery(function ($) {
   
-  $('.tk-column-select-btn').columnSelect({});
-  
+  var init = function () {
+    $('.tk-column-select-btn').columnSelect({});
+  };
+  $('form').on('init', document, init).each(init);
 });
 JS;
         $template->appendJs($js);
