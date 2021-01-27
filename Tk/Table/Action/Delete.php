@@ -218,6 +218,7 @@ class Delete extends Button
     {
         $js = <<<JS
 jQuery(function($) {
+  var init = function () {
     function updateBtn(btn) {
       var cbName = btn.data('cb-name');
       if(btn.closest('.tk-table').find('.table-body input[name^="'+cbName+'"]:checked').length) {
@@ -230,16 +231,15 @@ jQuery(function($) {
     $('.tk-action-delete').each(function () {
       var btn = $(this);
       var cbName = btn.data('cb-name');
-      //var confirmStr = btn.data('cb-confirm');
-      
       btn.on('click', function () {
         var selected = $(this).closest('.tk-table').find('.table-body input[name^="'+cbName+'"]:checked');
         return selected.length > 0;
       });
       btn.closest('.tk-table').on('change', '.table-body input[name^="'+cbName+'"]', function () { updateBtn(btn); });
-      
       updateBtn(btn);
     });
+  }
+  $('.tk-table form').on('init', document, init).each(init);
 });
 JS;
         return $js;
