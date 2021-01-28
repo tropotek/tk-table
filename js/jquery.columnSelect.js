@@ -251,6 +251,7 @@ if (typeof (String.prototype.hashCode) === 'undefined') {
       }
       // This is required so the crumbs are not messed up...
       plugin.settings.ajaxUrl = addParam(plugin.settings.ajaxUrl, 'crumb_ignore', 'crumb_ignore');
+      plugin.settings.ajaxUrl = addParam(plugin.settings.ajaxUrl, 'nolog', 'nolog');
 
 
       // Get the first row that we will use to setup the column selector

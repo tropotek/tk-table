@@ -270,7 +270,11 @@ class Table extends Iface
         foreach($this->getTable()->getList() as $i => $obj) {
             $this->rowRepeat = $template->getRepeat('tr');
             $this->showRow($obj);
-            $this->rowRepeat->setAttr('tr', 'data-rowid', $this->rowId);
+            $this->rowRepeat->setAttr('tr', 'data-rowid', $this->rowId);    // deprecated
+            //$this->rowRepeat->setAttr('tr', 'data-row-id', $this->rowId);     // TODO: upgrade to use this instead
+            if (!$this->rowRepeat->getAttr('tr', 'data-obj-id') && method_exists($obj, 'getId')) {
+                $this->rowRepeat->setAttr('tr', 'data-obj-id', $obj->getId());
+            }
             $this->rowRepeat->appendRepeat();
             $this->rowId++;
         }
