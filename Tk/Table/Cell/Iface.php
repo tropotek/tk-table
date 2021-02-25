@@ -222,7 +222,7 @@ abstract class Iface
      */
     public function getPropertyValue($obj)
     {
-        $value = $this->getRawValue($obj);
+        $value = $this->getObjectPropertyValue($obj);
         return $value;
     }
 
@@ -235,7 +235,7 @@ abstract class Iface
      */
     public function getRawValue($obj)
     {
-        $value = $this->getObjectPropertyValue($obj);
+        $value = $this->getPropertyValue($obj);
         return $value;
     }
 
