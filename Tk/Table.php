@@ -194,6 +194,10 @@ class Table implements \Tk\InstanceKey
                 }
             }
             $this->setExecuted(true);
+            if ($this->getRequest()->has('rts')) {
+                $this->resetSession();
+                \Tk\Uri::create()->remove('rts')->redirect();
+            }
         }
     }
 
