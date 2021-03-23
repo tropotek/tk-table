@@ -61,9 +61,13 @@ class Pager extends Iface
     }
 
     /**
+     * 
+     * @param int $total The total number of records on all pages
+     * @param int $limit
+     * @param int $offset
      * @return Pager
      */
-    public static function create(): Pager
+    public static function create($total = 0, $limit = 25, $offset = 0): Pager
     {
         return new self();
     }

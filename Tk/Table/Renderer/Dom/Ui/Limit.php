@@ -38,10 +38,12 @@ class Limit extends Iface
 
     /**
      * @return Limit
+     * @param int $limit
+     * @param array|null $limitList
      */
-    public static function create(): Limit
+    public static function create($limit = 0, $limitList = null): Limit
     {
-        return new self();
+        return new self($limit, $limitList);
     }
 
     /**
@@ -101,7 +103,7 @@ class Limit extends Iface
         foreach($this->limitList as $val) {
             $select->appendOption($val, $val);
         }
-
+vd($this->limit);
         $select->setValue($this->limit);
         //$select->setAttribute('name', $this->makeInstanceKey(self::PARAM_LIMIT));
         $select->setAttribute('name', '');

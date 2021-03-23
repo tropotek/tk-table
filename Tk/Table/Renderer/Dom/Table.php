@@ -163,6 +163,7 @@ class Table extends Iface
             $limit = $this->getFootRenderer('Limit');
             if ($limit) {
                 // deprecated if code remove in the future use ->setLimitList() not params
+                $limit->setLimit($tool->getLimit());
                 if ($this->getTable()->getParam('limitList')) {
                     $limit->setLimitList($this->getTable()->getParam('limitList'));
                 }
