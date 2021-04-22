@@ -170,7 +170,7 @@ if (typeof (String.prototype.hashCode) === 'undefined') {
 
         //var state = Cookies.get(plugin.settings.sid);
         getSessionParam(plugin.settings.sid, function (data) {
-          if (data.value) {
+          if (data != undefined && data.value) {
             try {
               var value = JSON.parse(data.value);
               var sel = [];
