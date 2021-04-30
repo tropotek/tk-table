@@ -1,5 +1,9 @@
 #CHANGELOG#
 
+Ver 3.0.102 [2021-04-30]:
+-------------------------------
+
+
 Ver 3.0.100 [2021-04-23]:
 -------------------------------
   - Merge branch '3.0' of ssh://github.com/tropotek/tk-table into 3.0
