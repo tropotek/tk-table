@@ -101,6 +101,7 @@ class Csv extends Button
             }
 
             $stmt = $this->db->prepare($sql);
+            vd($stmt, $st->getBindParams());
             $stmt->execute($st->getBindParams());
             if ($list->getMapper()) {
                 $fullList = \Tk\Db\Map\ArrayObject::createFromMapper($list->getMapper(), $stmt);
