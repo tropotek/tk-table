@@ -12,6 +12,10 @@ use Tk\Table\Row;
 
 
 /**
+ *
+ * - Add ?rts=rts to the URL request to reset the table session
+ *
+ *
  * @author Michael Mifsud <info@tropotek.com>
  * @see http://www.tropotek.com/
  * @license Copyright 2015 Michael Mifsud
