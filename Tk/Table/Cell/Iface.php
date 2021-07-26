@@ -152,7 +152,9 @@ abstract class Iface
      */
     public function getCellHeader()
     {
-        $str = str_replace(array('id', 'Id'), '', $this->getLabel());
+        // TODO: check this change, as replacing 'id' interferes with legit labels (EG: 'Paid' becomes 'Pa')
+        //$str = str_replace(array('id', 'Id'), '', $this->getLabel());
+        $str = str_replace(array('_id', 'Id'), '', $this->getLabel());
         $url = $this->getOrderUrl();
         if ($url && $this->getTable()->getStaticOrderBy() === null) {
             $t = 'Click to order by: ' . $this->getLabel();
