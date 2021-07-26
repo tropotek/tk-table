@@ -121,10 +121,11 @@ class Table implements \Tk\InstanceKey
      */
     public function __construct($tableId = '')
     {
+        static $tid = 1;
         $this->getInstanceId();             // Init the instance ID so is can be used if needed
         if (!$tableId) {
             $uri = \Tk\Uri::create();
-            $uri = str_replace('.'.$uri->getExtension(), '', $uri->basename());
+            $uri = str_replace('.'.$uri->getExtension(), '', $uri->basename()) . '-' . $tid++;
             $tableId = trim(strtolower(preg_replace('/[A-Z]/', '-$0', $uri . \Tk\ObjectUtil::basename(get_class($this)) )), '-');
         }
         
