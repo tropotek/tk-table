@@ -28,6 +28,11 @@ class Table implements \Tk\InstanceKey
     use CollectionTrait;
     use ConfigTrait;
 
+    /**
+     * This is the query string to set to reset the table session fully
+     */
+    const RESET_TABLE = 'rts';
+
     const PARAM_ORDER_BY = 'orderBy';
     const ORDER_NONE = '';
     const ORDER_ASC = 'ASC';
@@ -199,9 +204,9 @@ class Table implements \Tk\InstanceKey
                 }
             }
             $this->setExecuted(true);
-            if ($this->getRequest()->has('rts')) {
+            if ($this->getRequest()->has(self::RESET_TABLE) && $this->getRequest()->get(self::RESET_TABLE) == $this->getId()) {
                 $this->resetSession();
-                \Tk\Uri::create()->remove('rts')->redirect();
+                \Tk\Uri::create()->remove(self::RESET_TABLE)->redirect();
             }
         }
     }
