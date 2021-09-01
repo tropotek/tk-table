@@ -22,10 +22,11 @@ class Csv extends Button
     protected $checkboxName = 'id';
 
 
-    protected $ignoreCellList = array(
+    protected $ignoreCellList = [
         //'Tk\Table\Cell\Checkbox',
-        'Tk\Table\Cell\Actions'
-    );
+        'Tk\Table\Cell\Actions',
+        'Tk\Table\Cell\ButtonCollection'
+    ];
 
     /**
      * @var string
@@ -101,7 +102,6 @@ class Csv extends Button
             }
 
             $stmt = $this->db->prepare($sql);
-            vd($stmt, $st->getBindParams());
             $stmt->execute($st->getBindParams());
             if ($list->getMapper()) {
                 $fullList = \Tk\Db\Map\ArrayObject::createFromMapper($list->getMapper(), $stmt);
@@ -195,6 +195,7 @@ JS;
      */
     private function ignoreCell($cell)
     {
+        vd(get_class($cell), $this->ignoreCellList);
         return in_array(get_class($cell), $this->ignoreCellList);
     }
 
