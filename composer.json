@@ -6,7 +6,7 @@
         "tropotek",
         "Table"
     ],
-    "time": "2021-09-02",
+    "time": "2020-11-12",
     "license": "MIT",
     "authors":  [
          {
@@ -15,8 +15,8 @@
             "homepage": "http://www.tropotek.com/"
         }
     ],
-    "funding":  [
-         {
+    "funding": [
+        {
             "type": "Paypal",
             "url": "https://www.paypal.me/tropotek"
         }
