@@ -195,7 +195,6 @@ JS;
      */
     private function ignoreCell($cell)
     {
-        vd(get_class($cell), $this->ignoreCellList);
         return in_array(get_class($cell), $this->ignoreCellList);
     }
 
