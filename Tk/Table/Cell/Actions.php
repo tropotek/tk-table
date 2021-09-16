@@ -34,7 +34,7 @@ class Actions extends Text
      */
     public function hasButtons()
     {
-        return count($this->buttonList) > 1;
+        return count($this->buttonList) > 0;
     }
 
     /**
