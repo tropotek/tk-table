@@ -399,7 +399,7 @@ class ColumnSelect extends Button
 
         $template = parent::show();
 
-        $template->appendJsUrl(\Tk\Uri::create('/vendor/ttek/tk-table/js/jquery.columnSelect.js'));
+        $template->appendJsUrl(\Tk\Uri::create('/vendor/uom/tk-table/js/jquery.columnSelect.js'));
 
         $js = <<<JS
 jQuery(function ($) {
