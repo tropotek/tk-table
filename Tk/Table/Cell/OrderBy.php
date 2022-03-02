@@ -217,7 +217,7 @@ class OrderBy extends Text
 //        $value = $this->getPropertyValue($obj, $this->getProperty());
         //vd($value);
 
-        $template->appendJsUrl(\Tk\Uri::create('/vendor/ttek/tk-table/js/jquery.tableOrderBy.js'));
+        $template->appendJsUrl(\Tk\Uri::create('/vendor/uom/tk-table/js/jquery.tableOrderBy.js'));
         $handle = $this->isIconOnly() ? 'td.tk-orderBy' : '';
         $js = <<<JS
 jQuery(function($) {
