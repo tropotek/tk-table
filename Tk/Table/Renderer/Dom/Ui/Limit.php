@@ -110,7 +110,7 @@ class Limit extends Iface
         $select->setAttribute('data-name', $this->makeInstanceKey(self::PARAM_LIMIT));
 
 
-        //$template->appendJsUrl(\Tk\Uri::create('/vendor/ttek/tk-base/assets/js/Uri.js'));
+        //$template->appendJsUrl(\Tk\Uri::create('/vendor/uom/tk-base/assets/js/Uri.js'));
 
         $js = <<<JS
 jQuery(function($) {
