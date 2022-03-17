@@ -1,6 +1,7 @@
 <?php
 namespace Tk\Table\Action;
 
+use Tk\Request;
 use \Tk\Table\Cell;
 
 /**
@@ -72,6 +73,16 @@ class Csv extends Button
         parent::execute();
 
         $request = $this->getTable()->getRequest();
+
+        $this->doCsv($request);
+    }
+
+    /**
+     * @param Request $request
+     * @throws \Tk\Db\Exception
+     */
+    public function doCsv($request)
+    {
         // Headers for an download:
         ini_set('max_execution_time', 0);
 
@@ -147,6 +158,7 @@ class Csv extends Button
 
         fclose($out);
         exit;
+
     }
 
     /**
