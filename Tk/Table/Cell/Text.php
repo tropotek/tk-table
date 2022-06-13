@@ -19,6 +19,8 @@ class Text extends Iface
 
     protected $urlEnabled = true;
 
+    protected $linkAttrs = '';
+
     /**
      * Create
      *
@@ -68,6 +70,23 @@ class Text extends Iface
         return $this->charLimit;
     }
 
+    /**
+     * @return string
+     */
+    public function getLinkAttrs(): string
+    {
+        return $this->linkAttrs;
+    }
+
+    /**
+     * @param string $linkAttrs
+     * @return Text
+     */
+    public function setLinkAttrs(string $linkAttrs): Text
+    {
+        $this->linkAttrs = $linkAttrs;
+        return $this;
+    }
 
     /**
      * @param mixed $obj
@@ -89,7 +108,7 @@ class Text extends Iface
         $str = htmlspecialchars($propValue);
         $url = $this->getCellUrl($obj);
         if ($url && $this->isUrlEnabled()) {
-            $str = sprintf('<a href="%s">%s</a>', htmlentities($url->toString()), htmlspecialchars($propValue));
+            $str = sprintf('<a href="%s" %s>%s</a>', htmlentities($url->toString()), $this->linkAttrs, htmlspecialchars($propValue));
         }
 
         $this->setUrlEnabled(true);     // Reset the urlEnabled status
