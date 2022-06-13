@@ -1,5 +1,10 @@
 #CHANGELOG#
 
+Ver 3.2.4 [2022-06-13]:
+-------------------------------
+  - Add feature for students to upload PDF or image of signed consent letter
+
+
 Ver 3.2.2 [2022-03-17]:
 -------------------------------
   - Fixed placement export list for terraDotta
