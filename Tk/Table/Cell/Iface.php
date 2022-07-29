@@ -307,7 +307,6 @@ abstract class Iface
         } catch (\Exception $e) {
             $exists = property_exists($obj, $property);
         }
-        //vd($obj, $exists);
         return $exists;
     }
 
@@ -380,7 +379,6 @@ abstract class Iface
         
         $order = '';
 
-        //vd($this->getTable()->getOrder(), $this->getOrderProperty(), $this->getTable()->getOrderProperty());
         if ($this->getOrderProperty() == $this->getTable()->getOrderProperty()) {
             $order = $this->getTable()->getOrder();
         }

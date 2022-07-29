@@ -142,7 +142,7 @@ class ColumnSelect extends Button
             $response = \Tk\ResponseJson::createJson($data);
             $response->send();
         } catch (\Exception $e) {
-            vd($e->__toString());
+            \Tk\Log::debug($e->__toString());
             $data['error'] = $e->getMessage();
             $response = \Tk\ResponseJson::createJson($data, \Tk\Response::HTTP_INTERNAL_SERVER_ERROR);
             $response->send();
