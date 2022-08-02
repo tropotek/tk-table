@@ -1,5 +1,10 @@
 #CHANGELOG#
 
+Ver 3.2.6 [2022-08-03]:
+-------------------------------
+  - removed comments
+
+
 Ver 3.2.4 [2022-06-13]:
 -------------------------------
   - Add feature for students to upload PDF or image of signed consent letter
