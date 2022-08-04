@@ -215,7 +215,7 @@ class OrderBy extends Text
         $this->setAttr('title', 'Click and drag to change order');
         $this->addCss('tk-orderBy');
 
-        $template->appendJsUrl(\Tk\Uri::create('/vendor/uom/tk-table/js/jquery.tableOrderBy.js'));
+        $template->appendJsUrl(\Tk\Uri::create($this->getConfig()->getOrgVendor() . '/tk-table/js/jquery.tableOrderBy.js'));
         $handle = $this->isIconOnly() ? 'td.tk-orderBy' : '';
         $js = <<<JS
 jQuery(function($) {
