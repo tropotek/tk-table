@@ -1,5 +1,5 @@
 {
-    "name": "uom/tk-table",
+    "name": "ttek/tk-table",
     "type": "library",
     "description": "A dynamic table lib to manage table rendering",
     "keywords":  [
@@ -20,7 +20,7 @@
         }
     },
     "require":  {
-        "uom/tk-framework": "~3.2.0"
+        "ttek/tk-framework": "~3.2.0"
     },
     "extra":  {
         "branch-alias":  {
