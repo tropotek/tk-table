@@ -1,6 +1,7 @@
 <?php
 namespace Tk\Table\Renderer;
 
+use Tk\ConfigTrait;
 use Tk\ObjectUtil;
 use \Tk\Table;
 use \Tk\Table\Cell;
@@ -13,6 +14,8 @@ use \Tk\Table\Cell;
  */
 abstract class Iface extends \Dom\Renderer\Renderer implements \Dom\Renderer\DisplayInterface
 {
+    use ConfigTrait;
+
     /**
      * Enable Rendering of the footer
      * @var bool
