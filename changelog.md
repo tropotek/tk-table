@@ -1,5 +1,10 @@
 #CHANGELOG#
 
+Ver 3.2.16 [2022-09-30]:
+-------------------------------
+  - Added assessment manager
+
+
 Ver 3.2.14 [2022-08-19]:
 -------------------------------
   - Fixed getConfig() error in map table render
