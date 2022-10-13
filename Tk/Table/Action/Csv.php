@@ -96,7 +96,6 @@ class Csv extends Button
 
         // Get list with no limit...
         $list = $this->getTable()->getList();
-
         $fullList = $list;
         if ($request->has($this->checkboxName) && is_array($request->get($this->checkboxName))) {
             $fullList = array();
@@ -126,7 +125,8 @@ class Csv extends Button
             }
             $stmt = $this->getDb()->prepare($sql);
             $stmt->execute();
-            $fullList = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+            //$fullList = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+            $fullList = $stmt->fetchAll();
         }
 
         // Output the CSV data
