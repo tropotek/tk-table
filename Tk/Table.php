@@ -118,7 +118,7 @@ class Table implements \Tk\InstanceKey
      */
     private $row = null;
 
-    
+
     /**
      * Create a table object
      *
@@ -133,13 +133,13 @@ class Table implements \Tk\InstanceKey
             $uri = str_replace('.'.$uri->getExtension(), '', $uri->basename()) . '-' . $tid++;
             $tableId = trim(strtolower(preg_replace('/[A-Z]/', '-$0', $uri . \Tk\ObjectUtil::basename(get_class($this)) )), '-');
         }
-        
+
         $this->id = $tableId;
         $this->row = new Row();
         $this->setAttr('id', $this->getId());
         $this->getTableSession();           // init Table Session
         $this->form = $this->makeForm();
-        
+
         // TODO: Re-think this, we need to look at both the tables and forms create/init/execute/show logic so they work together.
         //$this->initCells();
     }
@@ -342,7 +342,7 @@ class Table implements \Tk\InstanceKey
     {
         $uri = \Tk\Uri::create();
         if ($form) {
-            /* @var \Tk\Form\Field\Iface $field */
+            /* @var \Tk\Form\Field\FieldInterface $field */
             foreach ($form->getFieldList() as $field) {
                 $uri->remove($field->getName());
             }
@@ -623,34 +623,34 @@ class Table implements \Tk\InstanceKey
     }
 
     /**
-     * @param \Tk\Form\Field\Iface $field
-     * @param null|\Tk\Form\Field\Iface|string $refField
-     * @return \Tk\Form\Field\Iface
+     * @param \Tk\Form\Field\FieldInterface $field
+     * @param null|\Tk\Form\Field\FieldInterface|string $refField
+     * @return \Tk\Form\Field\FieldInterface
      * @since 2.0.68
      */
-    public function appendFilter(\Tk\Form\Field\Iface $field, $refField = null)
+    public function appendFilter(\Tk\Form\Field\FieldInterface $field, $refField = null)
     {
-        if (!$field instanceof \Tk\Form\Event\Iface) $this->initFilterForm();
+        if (!$field instanceof \Tk\Form\Event\FieldInterface) $this->initFilterForm();
         $field->setShowLabel(false);
         return $this->getFilterForm()->appendField($field, $refField);
     }
 
     /**
-     * @param \Tk\Form\Field\Iface $field
-     * @param null|\Tk\Form\Field\Iface|string $refField
-     * @return \Tk\Form\Field\Iface
+     * @param \Tk\Form\Field\FieldInterface $field
+     * @param null|\Tk\Form\Field\FieldInterface|string $refField
+     * @return \Tk\Form\Field\FieldInterface
      * @since 2.0.68
      */
-    public function prependFilter(\Tk\Form\Field\Iface $field, $refField = null)
+    public function prependFilter(\Tk\Form\Field\FieldInterface $field, $refField = null)
     {
-        if (!$field instanceof \Tk\Form\Event\Iface) $this->initFilterForm();
+        if (!$field instanceof \Tk\Form\Event\FieldInterface) $this->initFilterForm();
         $field->setShowLabel(false);
         return $this->getFilterForm()->prependField($field, $refField);
     }
 
     /**
-     * @param string|\Tk\Form\Field\Iface $field
-     * @return null|string|\Tk\Form\Field\Iface
+     * @param string|\Tk\Form\Field\FieldInterface $field
+     * @return null|string|\Tk\Form\Field\FieldInterface
      * @since 2.0.68
      */
     public function removeFilter($field)
@@ -1006,8 +1006,8 @@ class Table implements \Tk\InstanceKey
     /**
      * Add a field to the filter form
      *
-     * @param \Tk\Form\Field\Iface $field
-     * @return \Tk\Form\Field\Iface
+     * @param \Tk\Form\Field\FieldInterface $field
+     * @return \Tk\Form\Field\FieldInterface
      * @deprecated use appendFilter($field)
      * @remove 2.4.0
      */
