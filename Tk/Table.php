@@ -2,31 +2,27 @@
 
 namespace Tk;
 
-use Tk\Dom\AttributesTrait;
-use Tk\Dom\CssTrait;
+use Dom\Renderer\Traits\AttributesTrait;
+use Dom\Renderer\Traits\CssTrait;
 use Tk\Table\Action;
 use Tk\Table\Cell;
 use Tk\Db\Tool;
-use \Tk\Form\Event;
+use Tk\Form\Event;
 use Tk\Table\Row;
+use Tk\Traits\SystemTrait;
 
 
 /**
+ *  Add ?rts=rts to the URL request to reset the table session
  *
- * - Add ?rts=rts to the URL request to reset the table session
- *
- *
- * @author Michael Mifsud <http://www.tropotek.com/>
- * @see http://www.tropotek.com/
- * @license Copyright 2015 Michael Mifsud
+ * @author Tropotek <http://www.tropotek.com/>
  */
-class Table implements \Tk\InstanceKey
+class Table implements InstanceKey
 {
 
     use AttributesTrait;
     use CssTrait;
-    use CollectionTrait;
-    use ConfigTrait;
+    use SystemTrait;
 
     /**
      * This is the query string to set to reset the table session fully
@@ -37,18 +33,6 @@ class Table implements \Tk\InstanceKey
     const ORDER_NONE = '';
     const ORDER_ASC = 'ASC';
     const ORDER_DESC = 'DESC';
-
-    /**
-     * Used internally to flag when the filter submit buttons have been appended
-     * @var bool
-     */
-    protected $formInit = false;
-
-    /**
-     * Internal flag for executing the filter form
-     * @var bool
-     */
-    protected $filterFormExecuted = false;
 
 
     /**
@@ -62,6 +46,18 @@ class Table implements \Tk\InstanceKey
     protected $id = '';
 
     /**
+     * Used internally to flag when the filter submit buttons have been appended
+     * @var bool
+     */
+    protected $formInit = false;
+
+    /**
+     * Internal flag for executing the filter form
+     * @var bool
+     */
+    protected $filterFormExecuted = false;
+
+    /**
      * @var Action\Iface[]
      */
     protected $actionList = array();
@@ -70,13 +66,6 @@ class Table implements \Tk\InstanceKey
      * @var Cell\Iface[]
      */
     protected $cellList = array();
-
-    /**
-     * @var array|\ArrayAccess
-     * @deprecated
-     * @remove 2.4.0
-     */
-    protected $paramList = array();
 
     /**
      * @var array
@@ -820,17 +809,6 @@ class Table implements \Tk\InstanceKey
     }
 
     /**
-     * @param string $defaultOrderBy
-     * @param int $defaultLimit
-     * @return Tool
-     * @deprecated  Use self::getTool() instead
-     */
-    public function makeDbTool($defaultOrderBy = '', $defaultLimit = 25)
-    {
-        return $this->getTool($defaultOrderBy, $defaultLimit);
-    }
-
-    /**
      * Reset the db tool offset to 0
      *
      * @return $this
@@ -954,137 +932,11 @@ class Table implements \Tk\InstanceKey
     }
 
     /**
-     * @param Cell\Iface $cell
-     * @return Cell\Iface
-     * @deprecated Use appendCell($cell)
-     * @remove 2.4.0
-     */
-    public function addCell($cell)
-    {
-        return $this->appendCell($cell);
-    }
-
-    /**
-     * Add a field element before another element
-     *
-     * @param string|Cell\Iface $refCell
-     * @param Cell\Iface $cell
-     * @return Cell\Iface
-     * @deprecated use prependCell($cell, $refCell)
-     * @remove 2.4.0
-     */
-    public function addCellBefore($refCell, $cell)
-    {
-        return $this->prependCell($cell, $refCell);
-    }
-
-    /**
-     * Add an element after another element
-     *
-     * @param string|Cell\Iface $refCell
-     * @param Cell\Iface $cell
-     * @return Cell\Iface
-     * @deprecated Use appendCell($cell, $refCell)
-     * @remove 2.4.0
-     */
-    public function addCellAfter($refCell, $cell)
-    {
-        return $this->prependCell($cell, $refCell);
-    }
-
-    /**
-     * @param Action\Iface $action
-     * @return Action\Iface
-     * @deprecated use prependAction($action)
-     * @remove 2.4.0
-     */
-    public function addAction($action)
-    {
-        return $this->appendAction($action);
-    }
-
-    /**
-     * Add a field to the filter form
-     *
-     * @param \Tk\Form\Field\FieldInterface $field
-     * @return \Tk\Form\Field\FieldInterface
-     * @deprecated use appendFilter($field)
-     * @remove 2.4.0
-     */
-    public function addFilter($field)
-    {
-        return $this->appendFilter($field);
-    }
-
-    /**
      * @return Row
      */
     public function getRow(): Row
     {
         return $this->row;
-    }
-
-    /**
-     * Use for your own table parent objects
-     * @deprecated
-     * @remove 2.4.0
-     */
-    //public function initCells() {}
-
-
-    // TODO: I do not think this is used enough to keep, if it is then wew need to find an external solution I think...
-    // TODO:   - It seems to be used in the VOCE site to update the limit list in the renderer, this is not a good way to update it
-    // TODO:   Find a new way to pass these params around to those objects, probably better to use the renderer
-    // TODO:
-    // TODO:
-    // TODO:
-    /**
-     * @param $name
-     * @return string|mixed
-     * @deprecated
-     * @remove 2.4.0
-     */
-    public function getParam($name)
-    {
-        if (!empty($this->paramList[$name])) {
-            return $this->paramList[$name];
-        }
-        return '';
-    }
-
-    /**
-     * @param string $name
-     * @param mixed $value
-     * @return $this
-     * @deprecated
-     * @remove 2.4.0
-     */
-    public function setParam($name, $value)
-    {
-        $this->paramList[$name] = $value;
-        return $this;
-    }
-
-    /**
-     * @return array
-     * @deprecated
-     * @remove 2.4.0
-     */
-    public function getParamList()
-    {
-        return $this->paramList;
-    }
-
-    /**
-     * @param array $params
-     * @return $this
-     * @deprecated
-     * @remove 2.4.0
-     */
-    public function setParamList($params)
-    {
-        $this->paramList = $params;
-        return $this;
     }
 
 }

@@ -1,8 +1,4 @@
 /**
- * @plugin tableOrderBy
- * @version 1.1, Nov 03th, 2016
- * @author Michael Mifsud
- * @source This plugin template is from http://stefangabos.ro/jquery/jquery-plugin-boilerplate-revisited/
  *
  * This plugin is designed to be used in conjunction with the \Tk\Table\Cell\OrderBy object
  * to make the table rows dragable
@@ -10,7 +6,7 @@
  * Note: The main node to use as the selector is the parent of the cells
  *       that you want to be sortable. IE: 'table' or 'table tbody'
  *
- * <code>
+ * ```
  *   $(document).ready(function() {
  *     // attach the plugin to an element
  *     $('#element').tableOrderBy({'foo': 'bar'});
@@ -22,7 +18,11 @@
  *     $('#element').data('tableOrderBy').settings.foo;
  *
  *   });
- * </code>
+ * ```
+ * @plugin tableOrderBy
+ * @version 1.1, Nov 03th, 2016
+ * @author Michael Mifsud
+ * @source This plugin template is from http://stefangabos.ro/jquery/jquery-plugin-boilerplate-revisited/
  */
 (function($) {
 
