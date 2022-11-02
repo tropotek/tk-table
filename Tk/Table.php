@@ -19,7 +19,6 @@ use Tk\Traits\SystemTrait;
  */
 class Table implements InstanceKey
 {
-
     use AttributesTrait;
     use CssTrait;
     use SystemTrait;
