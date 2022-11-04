@@ -11,7 +11,7 @@ use \Tk\Table\Cell;
  */
 class Csv extends Button
 {
-    
+
     /**
      * @var \Tk\Db\Pdo
      */
@@ -146,7 +146,7 @@ class Csv extends Button
         if ($fullList) {
             foreach ($fullList as $obj) {
                 $arr = array();
-                /* @var $cell Cell\Iface */
+                /* @var $cell Cell\CellInterface */
                 foreach ($this->table->getCellList() as $cell) {
                     if ($this->ignoreCell($cell)) continue;
                     $value = $cell->getRawValue($obj);
@@ -173,7 +173,7 @@ class Csv extends Button
         $js = <<<JS
 jQuery(function ($) {
   $('.tk-action-csv').each(function () {
-    
+
   });
 });
 JS;
@@ -202,7 +202,7 @@ JS;
 
     /**
      *
-     * @param \Tk\Table\Cell\Iface $cell
+     * @param \Tk\Table\Cell\CellInterface $cell
      * @return bool
      */
     private function ignoreCell($cell)
@@ -212,7 +212,7 @@ JS;
 
     /**
      *
-     * @param \Tk\Table\Cell\Iface $cell
+     * @param \Tk\Table\Cell\CellInterface $cell
      * @return $this
      */
     public function addIgnoreCell($cell)

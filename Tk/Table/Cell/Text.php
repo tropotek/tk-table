@@ -2,34 +2,30 @@
 namespace Tk\Table\Cell;
 
 
+use Dom\Renderer\Attributes;
+use Dom\Template;
+
 /**
- * @author Michael Mifsud <http://www.tropotek.com/>
- * @see http://www.tropotek.com/
- * @license Copyright 2015 Michael Mifsud
+ * @author Tropotek <http://www.tropotek.com/>
  */
-class Text extends Iface
+class Text extends CellInterface
 {
 
     /**
      * The max numbers of characters to display
      *      0 = no limit
-     * @var int
      */
-    protected $charLimit = 0;
+    protected int $charLimit = 0;
 
-    protected $urlEnabled = true;
+    protected bool $urlEnabled = true;
 
-    protected $linkAttrs = '';
+    protected Attributes $linkAttrs;
 
-    /**
-     * Create
-     *
-     * @param string $property
-     * @param string $label If null the property name is used EG: 'propName' = 'Prop Name'
-     */
-    public function __construct($property, $label = null)
+
+    public function __construct(string $name, string $label = '')
     {
-        parent::__construct($property, $label);
+        $this->linkAttrs = new Attributes();
+        parent::__construct($name, $label);
     }
 
     /**
@@ -52,69 +48,60 @@ class Text extends Iface
 
     /**
      * Use 0 to disable character limit
-     *
-     * @param $i
-     * @return $this
      */
-    public function setCharacterLimit($i)
+    public function setCharacterLimit(int $i): static
     {
-        $this->charLimit = (int)$i;
+        $this->charLimit = $i;
         return $this;
     }
 
-    /**
-     * @return int
-     */
-    public function getCharLimit()
+    public function getCharLimit(): int
     {
         return $this->charLimit;
     }
 
-    /**
-     * @return string
-     */
-    public function getLinkAttrs(): string
+    public function getLinkAttrs(): Attributes
     {
         return $this->linkAttrs;
     }
 
-    /**
-     * @param string $linkAttrs
-     * @return Text
-     */
-    public function setLinkAttrs(string $linkAttrs): Text
+//    /**
+//     * @param mixed $obj
+//     * @param int|null $rowIdx The current row being rendered (0-n) If null no rowIdx available.
+//     * @return string
+//     */
+//    public function getCellHtml($obj, $rowIdx = null)
+//    {
+//        $value = $propValue = $this->getPropertyValue($obj);
+//        if ($this->charLimit && strlen($propValue) > $this->charLimit) {
+//            $propValue = \Tk\Str::wordcat($propValue, $this->charLimit - 3, '...');
+//        }
+//        //if (!$this->hasAttr('title') && (!is_array($value) && !is_object($value))) {
+//        if (!$this->hasAttr('title')) {
+//            //$this->setAttr('title', htmlentities($propValue));
+//            $this->setAttr('title', htmlspecialchars($value));
+//        }
+//
+//        $str = htmlspecialchars($propValue);
+//        $url = $this->getCellUrl($obj);
+//        if ($url && $this->isUrlEnabled()) {
+//            $str = sprintf('<a href="%s" %s>%s</a>', htmlentities($url->toString()), $this->linkAttrs, htmlspecialchars($propValue));
+//        }
+//
+//        $this->setUrlEnabled(true);     // Reset the urlEnabled status
+//        return $str;
+//    }
+
+    public function show(): ?Template
     {
-        $this->linkAttrs = $linkAttrs;
-        return $this;
+        // This is the cell repeat
+        $template = $this->getTemplate();
+
+        $template->insertHtml('td', $this->getValue());
+
+        $this->decorate($template);
+        return $template;
     }
-
-    /**
-     * @param mixed $obj
-     * @param int|null $rowIdx The current row being rendered (0-n) If null no rowIdx available.
-     * @return string
-     */
-    public function getCellHtml($obj, $rowIdx = null)
-    {
-        $value = $propValue = $this->getPropertyValue($obj);
-        if ($this->charLimit && strlen($propValue) > $this->charLimit) {
-            $propValue = \Tk\Str::wordcat($propValue, $this->charLimit - 3, '...');
-        }
-        //if (!$this->hasAttr('title') && (!is_array($value) && !is_object($value))) {
-        if (!$this->hasAttr('title')) {
-            //$this->setAttr('title', htmlentities($propValue));
-            $this->setAttr('title', htmlspecialchars($value));
-        }
-
-        $str = htmlspecialchars($propValue);
-        $url = $this->getCellUrl($obj);
-        if ($url && $this->isUrlEnabled()) {
-            $str = sprintf('<a href="%s" %s>%s</a>', htmlentities($url->toString()), $this->linkAttrs, htmlspecialchars($propValue));
-        }
-
-        $this->setUrlEnabled(true);     // Reset the urlEnabled status
-        return $str;
-    }
-
 
 
 }

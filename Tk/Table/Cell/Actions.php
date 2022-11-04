@@ -103,7 +103,7 @@ class Actions extends Text
 
     /**
      * Return the first button in the list matching the name
-     * 
+     *
      * @param string $name
      * @return null|ActionButton
      */
@@ -129,7 +129,7 @@ class Actions extends Text
         return $button;
     }
 
-    public function getRawValue($obj)
+    public function getRawValue(mixed $obj)
     {
         $arr = array();
         /** @var ActionButton $btn */
@@ -207,5 +207,5 @@ class Actions extends Text
 HTML;
         return \Dom\Loader::load($html);
     }
-    
+
 }

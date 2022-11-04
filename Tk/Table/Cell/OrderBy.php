@@ -3,6 +3,7 @@ namespace Tk\Table\Cell;
 
 
 use Tk\Callback;
+use Tk\Table;
 
 /**
  * @author Michael Mifsud <http://www.tropotek.com/>
@@ -84,10 +85,10 @@ class OrderBy extends Text
     /**
      * Set table fixed order by (otherwise changing the sort order does not make any sense)
      *
-     * @param \Tk\Table $table
-     * @return Iface
+     * @param Table $table
+     * @return CellInterface
      */
-    public function setTable($table)
+    public function setTable(Table $table)
     {
         $table->addCss('tk-sortable');
         $table->setStaticOrderBy('order_by');
@@ -353,7 +354,7 @@ JS;
   <div class="btn-group" role="group">
     <a href="javascript:;" title="Move Order Up" rel="nofollow" class="btn btn-default btn-sm btn-xs" var="upUrl"><i class="fa fa-caret-up" var="upIcon"></i></a>
     <a href="javascript:;" title="Move Order Down" rel="nofollow" class="btn btn-default btn-sm btn-xs" var="dnUrl"><i class="fa fa-caret-down" var="dnIcon"></i></a>
-  </div>  
+  </div>
   <a href="javascript:;" title="Click And Drag" rel="nofollow" class="drag">
     <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA8AAAAPAgMAAABGuH3ZAAAACVBMVEX///8AAAAAM8wY6EL2AAAAAXRSTlMAQObYZgAAAAFiS0dEAIgFHUgAAAAJcEhZcwAACxMAAAsTAQCanBgAAAAHdElNRQfjCwYAHAmRFEi4AAAAH0lEQVQI12NgAANGEMHqACREA2Bc/ARYHVgHI8QIBgAy+QFeo6/RgQAAAABJRU5ErkJggg==" alt="Drag"/>
   </a>

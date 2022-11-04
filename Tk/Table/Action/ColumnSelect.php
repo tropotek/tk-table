@@ -355,7 +355,7 @@ class ColumnSelect extends Button
     private function propsToCols($arr) {
         $nums = array();
         $i = 0;
-        /** @var \Tk\Table\Cell\Iface $cell */
+        /** @var \Tk\Table\Cell\CellInterface $cell */
         foreach ($this->getTable()->getCellList() as $k => $cell) {
             if (in_array($cell->getProperty(), $arr)) {
                 $nums[] = $i;   // int not string
@@ -370,7 +370,7 @@ class ColumnSelect extends Button
      */
     protected function initDefaultHidden()
     {
-        /** @var \Tk\Table\Cell\Iface $cell */
+        /** @var \Tk\Table\Cell\CellInterface $cell */
         foreach ($this->getTable()->getCellList() as $k => $cell) {
             if ($cell instanceof \Tk\Table\Cell\Checkbox || $cell instanceof \Tk\Table\Cell\Actions)
                 $this->addHidden($cell->getProperty());
@@ -403,7 +403,7 @@ class ColumnSelect extends Button
 
         $js = <<<JS
 jQuery(function ($) {
-  
+
   var init = function () {
     $('.tk-column-select-btn').columnSelect({});
   };

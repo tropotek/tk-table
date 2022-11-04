@@ -2,18 +2,35 @@
 
 namespace Tk;
 
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Dom\Renderer\Traits\AttributesTrait;
 use Dom\Renderer\Traits\CssTrait;
-use Tk\Table\Action;
-use Tk\Table\Cell;
-use Tk\Db\Tool;
-use Tk\Form\Event;
-use Tk\Table\Row;
+use Symfony\Component\HttpFoundation\Request;
+use Tk\Event\TableEvent;
+use Tk\Table\TableEvents;
 use Tk\Traits\SystemTrait;
+use Tk\Table\Cell\CellInterface;
+use Tk\Table\Row;
+
+
+    // TODO:
+    //     I have had a thought here, could we implement some sort of adaper/decorator pattern here
+    //     Where we send the list to the list adapter and send the adapter to the table.
+    //     We could create an adapter for arrays, the Db\Map\Results object, and others.
+    //     Create an interface for it then we can create different types of lists as needed.
+    //     Then maybe the DB adapter can manage the Db\Tool, DB\Mapper and paging then the Table does not need to know
+    //     about these abstract objects...
+    // TODO:
+    //     Create a test and see what reveals from it, also look into how we handle sorting of columns
+
+    //  TODO:
+    //     Add the session into a symfony session bag and that may take care of a lot of session code in here
+
 
 
 /**
- *  Add ?rts=rts to the URL request to reset the table session
+ *  Add ?rts={id} to the URL request to reset this table session.
+ *  And ?rts=rts to reset all table sessions on the page
  *
  * @author Tropotek <http://www.tropotek.com/>
  */
@@ -24,918 +41,166 @@ class Table implements InstanceKey
     use SystemTrait;
 
     /**
-     * This is the query string to set to reset the table session fully
+     * This is the query string to set to reset the table session
      */
     const RESET_TABLE = 'rts';
 
-    const PARAM_ORDER_BY = 'orderBy';
-    const ORDER_NONE = '';
-    const ORDER_ASC = 'ASC';
-    const ORDER_DESC = 'DESC';
+    protected ?EventDispatcherInterface $dispatcher = null;
 
+    protected string $id = '';
 
     /**
-     * @var int|null
+     * A row to set the defaults and will be cloned
+     * on each row render
      */
-    private $instanceId = null;
+    private Row $row;
 
     /**
-     * @var string
+     * The default cells that will be cloned
+     * on each row render
      */
-    protected $id = '';
+    protected Collection $cells;
 
-    /**
-     * Used internally to flag when the filter submit buttons have been appended
-     * @var bool
-     */
-    protected $formInit = false;
-
-    /**
-     * Internal flag for executing the filter form
-     * @var bool
-     */
-    protected $filterFormExecuted = false;
-
-    /**
-     * @var Action\Iface[]
-     */
-    protected $actionList = array();
-
-    /**
-     * @var Cell\Iface[]
-     */
-    protected $cellList = array();
-
-    /**
-     * @var array
-     */
-    protected $list = null;
-
-    /**
-     * @var Form
-     */
-    protected $form = null;
-
-    /**
-     * @var string
-     */
-    protected $staticOrderBy = null;
-
-    /**
-     * @var bool
-     */
-    protected $executed = false;
-
-    /**
-     * @var null|\Symfony\Component\EventDispatcher\EventDispatcherInterface
-     */
-    protected $dispatcher = null;
-
-    /**
-     * @var Tool
-     */
-    private $tool = null;
-
-    /**
-     * @var null|Table\Renderer\Iface
-     */
-    private $renderer = null;
-
-    /**
-     * @var Row
-     */
-    private $row = null;
+    protected array $list = [];
 
 
-    /**
-     * Create a table object
-     *
-     * @param string $tableId
-     */
-    public function __construct($tableId = '')
+    public function __construct(string $tableId = '')
     {
-        static $tid = 1;
-        $this->getInstanceId();             // Init the instance ID so is can be used if needed
+        $this->row = new Row($this);
+        $this->cells = new Collection();
+        if ($this->getFactory()->getEventDispatcher()) {
+            $this->dispatcher = $this->getFactory()->getEventDispatcher();
+        }
+
         if (!$tableId) {
             $uri = \Tk\Uri::create();
-            $uri = str_replace('.'.$uri->getExtension(), '', $uri->basename()) . '-' . $tid++;
+            $uri = str_replace('.'.$uri->getExtension(), '', $uri->basename());
             $tableId = trim(strtolower(preg_replace('/[A-Z]/', '-$0', $uri . \Tk\ObjectUtil::basename(get_class($this)) )), '-');
         }
-
-        $this->id = $tableId;
-        $this->row = new Row();
-        $this->setAttr('id', $this->getId());
-        $this->getTableSession();           // init Table Session
-        $this->form = $this->makeForm();
-
-        // TODO: Re-think this, we need to look at both the tables and forms create/init/execute/show logic so they work together.
-        //$this->initCells();
+        $this->setId($tableId);
     }
 
-    /**
-     * get the unique table instance ID
-     * @return int|null
-     */
-    public function getInstanceId()
-    {
-        static $count = 1;
-        if ($this->instanceId === null) {
-            $this->instanceId = $count++;
-        }
-        return $this->instanceId;
-    }
 
     /**
-     * @param string $tableId
-     * @return static
+     * Set the data list
      */
-    public static function create($tableId = '')
-    {
-        $obj = new static($tableId);
-        return $obj;
-    }
-
-    /**
-     * @return bool
-     */
-    public function isExecuted(): bool
-    {
-        return $this->executed;
-    }
-
-    /**
-     * @param bool $executed
-     * @return Table
-     */
-    protected function setExecuted(bool $executed): Table
-    {
-        $this->executed = $executed;
-        return $this;
-    }
-
-    /**
-     * Execute the table
-     * Generally called in the renderer`s show() method
-     */
-    public function execute()
-    {
-        if (!$this->isExecuted()) {
-            /* @var Cell\Iface $cell */
-            foreach ($this->getCellList() as $cell) {
-                $cell->execute();
-            }
-            /* @var Action\Iface $action */
-            foreach ($this->getActionList() as $action) {
-                $action->init();
-                if ($action->hasTriggered()) {
-                    $action->execute();
-                }
-            }
-            $this->setExecuted(true);
-            if ($this->getRequest()->has(self::RESET_TABLE) && $this->getRequest()->get(self::RESET_TABLE) == $this->getId()) {
-                $this->resetSession();
-                \Tk\Uri::create()->remove(self::RESET_TABLE)->redirect();
-            }
-        }
-    }
-
-    /**
-     * @param array|\ArrayAccess|\Iterator|\Tk\Db\Map\ArrayObject $list
-     * @return $this
-     */
-    public function setList($list)
+    public function setList(mixed $list): static
     {
         $this->list = $list;
-        if ($list instanceof \Tk\Db\Map\ArrayObject) {
-            if($list->countAll() < $this->getTool()->getOffset()) {
-                // not the best solution because it requires the page to be reloaded,
-                //  but it usually only happens on developer error or testing.
-                $this->resetSessionOffset();
-                //$this->resetSessionTool();
-            }
-        }
+        $this->getDispatcher()?->dispatch(new TableEvent($this), TableEvents::TABLE_INIT);
 
-        if ($this->dispatcher) {
-            $e = new \Tk\Event\TableEvent($this);
-            $this->dispatcher->dispatch(\Tk\Table\TableEvents::TABLE_INIT, $e);
-        }
-
-        $this->execute();
-
-        if ($this->dispatcher) {
-            $this->dispatcher->dispatch(\Tk\Table\TableEvents::TABLE_EXECUTE, $e);
-        }
         return $this;
     }
 
     /**
-     * Get the data list array
-     *
-     * @return array|\Tk\Db\Map\ArrayObject
+     * Get the data list
      */
-    public function getList()
+    public function getList(): array
     {
         return $this->list;
     }
 
-
     /**
-     * Add Filter submit events
+     * Execute any Table and cell request responses
      */
-    protected function initFilterForm()
+    public function execute(Request $request)
     {
-        if (!$this->formInit) {
-            $this->appendFilter(new Event\Submit($this->makeInstanceKey('search'), array($this, 'doSearch')))
-                ->setAttr('value', $this->makeInstanceKey('search'))->setLabel('Search');
-            $this->appendFilter(new Event\Submit($this->makeInstanceKey('clear'), array($this, 'doClear')))
-                ->setAttr('value', $this->makeInstanceKey('clear'))->setLabel('Clear');
-            $this->formInit = true;
+        foreach ($this->getCells() as $cell) {
+            $cell->execute($request);
         }
 
+        $this->getDispatcher()?->dispatch(new TableEvent($this), TableEvents::TABLE_EXECUTE);
     }
 
-    /**
-     * @return Form
-     */
-    protected function makeForm()
-    {
-        $form = new Form($this->id . 'Filter');
-        $form->setDispatcher($this->getDispatcher());
-        $form->setParamList($this->all());      // TODO: remove by v2.4.0
-        $form->addCss('tk-table-filter-form form-inline');      // TODO: move to a table form renderer, this is the wrong place to set the classes?
-        return $form;
-    }
 
-    /**
-     * @param $form
-     */
-    public function doSearch($form)
-    {
-        //  Save to session
-        $this->saveFilterSession();
-        $this->resetSessionOffset();
-        $this->getUri($form)->redirect();
-    }
 
-    /**
-     * @param $form
-     */
-    public function doClear($form)
-    {
-        // Clear session
-        $this->clearFilterSession();
-        $this->resetSessionOffset();
-        $this->getUri($form)->redirect();
-    }
-
-    /**
-     * @return null|\Symfony\Component\EventDispatcher\EventDispatcherInterface
-     */
-    public function getDispatcher()
+    public function getDispatcher(): ?EventDispatcherInterface
     {
         return $this->dispatcher;
     }
 
     /**
-     * @param null|\Symfony\Component\EventDispatcher\EventDispatcherInterface $dispatcher
+     * The id can only be set once unless it is cleared first
      */
-    public function setDispatcher($dispatcher)
+    protected function setId($id): static
     {
-        $this->dispatcher = $dispatcher;
-    }
-
-    /**
-     * @return null|Table\Renderer\Iface
-     */
-    public function getRenderer()
-    {
-        return $this->renderer;
-    }
-
-    /**
-     * @param null|Table\Renderer\Iface $renderer
-     * @return static
-     */
-    public function setRenderer($renderer)
-    {
-        $this->renderer = $renderer;
+        static $instances = [];
+        if ($this->id) return $this;
+        if (!isset($instances[$id])) {
+            $instances[$id] = 0;
+        } else {
+            $instances[$id]++;
+        }
+        if ($instances[$id] > 0) $id = $id.$instances[$id];
+        $this->id = $id;
+        $this->setAttr('id', $this->getId());
         return $this;
     }
 
     /**
-     * @param Form $form
-     * @return Uri
+     * Get the table id
      */
-    protected function getUri($form = null)
-    {
-        $uri = \Tk\Uri::create();
-        if ($form) {
-            /* @var \Tk\Form\Field\FieldInterface $field */
-            foreach ($form->getFieldList() as $field) {
-                $uri->remove($field->getName());
-            }
-        }
-        return $uri;
-    }
-
-    /**
-     * Get the table Id
-     *
-     * @return string
-     */
-    public function getId()
+    public function getId(): string
     {
         return $this->id;
     }
 
     /**
-     * @param Cell\Iface $cell
-     * @param null|Cell\Iface|string $refCell
-     * @return Cell\Iface
-     * @since 2.0.68
-     */
-    public function appendCell($cell, $refCell = null)
-    {
-        $cell->setTable($this);
-        $cell->setRow($this->row);
-        if (is_string($refCell)) {
-            $refCell = $this->findCell($refCell);
-        }
-        if (!$refCell || !$refCell instanceof Cell\Iface) {    // Append to end of list
-            array_push($this->cellList, $cell);
-        } else {
-            $newArr = array();
-            /** @var Cell\Iface $c */
-            foreach ($this->getCellList() as $c) {
-                $newArr[] = $c;
-                if ($c === $refCell) $newArr[] = $cell;
-            }
-            $this->setCellList($newArr);
-        }
-        return $cell;
-    }
-
-    /**
-     * @param Cell\Iface $cell
-     * @param null|Cell\Iface|string $refCell
-     * @return Cell\Iface
-     * @since 2.0.68
-     */
-    public function prependCell($cell, $refCell = null)
-    {
-        $cell->setTable($this);
-        $cell->setRow($this->row);
-        if (is_string($refCell)) {
-            $refCell = $this->findCell($refCell);
-        }
-        if (!$refCell || !$refCell instanceof Cell\Iface) {    // Prepend to start of list
-            array_unshift($this->cellList, $cell);
-        } else {
-            // TODO: optimise this if possible
-            $newArr = array();
-            /** @var Cell\Iface $c */
-            foreach ($this->getCellList() as $c) {
-                if ($c === $refCell) $newArr[] = $cell;
-                $newArr[] = $c;
-            }
-            $this->setCellList($newArr);
-        }
-        return $cell;
-    }
-
-    /**
-     * Remove a cell from the table
-     *
-     * @param string|Cell\Iface $cell
-     * @return array|Cell\Iface
-     */
-    public function removeCell($cell)
-    {
-        $cells = $cell;
-        if (is_string($cells)) {
-            $cells = $this->findCells($cells);
-        }
-        if ($cells) {
-            if (!is_array($cells)) $cells = array($cells);
-            $arr = array();
-            /** @var Cell\Iface $c */
-            foreach ($this->getCellList() as $i => $c) {
-                $found = false;
-                foreach ($cells as $cell) {
-                    if ($c === $cell) {
-                        $found = true;
-                    }
-                }
-                if (!$found) $arr[] = $c;
-            }
-            $this->cellList = $arr;
-        }
-        return $cell;
-    }
-
-    /**
-     * Find a cell in the table that match the given property and/or label
-     *
-     * @param string $property
-     * @param null|string $label
-     * @return Cell\Iface
-     */
-    public function findCell($property, $label = null)
-    {
-        $found = $this->findCells($property, $label);
-        return current($found);
-    }
-
-    /**
-     * Find all cells that match the given property and/or label
-     *
-     * @param string $property
-     * @param null|string $label
-     * @return array|Cell\Iface[]
-     */
-    public function findCells($property, $label = null)
-    {
-        $found = array();
-        foreach ($this->getCellList() as $c) {
-            if ($c->getProperty() == $property) {
-                if ($label !== null) {
-                    if ($c->getLabel() == $label)
-                        $found[] = $c;
-                } else {
-                    $found[] = $c;
-                }
-            }
-        }
-        return $found;
-    }
-
-    /**
-     * Set the cells, init with the table
-     *
-     * @param Cell\Iface[] $array
-     * @return Table
-     */
-    public function setCellList($array)
-    {
-        foreach ($array as $cell) {
-            $cell->setTable($this);
-            $cell->setRow($this->row);
-        }
-        $this->cellList = $array;
-        return $this;
-    }
-
-    /**
-     * Get the cell list array
-     *
-     * @return Cell\Iface[]
-     */
-    public function getCellList()
-    {
-        return $this->cellList;
-    }
-
-    /**
-     * @param Action\Iface $action
-     * @param null|Action\Iface|string $refAction
-     * @return Action\Iface
-     * @since 2.0.68
-     */
-    public function appendAction(Action\Iface $action, $refAction = null)
-    {
-        $action->setTable($this);
-        if (is_string($refAction)) {
-            $refAction = $this->findAction($refAction);
-        }
-        if (!$refAction) {
-            $this->actionList[$action->getName()] = $action;
-        } else {
-            $newArr = array();
-            foreach ($this->actionList as $a) {
-                $newArr[$a->getName()] = $a;
-                if ($a === $refAction) $newArr[$action->getName()] = $action;
-            }
-            $this->actionList = $newArr;
-        }
-        return $action;
-    }
-
-    /**
-     * @param Action\Iface $action
-     * @param null|Action\Iface|string $refAction
-     * @return Action\Iface
-     * @since 2.0.68
-     */
-    public function prependAction(Action\Iface $action, $refAction = null)
-    {
-        $action->setTable($this);
-        if (is_string($refAction)) {
-            $refAction = $this->findAction($refAction);
-        }
-        if (!$refAction) {
-            $this->actionList = array($action->getName() => $action) + $this->actionList;
-        } else {
-            $newArr = array();
-            foreach ($this->actionList as $a) {
-                if ($a === $refAction) $newArr[$action->getName()] = $action;
-                $newArr[$a->getName()] = $a;
-            }
-            $this->actionList = $newArr;
-        }
-        return $action;
-    }
-
-    /**
-     * @param Action\Iface|string $action
-     * @since 2.0.68
-     * @return null|Action\Iface
-     */
-    public function removeAction($action)
-    {
-        if (is_string($action)) {
-            $action = $this->findAction($action);
-        }
-        if ($action) {
-            /** @var Action\Iface $c */
-            foreach ($this->getActionList() as $i => $a) {
-                if ($a === $action) {
-                    unset($this->actionList[$i]);
-                    $this->actionList = array_values($this->actionList);
-                    return $action;
-                }
-            }
-        }
-        return null;
-    }
-
-    /**
-     * @param string $name
-     * @return null|Action\Iface
-     */
-    public function findAction($name)
-    {
-        foreach ($this->getActionList() as $a) {
-            if ($a->getName() == $name) {
-                return $a;
-            }
-        }
-        return null;
-    }
-
-    /**
-     * Get the action list array
-     *
-     * @return array|Action\Iface[]
-     */
-    public function getActionList()
-    {
-        return $this->actionList;
-    }
-
-    /**
-     * @param array $array
-     * @return $this
-     */
-    public function setActionList($array = array())
-    {
-        $this->actionList = $array;
-        return $this;
-    }
-
-    /**
-     * @return Form
-     */
-    public function getFilterForm()
-    {
-        return $this->form;
-    }
-
-    /**
-     * @param \Tk\Form\Field\FieldInterface $field
-     * @param null|\Tk\Form\Field\FieldInterface|string $refField
-     * @return \Tk\Form\Field\FieldInterface
-     * @since 2.0.68
-     */
-    public function appendFilter(\Tk\Form\Field\FieldInterface $field, $refField = null)
-    {
-        if (!$field instanceof \Tk\Form\Event\FieldInterface) $this->initFilterForm();
-        $field->setShowLabel(false);
-        return $this->getFilterForm()->appendField($field, $refField);
-    }
-
-    /**
-     * @param \Tk\Form\Field\FieldInterface $field
-     * @param null|\Tk\Form\Field\FieldInterface|string $refField
-     * @return \Tk\Form\Field\FieldInterface
-     * @since 2.0.68
-     */
-    public function prependFilter(\Tk\Form\Field\FieldInterface $field, $refField = null)
-    {
-        if (!$field instanceof \Tk\Form\Event\FieldInterface) $this->initFilterForm();
-        $field->setShowLabel(false);
-        return $this->getFilterForm()->prependField($field, $refField);
-    }
-
-    /**
-     * @param string|\Tk\Form\Field\FieldInterface $field
-     * @return null|string|\Tk\Form\Field\FieldInterface
-     * @since 2.0.68
-     */
-    public function removeFilter($field)
-    {
-        $this->initFilterForm();
-        return $this->getFilterForm()->removeField($field);
-    }
-
-    /**
-     * @param array $array
-     * @return $this
-     */
-    public function setFilterList($array = array())
-    {
-        $this->getFilterForm()->setFieldList($array);
-        return $this;
-    }
-
-    /**
-     * @param null|array|string $regex A regular expression or array of field names to get
-     * @return array
-     * @throws \Exception
-     */
-    public function getFilterValues($regex = null)
-    {
-        if (!$this->filterFormExecuted && $this->getFilterForm()) { // execute form on first access
-            $this->getFilterForm()->load($this->getFilterSession()->all());
-            $this->getFilterForm()->execute($this->getRequest());
-            $this->filterFormExecuted = true;
-        }
-        return $this->getFilterForm()->getValues($regex);
-    }
-
-    /**
-     * Clear the filter form session data.
-     * This should be called from the clear filter event usually
-     *
-     * @return $this
-     */
-    public function clearFilterSession()
-    {
-        $this->getFilterSession()->clear();
-        return $this;
-    }
-
-    /**
-     * Save the filter form session data
-     * This should be called from the search filter event
-     *
-     * @return $this
-     */
-    public function saveFilterSession()
-    {
-        $filterSession = $this->getFilterSession();
-        if ($this->getFilterForm()) {
-            $filterSession->replace($this->getFilterForm()->getValues());
-        }
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getStaticOrderBy()
-    {
-        return $this->staticOrderBy;
-    }
-
-    /**
-     * @param string $staticOrderBy
-     * @return $this
-     */
-    public function setStaticOrderBy($staticOrderBy)
-    {
-        $this->staticOrderBy = $staticOrderBy;
-        return $this;
-    }
-
-    /**
-     * Get the active order By value
-     *
-     * Will be one of: '', 'ASC', 'DESC'
-     *
-     * @return string
-     */
-    public function getOrder()
-    {
-        $ord = $this->getOrderStatus();
-        $val = self::ORDER_NONE;
-        if (count($ord) >= 2) {
-            $val = trim($ord[1]);
-        }
-        return $val;
-    }
-
-    /**
-     * Get the active order property
-     *
-     * @return string
-     */
-    public function getOrderProperty()
-    {
-        $ord = $this->getOrderStatus();
-        $prop = '';
-        if (count($ord)) {
-            $prop = trim($ord[0]);
-
-        }
-        return $prop;
-    }
-
-
-    /**
-     * Get the property and order value from the Request or params
-     *
-     * EG: from "lastName DESC" TO array('lastName', 'DESC');
-     *
-     * @return array
-     */
-    private function getOrderStatus()
-    {
-        $o = array();
-        if ($this->getTool()) {
-            $o = explode(' ', $this->getTool()->getOrderBy());
-        }
-        return $o;
-    }
-
-    /**
-     * Create a DbTool from the request using the table ID and
-     * default parameters...
-     *
-     * @param string $defaultOrderBy
-     * @param int $defaultLimit
-     * @return Tool
-     * TODO: we could put this into the pager`s area of responsibility if we wish to reduce the Table objects complexity
-     */
-    public function getTool($defaultOrderBy = '', $defaultLimit = 25)
-    {
-        if (!$this->tool) {
-
-            $this->tool = Tool::create($defaultOrderBy, $defaultLimit);
-            $this->tool->setInstanceId($this->getId());
-
-            $dbToolSession = $this->getDbToolSession();
-            $this->tool->updateFromArray($dbToolSession->all());
-
-            $a = \Tk\Uri::create()->all();
-            $isRequest = $this->tool->updateFromArray($a);  // Use GET params only
-            if ($this->getStaticOrderBy() !== null) {
-                $this->tool->setOrderBy($this->getStaticOrderBy());
-            }
-
-            if ($isRequest) {   // note, should only fire on GET requests.
-                $dbToolSession->replace($this->tool->toArray());
-                \Tk\Uri::create()
-                    ->remove($this->makeInstanceKey(Tool::PARAM_ORDER_BY))
-                    ->remove($this->makeInstanceKey(Tool::PARAM_LIMIT))
-                    ->remove($this->makeInstanceKey(Tool::PARAM_OFFSET))
-                    ->remove($this->makeInstanceKey(Tool::PARAM_GROUP_BY))
-                    ->remove($this->makeInstanceKey(Tool::PARAM_HAVING))
-                    ->remove($this->makeInstanceKey(Tool::PARAM_DISTINCT))
-                    ->redirect();
-            }
-        }
-        return $this->tool;
-    }
-
-    /**
-     * Reset the db tool offset to 0
-     *
-     * @return $this
-     */
-    public function resetSessionOffset()
-    {
-        \Tk\Log::warning('Resetting Offset Session.');
-        $sesh = $this->getDbToolSession();
-        $sesh->set($this->makeInstanceKey(Tool::PARAM_OFFSET), 0);
-        return $this;
-    }
-
-
-    /**
-     * All table related data should be save to this object
-     *
-     * @return Collection
-     */
-    public function getTableSession()
-    {
-        $session = $this->getSession();
-        $key = 'tables';
-        $tableSession = new Collection();
-        if ($session->has($key)) {
-            $tableSession = $session->get($key);
-        }
-        $session->set($key, $tableSession);
-        $instanceSession = new Collection();
-        if ($tableSession->has($this->getId())) {
-            $instanceSession = $tableSession->get($this->getId());
-        }
-        $tableSession->set($this->getId(), $instanceSession);
-
-        return $instanceSession;
-    }
-
-    /**
-     * @param string $key
-     * @return Collection
-     */
-    public function getDbToolSession($key = 'dbTool')
-    {
-        $tableSession = $this->getTableSession();
-        $dbToolSession = $tableSession->get($key);
-        if (!$dbToolSession instanceof Collection) {
-            $dbToolSession = new Collection();
-            $tableSession->set($key, $dbToolSession);
-        }
-        return $dbToolSession;
-    }
-
-    /**
-     * @param string $key
-     * @return Collection
-     */
-    public function getFilterSession($key = 'filter')
-    {
-        $tableSession = $this->getTableSession();
-        $filterSession = $tableSession->get($key);
-        if (!$filterSession instanceof Collection) {
-            $filterSession = new Collection();
-            $tableSession->set($key, $filterSession);
-        }
-        return $filterSession;
-    }
-
-    /**
-     * @param string $key
-     * @return Collection
-     */
-    public function getActionSession($key = 'action')
-    {
-        $tableSession = $this->getTableSession();
-        $filterSession = $tableSession->get($key);
-        if (!$filterSession instanceof Collection) {
-            $filterSession = new Collection();
-            $tableSession->set($key, $filterSession);
-        }
-        return $filterSession;
-    }
-
-    /**
-     * Reset the db tool offset to 0
-     *
-     * @return $this
-     */
-    public function resetSessionTool()
-    {
-        \Tk\Log::warning('Resetting Session Tool.');
-        $sesh = $this->getDbToolSession();
-        $sesh->clear();
-        return $this;
-    }
-
-    /**
-     * Reset the table session values
-     *
-     * @return $this
-     */
-    public function resetSession()
-    {
-        \Tk\Log::warning('Resetting Table Session.');
-//        $this->resetSessionOffset();
-//        $this->resetSessionTool();
-        $this->getTableSession()->clear();
-        return $this;
-    }
-
-    /**
      * Create request keys with prepended string
-     *
-     * returns: `{instanceId}-{$key}`
-     *
-     * @param $key
-     * @return string
+     * returns: `{id}-{$key}`
      */
-    public function makeInstanceKey($key)
+    public function makeInstanceKey($key): string
     {
-        //return $this->getInstanceId() . '-' . $key;
         return $this->getId() . '-' . $key;
     }
 
-    /**
-     * @return Row
-     */
     public function getRow(): Row
     {
         return $this->row;
+    }
+
+
+    public function setCells(Collection $cells): static
+    {
+        foreach ($cells as $cell) {
+            $cell->setTable($this);
+        }
+        $this->cells = $cells;
+        return $this;
+    }
+
+    public function getCells(): Collection
+    {
+        return $this->cells;
+    }
+
+    public function appendCell(CellInterface $cell, ?string $refName = null): CellInterface
+    {
+        if ($this->getCells()->has($cell->getName())) {
+            throw new \Tk\Table\Exception("Cell with name '{$cell->getName()}' already exists.");
+        }
+        $cell->setTable($this);
+        return $this->getCells()->append($cell->getName(), $cell, $refName);
+    }
+
+    public function prependCell(CellInterface $cell, ?string $refName = null)
+    {
+        if ($this->getCells()->has($cell->getName())) {
+            throw new \Tk\Table\Exception("Cell with name '{$cell->getName()}' already exists.");
+        }
+        $cell->setTable($this);
+        return $this->getCells()->prepend($cell->getName(), $cell, $refName);
+    }
+
+    public function removeCell($cellName): static
+    {
+        $this->getCells()->remove($cellName);
+        return $this;
+    }
+
+    public function getCell(string $name): ?CellInterface
+    {
+        return $this->getCells()->get($name);
     }
 
 }

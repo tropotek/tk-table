@@ -1,6 +1,7 @@
 <?php
 namespace Tk\Event;
 
+use Symfony\Contracts\EventDispatcher\Event;
 
 /**
  * @author Michael Mifsud <http://www.tropotek.com/>

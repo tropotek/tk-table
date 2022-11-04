@@ -37,7 +37,7 @@ class Html extends Text
      * @param mixed $obj
      * @return string
      */
-    public function getRawValue($obj)
+    public function getRawValue(mixed $obj)
     {
         $value = strip_tags($this->getPropertyValue($obj));
         return $value;

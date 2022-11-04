@@ -10,7 +10,7 @@ namespace Tk\Table\Cell;
 class Minutes extends Text
 {
 
-    public function getPropertyValue($obj)
+    public function getPropertyValue(object $obj)
     {
         $value = self::min2Str($this->getObjectPropertyValue($obj));
         return $value;

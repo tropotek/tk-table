@@ -1,42 +1,81 @@
 <?php
 namespace Tk\Table;
 
+use Dom\Renderer\RendererInterface;
 use Dom\Renderer\Traits\AttributesTrait;
 use Dom\Renderer\Traits\CssTrait;
-use Tk\CollectionTrait;
+use Dom\Renderer\Traits\RendererTrait;
+use Dom\Template;
+use Tk\Collection;
+use Tk\Table;
+use Tk\Table\Cell\CellInterface;
 
 /**
- * This class holds the row template values
- *
  * @author Tropotek <http://www.tropotek.com/>
  */
-class Row
+class Row implements RendererInterface
 {
 
     use AttributesTrait;
     use CssTrait;
-    use CollectionTrait;
-
-    protected bool $head = true;
-
-    protected int $rowId = 0;
+    use RendererTrait;
 
 
-    public function __construct()
+    protected int $id = 0;
+
+    protected Table $table;
+
+    protected Collection $cells;
+
+    protected bool $head = false;
+
+    protected array $data = [];
+
+
+    public function __construct(Table $table)
     {
-        $this->_CollectionTrait();
+        $this->table = $table;
+        $this->cells = new Collection();
     }
 
-    public function getRowId(): int
+    public static function createRow(Row $row, array $rowData, int $rowId): static
     {
-        return $this->rowId;
+        $obj = clone $row;
+        $obj->cells = new Collection();
+        $obj->data = $rowData;
+        $obj->setId($rowId);
+        $obj->init($rowData);
+
+        return $obj;
     }
 
-    public function setRowId(int $rowId): Row
+    protected function init(array $rowData)
     {
-        if ($rowId > 0) $this->setHead(false);
-        $this->rowId = $rowId;
+        /** @var CellInterface $cell */
+        foreach ($this->getTable()->getCells() as $cell) {
+            $nc = clone $cell;
+            $nc->setRow($this);
+            $nc->setValue($rowData[$nc->getName()] ?? '');
+            $this->getCells()->set($nc->getName(), $nc);
+        }
+    }
+
+
+    public function getId(): int
+    {
+        return $this->id;
+    }
+
+    public function setId(int $id): Row
+    {
+        if ($id == 0) $this->head = true;
+        $this->id = $id;
         return $this;
+    }
+
+    public function getTable(): Table
+    {
+        return $this->table;
     }
 
     public function isHead(): bool
@@ -44,17 +83,36 @@ class Row
         return $this->head;
     }
 
-    public function setHead(bool $head): Row
+    public function getCells(): Collection
     {
-        $this->head = $head;
-        return $this;
+        return$this->cells;
     }
 
-    public function resetRow(): static
+    public function getData(): array
     {
-        $this->setAttrList([]);
-        $this->setCssList();
-        $this->getCollection()->clear();
-        return $this;
+        return $this->data;
+    }
+
+
+    function show(): ?Template
+    {
+        // This is the row repeat or thead repeat
+        $template = $this->getTemplate();
+
+        /** @var CellInterface $cell */
+        foreach ($this->getCells() as $cell) {
+            $cellTemplate = $template->getRepeat('td');
+            $cell->setTemplate($cellTemplate);
+            $cell->show();
+            $cellTemplate->appendRepeat();
+        }
+        if ($this->isHead()) return $template;
+
+        // TODO: Add on Show CallbackCollection ???
+
+        $template->setAttr('tr', $this->getAttrList());
+        $template->addCss('tr', $this->getCssList());
+
+        return $template;
     }
 }

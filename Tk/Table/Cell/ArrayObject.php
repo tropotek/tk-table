@@ -14,11 +14,11 @@ class ArrayObject extends Text
 
     /**
      * @param object $obj
-     * @param null $property
+     * @param string|null $property
      * @param bool $withCallable
      * @return mixed|string
      */
-    public function getObjectPropertyValue($obj, $property = null, $withCallable = true)
+    public function getObjectPropertyValue(object $obj, string $property = null, bool $withCallable = true)
     {
         $value = parent::getObjectPropertyValue($obj, $property, $withCallable);
         if (is_array($value)) {

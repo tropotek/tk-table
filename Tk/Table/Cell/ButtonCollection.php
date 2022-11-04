@@ -9,7 +9,7 @@ namespace Tk\Table\Cell;
 class ButtonCollection extends Text
 {
     use \Tk\Ui\ElementCollectionTrait;
-    
+
     /**
      * Actions constructor.
      * @param string $property
@@ -27,7 +27,7 @@ class ButtonCollection extends Text
      * @param mixed $obj
      * @return string
      */
-    public function getRawValue($obj)
+    public function getRawValue(mixed $obj)
     {
         $arr = array();
         /** @var \Tk\Table\Ui\ActionButton $btn */
@@ -103,5 +103,5 @@ class ButtonCollection extends Text
 HTML;
         return \Dom\Loader::load($html);
     }
-    
+
 }

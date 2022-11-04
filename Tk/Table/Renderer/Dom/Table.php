@@ -68,7 +68,7 @@ class Table extends Iface
 
     /**
      * Get the default form renderer object
-     * 
+     *
      * @return Form\Renderer\Dom|Form\Renderer\Iface
      */
     public function getFormRenderer()
@@ -217,7 +217,7 @@ class Table extends Iface
         }
 
         if ($template->keyExists('repeat', 'th')) {
-            /* @var \Tk\Table\Cell\Iface $cell */
+            /* @var \Tk\Table\Cell\CellInterface $cell */
             foreach ($this->getTable()->getCellList() as $property => $cell) {
                 if (!$cell->isVisible()) continue;
                 $repeat = $template->getRepeat('th');
@@ -296,7 +296,7 @@ class Table extends Iface
 
         if (!$this->rowRepeat || !$this->rowRepeat->keyExists('repeat', 'td')) return;
 
-        /* @var \Tk\Table\Cell\Iface $cell */
+        /* @var \Tk\Table\Cell\CellInterface $cell */
         foreach($this->getTable()->getCellList() as $k => $cell) {
             if (!$cell->isVisible()) continue;
             $cell->storeProperties();
@@ -318,15 +318,15 @@ class Table extends Iface
     /**
      * Render the table cell
      *
-     * @param Cell\Iface $cell
+     * @param Cell\CellInterface $cell
      * @param mixed $obj
      */
-    protected function showCell(Cell\Iface $cell, $obj)
+    protected function showCell(Cell\CellInterface $cell, $obj)
     {
         $html = $cell->getCellHtml($obj, $this->rowId);
         //if (is_callable($cell->getOnCellHtml())) {
             //$r = call_user_func_array($cell->getOnCellHtml(), array($cell, $obj, $html));
-            $r = $cell->getOnCellHtml()->execute($cell, $obj, $html);
+            $r = $cell->getOnShow()->execute($cell, $obj, $html);
             if ($r !== null) $html = $r;
         //}
 
@@ -384,7 +384,7 @@ class Table extends Iface
 
   <form var="form">
       <div class="tk-actions" var="actions" choice="actions"></div>
-      
+
       <div class="tk-table-wrap table-responsive">
         <table border="0" cellpadding="0" cellspacing="0" class="" var="table">
           <thead var="head">
@@ -399,10 +399,10 @@ class Table extends Iface
           </tbody>
         </table>
       </div>
-       
+
       <div class="tk-foot row" choice="foot" var="foot"></div>
   </form>
-  
+
 </div>
 HTML;
 

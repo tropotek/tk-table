@@ -59,11 +59,11 @@ class Date extends Text
     /**
      * Get the property value from the object using the supplied property name
      *
-     * @param \DateTime $obj
+     * @param object $obj
      * @param string $property
      * @return string
      */
-    public function getPropertyValue($obj)
+    public function getPropertyValue(object $obj)
     {
         $value = parent::getPropertyValue($obj);
         if ($value && !$value instanceof \DateTime) {
@@ -88,7 +88,7 @@ class Date extends Text
      * @param mixed $obj
      * @return string
      */
-    public function getRawValue($obj)
+    public function getRawValue(mixed $obj)
     {
         $value = parent::getRawValue($obj);
 
