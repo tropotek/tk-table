@@ -99,6 +99,18 @@ class Row implements RendererInterface
         // This is the row repeat or thead repeat
         $template = $this->getTemplate();
 
+        if ($this->isHead()) {
+            /** @var CellInterface $cell */
+            foreach ($this->getCells() as $cell) {
+                $cellTemplate = $template->getRepeat('td');
+                $cell->setTemplate($cellTemplate);
+                $cell->showHeader();
+                $cellTemplate->appendRepeat();
+            }
+
+            return $template;
+        }
+
         /** @var CellInterface $cell */
         foreach ($this->getCells() as $cell) {
             $cellTemplate = $template->getRepeat('td');
@@ -106,9 +118,6 @@ class Row implements RendererInterface
             $cell->show();
             $cellTemplate->appendRepeat();
         }
-        if ($this->isHead()) return $template;
-
-        // TODO: Add on Show CallbackCollection ???
 
         $template->setAttr('tr', $this->getAttrList());
         $template->addCss('tr', $this->getCssList());

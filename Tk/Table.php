@@ -6,8 +6,11 @@ use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Dom\Renderer\Traits\AttributesTrait;
 use Dom\Renderer\Traits\CssTrait;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Session\SessionBagInterface;
 use Tk\Event\TableEvent;
+use Tk\Table\TableBag;
 use Tk\Table\TableEvents;
+use Tk\Table\TableSession;
 use Tk\Traits\SystemTrait;
 use Tk\Table\Cell\CellInterface;
 use Tk\Table\Row;
@@ -112,8 +115,6 @@ class Table implements InstanceKey
         $this->getDispatcher()?->dispatch(new TableEvent($this), TableEvents::TABLE_EXECUTE);
     }
 
-
-
     public function getDispatcher(): ?EventDispatcherInterface
     {
         return $this->dispatcher;
@@ -201,6 +202,19 @@ class Table implements InstanceKey
     public function getCell(string $name): ?CellInterface
     {
         return $this->getCells()->get($name);
+    }
+
+
+    public function getTableSession(): TableSession
+    {
+        return TableBag::getTableSession($this->getId());
+    }
+
+    public function resetTableSession(): static
+    {
+        \Tk\Log::warning('Resetting Table Session.');
+        TableBag::removeTableSession($this->getId());
+        return $this;
     }
 
 }
