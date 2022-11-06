@@ -11,6 +11,8 @@ use Tk\Collection;
  *   Alternatively we could do all this in a jQuery plugin. (see: https://makitweb.com/how-to-hide-and-show-the-table-column-using-jquery/)
  *   Do we need this functionality and need to save the columns state?
  *
+ *   Think about making this a javascript plugin with just an api endpoint to save the state
+ *
  *
  * @author Tropotek <http://www.tropotek.com/>
  */

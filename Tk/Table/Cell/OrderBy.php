@@ -6,9 +6,12 @@ use Tk\Callback;
 use Tk\Table;
 
 /**
- * @author Michael Mifsud <http://www.tropotek.com/>
- * @see http://www.tropotek.com/
- * @license Copyright 2015 Michael Mifsud
+ *
+ * TODO:
+ *    Think about making this a full javascript with an api endpoint only
+ *
+ *
+ * @author Tropotek <http://www.tropotek.com/>
  */
 class OrderBy extends Text
 {
