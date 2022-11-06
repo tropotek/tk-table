@@ -89,6 +89,8 @@ abstract class CellInterface extends Element implements RendererInterface
         }
 
         $template->insertHtml('td', $html);
+        $template->setAttr('td', $this->getAttrList());
+        $template->addCss('td', $this->getCssList());
         return $template;
     }
 

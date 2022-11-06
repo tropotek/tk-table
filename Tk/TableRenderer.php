@@ -91,17 +91,17 @@ class TableRenderer extends Renderer
         foreach ($this->getTable()->getCells() as $cell) {
             $headerLabels[$cell->getName()] = $cell->getLabel();
         }
-        $headerRow = Row::createRow($this->getTable()->getRow(), $headerLabels, 0);
-        $headerRow->setTemplate($template);
-        $headerRow->show();
+        $row = Row::createRow($this->getTable()->getRow(), $headerLabels, 0);
+        $row->setTemplate($template);
+        $row->show();
 
         // Render table rows
         foreach ($this->getTable()->getList() as $rowId => $rowData) {
             // TODO: $rowId needs to add offset when using pager
             $rowRepeat = $template->getRepeat('tr');
-            $headerRow = Row::createRow($this->getTable()->getRow(), $rowData, $rowId+1);
-            $headerRow->setTemplate($rowRepeat);
-            $headerRow->show();
+            $row = Row::createRow($this->getTable()->getRow(), $rowData, $rowId+1);
+            $row->setTemplate($rowRepeat);
+            $row->show();
             $rowRepeat->appendRepeat();
         }
 

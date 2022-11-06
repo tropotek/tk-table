@@ -47,7 +47,6 @@ class Row implements RendererInterface
         $obj->data = $rowData;
         $obj->setId($rowId);
         $obj->init($rowData);
-
         return $obj;
     }
 
@@ -61,19 +60,54 @@ class Row implements RendererInterface
         }
 
         /** @var CellInterface $cell */
-        foreach ($this->getTable()->getCells() as $cell) {
-            $nc = clone $cell;
-            $nc->setRow($this);
+        foreach ($this->getTable()->getCells() as $orgCell) {
+            $cell = clone $orgCell;
+            $cell->setRow($this);
 
+            $val = '';
             if (is_object($data)) {
-                $val = ObjectUtil::getPropertyValue($data, $cell->getName());
-                $nc->setValue($val ?? '');
+                $val = ObjectUtil::getPropertyValue($data, $cell->getName()) ?? '';
             } elseif (is_array($data)) {
-                $nc->setValue($data[$nc->getName()] ?? '');
+                $val = $data[$cell->getName()] ?? '';
             }
+            $cell->setValue($val);
 
-            $this->getCells()->set($nc->getName(), $nc);
+            $this->getCells()->set($cell->getName(), $cell);
         }
+    }
+
+    function show(): ?Template
+    {
+        // This is the row repeat or thead repeat
+        $template = $this->getTemplate();
+
+        if ($this->isHead()) {
+            /** @var CellInterface $cell */
+            foreach ($this->getCells() as $cell) {
+                $cellTemplate = $template->getRepeat('td');
+                $cell->addCss('mh' . ucfirst($cell->getName()));
+                $cell->setAttr('title', $cell->getName());
+                $cell->setTemplate($cellTemplate);
+                $cell->showHeader();
+                $cellTemplate->appendRepeat();
+            }
+            return $template;
+        }
+
+        /** @var CellInterface $cell */
+        foreach ($this->getCells() as $cell) {
+            $cellTemplate = $template->getRepeat('td');
+            $cell->addCss('m' . ucfirst($cell->getName()));
+            $cell->setAttr('title', $cell->getName());
+            $cell->setTemplate($cellTemplate);
+            $cell->show();
+            $cellTemplate->appendRepeat();
+        }
+
+        $template->setAttr('tr', $this->getAttrList());
+        $template->addCss('tr', $this->getCssList());
+
+        return $template;
     }
 
 
@@ -107,37 +141,5 @@ class Row implements RendererInterface
     public function getData(): array|object
     {
         return $this->data;
-    }
-
-
-    function show(): ?Template
-    {
-        // This is the row repeat or thead repeat
-        $template = $this->getTemplate();
-
-        if ($this->isHead()) {
-            /** @var CellInterface $cell */
-            foreach ($this->getCells() as $cell) {
-                $cellTemplate = $template->getRepeat('td');
-                $cell->setTemplate($cellTemplate);
-                $cell->showHeader();
-                $cellTemplate->appendRepeat();
-            }
-
-            return $template;
-        }
-
-        /** @var CellInterface $cell */
-        foreach ($this->getCells() as $cell) {
-            $cellTemplate = $template->getRepeat('td');
-            $cell->setTemplate($cellTemplate);
-            $cell->show();
-            $cellTemplate->appendRepeat();
-        }
-
-        $template->setAttr('tr', $this->getAttrList());
-        $template->addCss('tr', $this->getCssList());
-
-        return $template;
     }
 }
