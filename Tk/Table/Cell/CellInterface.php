@@ -2,13 +2,11 @@
 namespace Tk\Table\Cell;
 
 use Dom\Renderer\RendererInterface;
-use Dom\Renderer\Traits\AttributesTrait;
-use Dom\Renderer\Traits\CssTrait;
+use Tk\Ui\Element;
 use Dom\Renderer\Traits\RendererTrait;
 use Dom\Template;
 use Symfony\Component\HttpFoundation\Request;
 use Tk\Db\Tool;
-use Tk\Traits\SystemTrait;
 use Tk\CallbackCollection;
 use Tk\Table;
 use Tk\Table\Row;
@@ -18,11 +16,8 @@ use Tk\Uri;
 /**
  * @author Tropotek <http://www.tropotek.com/>
  */
-abstract class CellInterface implements RendererInterface
+abstract class CellInterface extends Element implements RendererInterface
 {
-    use SystemTrait;
-    use AttributesTrait;
-    use CssTrait;
     use RendererTrait;
 
     const ORDER_NONE = '';
@@ -51,12 +46,15 @@ abstract class CellInterface implements RendererInterface
 
     protected CallbackCollection $onShow;
 
+    protected ?Uri $url = null;
+
+    protected string $urlProperty = 'id';
+
 
     public function __construct(string $name, string $label = '')
     {
         $this->onShow = CallbackCollection::create();
         $this->name = $name;
-        $this->orderByName = $name;
 
         if (!$label) {  // Set the default label if none supplied
             $label = preg_replace('/(Id|_id)$/', '', $name);
@@ -72,20 +70,6 @@ abstract class CellInterface implements RendererInterface
      * This is called after the list is set and before the render methods are called
      */
     public function execute(Request $request): void { }
-
-    /**
-     * A basic common cell renderer.
-     */
-    protected function decorate(Template $template): Template
-    {
-        // TODO ...
-        $this->getOnShow()->execute($template, $this);
-
-        $template->setAttr('td', $this->getAttrList());
-        $template->addCss('td', $this->getCssList());
-
-        return $template;
-    }
 
     public function showHeader(): ?Template
     {
@@ -105,6 +89,19 @@ abstract class CellInterface implements RendererInterface
         }
 
         $template->insertHtml('td', $html);
+        return $template;
+    }
+
+    /**
+     * A basic common cell renderer.
+     */
+    protected function decorate(Template $template): Template
+    {
+        $this->getOnShow()->execute($this);
+
+        $template->setAttr('td', $this->getAttrList());
+        $template->addCss('td', $this->getCssList());
+
         return $template;
     }
 
@@ -166,33 +163,6 @@ abstract class CellInterface implements RendererInterface
 //        }
         return self::ORDER_NONE;
     }
-
-//    /**
-//     * @param mixed $obj
-//     * @param int|null $rowIdx The current row being rendered (0-n) If null no rowIdx available.
-//     * @return string
-//     */
-//    public function getCellHtml($obj, $rowIdx = null)
-//    {
-//        $value = $propValue = $this->getPropertyValue($obj);
-//        if ($this->charLimit && strlen($propValue) > $this->charLimit) {
-//            $propValue = \Tk\Str::wordcat($propValue, $this->charLimit - 3, '...');
-//        }
-//        //if (!$this->hasAttr('title') && (!is_array($value) && !is_object($value))) {
-//        if (!$this->hasAttr('title')) {
-//            //$this->setAttr('title', htmlentities($propValue));
-//            $this->setAttr('title', htmlspecialchars($value));
-//        }
-//
-//        $str = htmlspecialchars($propValue);
-//        $url = $this->getCellUrl($obj);
-//        if ($url && $this->isUrlEnabled()) {
-//            $str = sprintf('<a href="%s" %s>%s</a>', htmlentities($url->toString()), $this->linkAttrs, htmlspecialchars($propValue));
-//        }
-//
-//        $this->setUrlEnabled(true);     // Reset the urlEnabled status
-//        return $str;
-//    }
 
     public function setTable(Table $table): static
     {
@@ -282,12 +252,23 @@ abstract class CellInterface implements RendererInterface
     }
 
     /**
-     * Callback: function (Template $template, CellInterface $cell) { return $template; }
+     * Callback: function (CellInterface $cell) {  }
      */
     public function addOnShow(callable $callable, int $priority = CallbackCollection::DEFAULT_PRIORITY): static
     {
         $this->getOnShow()->append($callable, $priority);
         return $this;
+    }
+
+    public function setUrl(string|Uri $url): static
+    {
+        $this->url = Uri::create($url);
+        return $this;
+    }
+
+    public function getUrl(): ?Uri
+    {
+        return $this->url;
     }
 
 }

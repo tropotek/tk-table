@@ -4,6 +4,8 @@ namespace Tk;
 use Dom\Builder;
 use Dom\Renderer\Renderer;
 use Dom\Template;
+use Tk\Table\Action\ActionInterface;
+use Tk\Table\Action\Link;
 use \Tk\Table\Cell\CellInterface;
 use Tk\Table\Row;
 use Tk\Traits\SystemTrait;
@@ -19,6 +21,8 @@ class TableRenderer extends Renderer
 
     protected array $params = [];
 
+    protected Builder $builder;
+
 
     public function __construct(Table $table, string $tplFile)
     {
@@ -28,10 +32,10 @@ class TableRenderer extends Renderer
 
     protected function init(string $tplFile)
     {
-        $builder = new Builder($tplFile);
+        $this->builder = new Builder($tplFile);
 
         // get any data-opt options from the template and remove them
-        $tableEl = $builder->getDocument()->getElementById('tpl-table');
+        $tableEl = $this->builder->getDocument()->getElementById('tpl-table');
         $cssPre = 'data-opt-';
         /** @var \DOMAttr $attr */
         foreach ($tableEl->attributes as $attr) {
@@ -45,7 +49,12 @@ class TableRenderer extends Renderer
             $tableEl->removeAttribute($cssPre . $k);
         }
 
-        $this->setTemplate($builder->getTemplate('tpl-table'));
+        $this->setTemplate($this->buildTemplate('table'));
+    }
+
+    public function buildTemplate(string $type): ?Template
+    {
+        return $this->builder->getTemplate('tpl-' . $type);
     }
 
     public function getParam(string $name, mixed $default = null): mixed
@@ -63,6 +72,18 @@ class TableRenderer extends Renderer
     {
         // This is the cell repeat
         $template = $this->getTemplate();
+
+        /* @var ActionInterface $action */
+        foreach ($this->getTable()->getActions() as $action) {
+            if (!$action->isVisible()) continue;
+            $action->setTemplate($this->buildTemplate('action-button'));
+            if ($action instanceof Link) {
+                $action->setTemplate($this->buildTemplate('action-link'));
+            }
+            $tpl = $action->show();
+            $template->appendTemplate('actions', $tpl);
+            $template->setVisible('actions');
+        }
 
         // Render table header elements
         $headerLabels = [];

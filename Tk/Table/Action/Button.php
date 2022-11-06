@@ -2,65 +2,38 @@
 namespace Tk\Table\Action;
 
 
+use Dom\Mvc\Loader;
+use Dom\Template;
+use Symfony\Component\HttpFoundation\Request;
+use Tk\Uri;
+
 /**
- * @author Michael Mifsud <http://www.tropotek.com/>
- * @see http://www.tropotek.com/
- * @license Copyright 2015 Michael Mifsud
+ * @author Tropotek <http://www.tropotek.com/>
  */
-class Button extends Iface
+class Button extends ActionInterface
 {
 
-    /**
-     * @var string
-     */
-    protected $icon = '';
+    protected string $icon = '';
 
-    /**
-     * @var \Tk\Uri
-     */
-    protected $url = null;
+    protected ?Uri $url = null;
 
 
-    /**
-     * @param string $name
-     * @param string $icon
-     * @param string|\Tk\Uri $url
-     */
-    public function __construct($name, $icon, $url = null)
+    public function __construct(string $name, string $icon = '', string|Uri $url = '')
     {
         parent::__construct($name);
         $this->setIcon($icon);
-        if ($url)
-            $this->setUrl($url);
-        $this->setAttr('type', 'submit');
-        $this->addCss('btn btn-default btn-sm btn-xs');
+        if ($url) $this->setUrl($url);
     }
 
-    /**
-     * @param string $name
-     * @param string $icon
-     * @param string|\Tk\Uri $url
-     * @return Button
-     */
-    static function createButton($name, $icon, $url = null)
+    public function execute(Request $request)
     {
-        return new static($name, $icon, $url);
-    }
-    
-    /**
-     * @return mixed
-     */
-    public function execute()
-    {
-        parent::execute();
-        if ($this->getUrl())
-            $this->getUrl()->redirect();
+        parent::execute($request);
+
+        if (!$this->isTriggered()) return;
+        $this->getUrl()?->redirect();
     }
 
-    /**
-     * @return string|\Dom\Template
-     */
-    public function show()
+    public function show(): ?Template
     {
         $template = parent::show();
 
@@ -73,66 +46,35 @@ class Button extends Iface
             $template->addCss('icon', $this->getIcon());
             $template->setVisible('icon');
         }
-        $template->appendHtml('btnTitle', $this->getLabel());
+        $template->appendHtml('text', $this->getLabel());
 
         // Add class names
-        foreach($this->getCssList() as $v) {
-            $template->addCss('btn', $v);
-        }
-
-        // Add new attribute values
-        foreach($this->getAttrList() as $k => $v) {
-            $template->setAttr('btn', $k, $v);
-        }
+        $template->addCss('btn', $this->getCssList());
+        $template->setAttr('btn', $this->getAttrList());
 
         return $template;
     }
 
-    /**
-     * @return string
-     */
-    public function getIcon()
+    public function getIcon(): string
     {
         return $this->icon;
     }
 
-    /**
-     * @param string $icon
-     */
-    public function setIcon($icon)
+    public function setIcon(string $icon): static
     {
         $this->icon = $icon;
         return $this;
     }
 
-    /**
-     * @return \Tk\Uri
-     */
-    public function getUrl()
+    public function getUrl(): ?Uri
     {
         return $this->url;
     }
 
-    /**
-     * @param string|\Tk\Uri $url
-     * @return Button
-     */
-    public function setUrl($url)
+    public function setUrl(Uri|string $url): static
     {
-        $this->url = \Tk\Uri::create($url);
+        $this->url = Uri::create($url);
         return $this;
     }
-
-    /**
-     * @return \Dom\Template
-     */
-    public function __makeTemplate()
-    {
-        $xhtml = <<<XHTML
-<button class="" var="btn"><i var="icon" choice="icon"></i> <span var="btnTitle"></span></button>
-XHTML;
-        return \Dom\Loader::load($xhtml);
-    }
-
 
 }

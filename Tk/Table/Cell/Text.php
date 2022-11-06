@@ -2,8 +2,9 @@
 namespace Tk\Table\Cell;
 
 
-use Dom\Renderer\Attributes;
 use Dom\Template;
+use Tk\Ui\Link;
+use Tk\Uri;
 
 /**
  * @author Tropotek <http://www.tropotek.com/>
@@ -17,33 +18,15 @@ class Text extends CellInterface
      */
     protected int $charLimit = 0;
 
-    protected bool $urlEnabled = true;
+    protected string $urlProperty = 'id';
 
-    protected Attributes $linkAttrs;
+    protected Link $link;
 
 
     public function __construct(string $name, string $label = '')
     {
-        $this->linkAttrs = new Attributes();
+        $this->link = new Link();
         parent::__construct($name, $label);
-    }
-
-    /**
-     * @return bool
-     */
-    public function isUrlEnabled(): bool
-    {
-        return $this->urlEnabled;
-    }
-
-    /**
-     * @param bool $urlEnabled
-     * @return Text
-     */
-    public function setUrlEnabled(bool $urlEnabled): Text
-    {
-        $this->urlEnabled = $urlEnabled;
-        return $this;
     }
 
     /**
@@ -60,46 +43,30 @@ class Text extends CellInterface
         return $this->charLimit;
     }
 
-    public function getLinkAttrs(): Attributes
+    public function getLink(): Link
     {
-        return $this->linkAttrs;
+        return $this->link;
     }
-
-//    /**
-//     * @param mixed $obj
-//     * @param int|null $rowIdx The current row being rendered (0-n) If null no rowIdx available.
-//     * @return string
-//     */
-//    public function getCellHtml($obj, $rowIdx = null)
-//    {
-//        $value = $propValue = $this->getPropertyValue($obj);
-//        if ($this->charLimit && strlen($propValue) > $this->charLimit) {
-//            $propValue = \Tk\Str::wordcat($propValue, $this->charLimit - 3, '...');
-//        }
-//        //if (!$this->hasAttr('title') && (!is_array($value) && !is_object($value))) {
-//        if (!$this->hasAttr('title')) {
-//            //$this->setAttr('title', htmlentities($propValue));
-//            $this->setAttr('title', htmlspecialchars($value));
-//        }
-//
-//        $str = htmlspecialchars($propValue);
-//        $url = $this->getCellUrl($obj);
-//        if ($url && $this->isUrlEnabled()) {
-//            $str = sprintf('<a href="%s" %s>%s</a>', htmlentities($url->toString()), $this->linkAttrs, htmlspecialchars($propValue));
-//        }
-//
-//        $this->setUrlEnabled(true);     // Reset the urlEnabled status
-//        return $str;
-//    }
 
     public function show(): ?Template
     {
         // This is the cell repeat
         $template = $this->getTemplate();
 
-        $template->insertHtml('td', $this->getValue());
-
         $this->decorate($template);
+
+        $propValue = $this->getValue();
+        if ($this->charLimit && strlen($propValue) > $this->charLimit) {
+            $propValue = \Tk\Str::wordcat($propValue, $this->charLimit - 3, '...');
+        }
+
+        $html = $propValue;
+        if ($this->getUrl()) {
+            $this->getLink()->setUrl($this->getUrl());
+            $html = $this->getLink()->setText($propValue)->getHtml();
+        }
+        $template->insertHtml('td', $html);
+
         return $template;
     }
 

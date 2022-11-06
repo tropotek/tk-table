@@ -2,70 +2,29 @@
 namespace Tk\Table\Action;
 
 
+use Dom\Template;
+use Tk\Uri;
+
 /**
- * @author Michael Mifsud <http://www.tropotek.com/>
- * @see http://www.tropotek.com/
- * @license Copyright 2015 Michael Mifsud
+ * @author Tropotek <http://www.tropotek.com/>
  */
-class Link extends Iface
+class Link extends ActionInterface
 {
 
-    /**
-     * @var string
-     */
-    protected $icon = null;
+    protected string $icon = '';
 
-    /**
-     * @var \Tk\Uri
-     */
-    protected $url = null;
+    protected ?Uri $url = null;
 
 
-    /**
-     * @param string $name
-     * @param string|\Tk\Uri|null $url
-     * @param string|null $icon
-     */
-    public function __construct($name, $url = null, $icon = null)
+    public function __construct(string $name, string|Uri $url = '', string $icon = '')
     {
         parent::__construct($name);
-        if ($url)
-            $this->setUrl($url);
-        if ($icon)
-            $this->setIcon($icon);
-        $this->addCss('btn btn-default btn-sm btn-xs');
+        if ($url) $this->setUrl($url);
+        if ($icon) $this->setIcon($icon);
+        //$this->addCss('btn btn-gray btn-sm');
     }
 
-    /**
-     * @param string $name
-     * @param string $icon
-     * @param string|\Tk\Uri|null $url
-     * @return Link
-     * @todo: we need to re-arrange these params, use createLink for now we will fix this in another major version
-     * @deprecated use createLink($name, $url, $icon)
-     */
-    static function create($name, $icon, $url = null)
-    {
-        return new static($name, $url, $icon);
-    }
-
-    /**
-     * @param string $name
-     * @param string|\Tk\Uri|null $url
-     * @param string|null $icon
-     * @return static
-     * @since 2.0.68
-     */
-    static function createLink($name, $url = null, $icon = null)
-    {
-        return new static($name, $url, $icon);
-    }
-
-
-    /**
-     * @return string|\Dom\Template
-     */
-    public function show()
+    public function show(): ?Template
     {
         $btnId = $this->getTable()->makeInstanceKey($this->getName());
         $this->setAttr('id', $btnId);
@@ -96,50 +55,26 @@ class Link extends Iface
         return $template;
     }
 
-    /**
-     * @return string
-     */
-    public function getIcon()
+    public function getIcon(): string
     {
         return $this->icon;
     }
 
-    /**
-     * @param string $icon
-     */
-    public function setIcon($icon)
+    public function setIcon(string $icon): static
     {
         $this->icon = $icon;
+        return $this;
     }
 
-    /**
-     * @return \Tk\Uri
-     */
-    public function getUrl()
+    public function getUrl(): ?Uri
     {
         return $this->url;
     }
 
-    /**
-     * @param \Tk\Uri|string $url
-     * @return Link
-     */
-    public function setUrl($url)
+    public function setUrl(Uri|string $url): static
     {
-        $this->url = \Tk\Uri::create($url);
+        $this->url = Uri::create($url);
         return $this;
     }
-
-    /**
-     * @return \Dom\Template
-     */
-    public function __makeTemplate()
-    {
-        $xhtml = <<<XHTML
-<a class="" href="javascript:;" var="btn"><i var="icon"></i> <span var="btnTitle"></span></a>
-XHTML;
-        return \Dom\Loader::load($xhtml);
-    }
-
 
 }

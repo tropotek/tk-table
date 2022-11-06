@@ -2,11 +2,13 @@
 namespace Tk\Table;
 
 use Dom\Renderer\RendererInterface;
-use Dom\Renderer\Traits\AttributesTrait;
-use Dom\Renderer\Traits\CssTrait;
+use Tk\Ui\Traits\AttributesTrait;
+use Tk\Ui\Traits\CssTrait;
 use Dom\Renderer\Traits\RendererTrait;
 use Dom\Template;
 use Tk\Collection;
+use Tk\Db\Mapper\Model;
+use Tk\ObjectUtil;
 use Tk\Table;
 use Tk\Table\Cell\CellInterface;
 
@@ -29,7 +31,7 @@ class Row implements RendererInterface
 
     protected bool $head = false;
 
-    protected array $data = [];
+    protected array|object $data;
 
 
     public function __construct(Table $table)
@@ -38,7 +40,7 @@ class Row implements RendererInterface
         $this->cells = new Collection();
     }
 
-    public static function createRow(Row $row, array $rowData, int $rowId): static
+    public static function createRow(Row $row, array|object $rowData, int $rowId): static
     {
         $obj = clone $row;
         $obj->cells = new Collection();
@@ -49,13 +51,27 @@ class Row implements RendererInterface
         return $obj;
     }
 
-    protected function init(array $rowData)
+    protected function init(array|object $rowData)
     {
+        $data = $rowData;
+        if ($data instanceof Model) {
+            /** @var Model $rowData */
+            $data = [];
+            $rowData->getMapper()->getTableMap()->loadArray($data, $rowData);
+        }
+
         /** @var CellInterface $cell */
         foreach ($this->getTable()->getCells() as $cell) {
             $nc = clone $cell;
             $nc->setRow($this);
-            $nc->setValue($rowData[$nc->getName()] ?? '');
+
+            if (is_object($data)) {
+                $val = ObjectUtil::getObjectPropertyValue($data, $cell->getName());
+                $nc->setValue($val ?? '');
+            } elseif (is_array($data)) {
+                $nc->setValue($data[$nc->getName()] ?? '');
+            }
+
             $this->getCells()->set($nc->getName(), $nc);
         }
     }
@@ -88,7 +104,7 @@ class Row implements RendererInterface
         return$this->cells;
     }
 
-    public function getData(): array
+    public function getData(): array|object
     {
         return $this->data;
     }

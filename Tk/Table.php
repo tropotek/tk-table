@@ -3,10 +3,12 @@
 namespace Tk;
 
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
-use Dom\Renderer\Traits\AttributesTrait;
-use Dom\Renderer\Traits\CssTrait;
+use Tk\Table\Action\ActionInterface;
+use Tk\Ui\Traits\AttributesTrait;
+use Tk\Ui\Traits\CssTrait;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Session\SessionBagInterface;
+use Tk\Db\Mapper\Result;
+use Tk\Db\Tool;
 use Tk\Event\TableEvent;
 use Tk\Table\TableBag;
 use Tk\Table\TableEvents;
@@ -14,22 +16,6 @@ use Tk\Table\TableSession;
 use Tk\Traits\SystemTrait;
 use Tk\Table\Cell\CellInterface;
 use Tk\Table\Row;
-
-
-    // TODO:
-    //     I have had a thought here, could we implement some sort of adaper/decorator pattern here
-    //     Where we send the list to the list adapter and send the adapter to the table.
-    //     We could create an adapter for arrays, the Db\Map\Results object, and others.
-    //     Create an interface for it then we can create different types of lists as needed.
-    //     Then maybe the DB adapter can manage the Db\Tool, DB\Mapper and paging then the Table does not need to know
-    //     about these abstract objects...
-    // TODO:
-    //     Create a test and see what reveals from it, also look into how we handle sorting of columns
-
-    //  TODO:
-    //     Add the session into a symfony session bag and that may take care of a lot of session code in here
-
-
 
 /**
  *  Add ?rts={id} to the URL request to reset this table session.
@@ -64,13 +50,17 @@ class Table implements InstanceKey
      */
     protected Collection $cells;
 
-    protected array $list = [];
+    protected Collection $actions;
+
+    protected array|Result $list;
 
 
     public function __construct(string $tableId = '')
     {
-        $this->row = new Row($this);
-        $this->cells = new Collection();
+        $this->row     = new Row($this);
+        $this->cells   = new Collection();
+        $this->actions = new Collection();
+
         if ($this->getFactory()->getEventDispatcher()) {
             $this->dispatcher = $this->getFactory()->getEventDispatcher();
         }
@@ -83,13 +73,45 @@ class Table implements InstanceKey
         $this->setId($tableId);
     }
 
+    /**
+     * Execute any Table and cell request responses
+     */
+    public function execute(Request $request)
+    {
+        /** @var CellInterface $cell */
+        foreach ($this->getCells() as $cell) {
+            $cell->execute($request);
+        }
+
+        /* @var ActionInterface $action */
+        foreach ($this->getActions() as $action) {
+            $action->init();
+            $action->execute($request);
+        }
+
+        if ($request->query->has(self::RESET_TABLE) && $request->query->has(self::RESET_TABLE) == $this->getId()) {
+            $this->resetTableSession();
+            \Tk\Uri::create()->remove(self::RESET_TABLE)->redirect();
+        }
+        $this->getDispatcher()?->dispatch(new TableEvent($this), TableEvents::TABLE_EXECUTE);
+    }
 
     /**
      * Set the data list
      */
-    public function setList(mixed $list): static
+    public function setList(array|Result $list, ?int $rowTotal = null): static
     {
         $this->list = $list;
+        if (!$rowTotal) {
+            $rowTotal = count($list);
+            if ($list instanceof Result) $rowTotal = $list->countAll();
+        }
+        $this->getTableSession()->setRowTotal($rowTotal);
+
+        // TODO: Not sure if this should happen here or should it be called manually
+        //       See how this goes over time
+        if ($list instanceof Result) $this->autofillOrderBy();
+
         $this->getDispatcher()?->dispatch(new TableEvent($this), TableEvents::TABLE_INIT);
 
         return $this;
@@ -98,21 +120,35 @@ class Table implements InstanceKey
     /**
      * Get the data list
      */
-    public function getList(): array
+    public function getList(): null|array|Result
     {
         return $this->list;
     }
 
-    /**
-     * Execute any Table and cell request responses
-     */
-    public function execute(Request $request)
+    public function autofillOrderBy(null|array|Result $list = null): static
     {
-        foreach ($this->getCells() as $cell) {
-            $cell->execute($request);
+        $list = $list ?? $this->getList();
+        if (!$list) throw new \Tk\Table\Exception('Cannot autofill orderBy names without setting the list first.');
+
+        if ($list instanceof Result) {
+            $dbMap = $list->getMapper()->getDbMap();
+            // Auto populate orderBy fields
+            /** @var CellInterface $cell */
+            foreach ($this->getCells() as $cell) {
+                if (!$cell->getOrderByName()) {
+                    $cell->setOrderByName($dbMap->getPropertyType($cell->getName())->getKey());
+                }
+            }
+        } else {
+            /** @var CellInterface $cell */
+            foreach ($this->getCells() as $cell) {
+                if (!$cell->getOrderByName()) {
+                    $cell->setOrderByName($cell->getName());
+                }
+            }
         }
 
-        $this->getDispatcher()?->dispatch(new TableEvent($this), TableEvents::TABLE_EXECUTE);
+        return $this;
     }
 
     public function getDispatcher(): ?EventDispatcherInterface
@@ -161,15 +197,6 @@ class Table implements InstanceKey
     }
 
 
-    public function setCells(Collection $cells): static
-    {
-        foreach ($cells as $cell) {
-            $cell->setTable($this);
-        }
-        $this->cells = $cells;
-        return $this;
-    }
-
     public function getCells(): Collection
     {
         return $this->cells;
@@ -205,6 +232,41 @@ class Table implements InstanceKey
     }
 
 
+    public function getActions(): Collection
+    {
+        return $this->actions;
+    }
+
+    public function appendAction(ActionInterface $action, ?string $refName = null): ActionInterface
+    {
+        if ($this->getActions()->has($action->getName())) {
+            throw new \Tk\Table\Exception("Action with name '{$action->getName()}' already exists.");
+        }
+        $action->setTable($this);
+        return $this->getActions()->append($action->getName(), $action, $refName);
+    }
+
+    public function prependAction(CellInterface $action, ?string $refName = null)
+    {
+        if ($this->getActions()->has($action->getName())) {
+            throw new \Tk\Table\Exception("Action with name '{$action->getName()}' already exists.");
+        }
+        $action->setTable($this);
+        return $this->getActions()->prepend($action->getName(), $action, $refName);
+    }
+
+    public function removeAction($actionName): static
+    {
+        $this->getActions()->remove($actionName);
+        return $this;
+    }
+
+    public function getAction(string $name): ?ActionInterface
+    {
+        return $this->getActions()->get($name);
+    }
+
+
     public function getTableSession(): TableSession
     {
         return TableBag::getTableSession($this->getId());
@@ -215,6 +277,11 @@ class Table implements InstanceKey
         \Tk\Log::warning('Resetting Table Session.');
         TableBag::removeTableSession($this->getId());
         return $this;
+    }
+
+    public function getTool(string $defaultOrderBy = '', int $defaultLimit = 0): Tool
+    {
+        return $this->getTableSession()->getTool($defaultOrderBy, $defaultLimit);
     }
 
 }

@@ -22,6 +22,12 @@ class TableSession implements InstanceKey
 
     protected ?string $orderBy = null;
 
+    /**
+     * Total rows available from the source.
+     * This value is all possible results available without paging offset.
+     */
+    protected int $rowTotal = 0;
+
 
     public function __construct(string $tableId)
     {
@@ -63,6 +69,17 @@ class TableSession implements InstanceKey
     public function setOrderBy(string $orderBy): TableSession
     {
         $this->orderBy = $orderBy;
+        return $this;
+    }
+
+    public function getRowTotal(): int
+    {
+        return $this->rowTotal;
+    }
+
+    public function setRowTotal(int $rowTotal): TableSession
+    {
+        $this->rowTotal = $rowTotal;
         return $this;
     }
 
