@@ -3,7 +3,12 @@ namespace Tk\Table\Action;
 
 
 use Dom\Template;
+use Symfony\Component\HttpFoundation\Request;
 use Tk\CallbackCollection;
+use Tk\Db\Mapper\Model;
+use Tk\ObjectUtil;
+use Tk\Table;
+use Tk\Uri;
 
 /**
  * @author Tropotek <http://www.tropotek.com/>
@@ -28,36 +33,36 @@ class Delete extends Button
         $this->setCheckboxName($checkboxName);
     }
 
-    public function execute()
+    public function execute(Request $request)
     {
-        parent::execute();
+        parent::execute($request);
 
-//        $reqName = $this->getTable()->makeInstanceKey($this->getName());
-//        $request = $this->getTable()->getRequest();
-//        if (empty($request->get($reqName))) {
-//            return;
-//        }
-//        $selected = $request->get($this->getCheckboxName());
-//        if (!is_array($selected)) return;
-//
-//        /* @var \Tk\Db\Map\Model $obj */
-//        foreach($this->getTable()->getList() as $obj) {
-//            if (!is_object($obj)) continue;
-//            $keyValue = 0;
-//            if (property_exists($obj, $this->getCheckboxName())) {
-//                $keyValue = $obj->{$this->getCheckboxName()};
-//            }
-//            if (in_array($keyValue, $selected) && !in_array($keyValue, $this->getExcludeIdList())) {
-//                $propagate = true;
-//                $r = $this->getOnDelete()->execute($this, $obj);
-//                if ($r !== null && is_bool($r)) $propagate = $r;
-//                if ($propagate) {
-//                    $obj->delete();
-//                }
-//            }
-//        }
+        if (!$this->isTriggered()) return;
 
-//        \Tk\Uri::create()->remove($this->getTable()->makeInstanceKey($this->getName()))->redirect();
+        /** @var Table\Cell\Checkbox $checkbox */
+        $checkbox = $this->getTable()->getCell($this->getCheckboxName());
+
+        /* @var object|array $obj */
+        foreach($this->getTable()->getList() as $obj) {
+            if (is_array($obj)) {
+                $keyValue = $obj[$this->getCheckboxName()] ?? '';
+            } else {
+                $keyValue = ObjectUtil::getPropertyValue($obj, $this->getCheckboxName());
+            }
+
+            if (in_array($keyValue, $this->getExcludeIdList())) continue;
+
+            if ($keyValue && $checkbox->isSelected($keyValue)) {
+                $propagate = true;
+                $r = $this->getOnDelete()->execute($this, $obj);
+                if (is_bool($r)) $propagate = $r;
+                if ($propagate && $obj instanceof Model) {
+                    $obj->delete();
+                }
+            }
+        }
+
+        Uri::create()->remove($this->getTable()->makeInstanceKey($this->getName()))->redirect();
     }
 
     public function show(): ?Template
@@ -70,7 +75,6 @@ class Delete extends Button
         $this->setAttr('disabled');
         $this->setAttr('data-cb-name', $this->getCheckboxName());
 
-
         $template = parent::show();
 
         $template->appendJs($this->getJs());
@@ -81,22 +85,23 @@ class Delete extends Button
     {
         $js = <<<JS
 jQuery(function($) {
+
   var init = function () {
+    let form = $(this);
+
     function updateBtn(btn) {
       var cbName = btn.data('cb-name');
-      if(btn.closest('.tk-table').find('.table-body input[name^="'+cbName+'"]:checked').length) {
-        btn.removeAttr('disabled');
-      } else {
+      btn.removeAttr('disabled');
+      if(!$('.table-body input[name^="'+cbName+'"]:checked', form).length) {
         btn.attr('disabled', 'disabled');
       }
     }
 
-    $('.tk-action-delete').each(function () {
+    $('.tk-action-delete', form).each(function () {
       var btn = $(this);
       var cbName = btn.data('cb-name');
       btn.on('click', function () {
-        var selected = $(this).closest('.tk-table').find('.table-body input[name^="'+cbName+'"]:checked');
-        return selected.length > 0;
+        return $('.table-body input[name^="'+cbName+'"]:checked', form).length > 0;
       });
       btn.closest('.tk-table').on('change', '.table-body input[name^="'+cbName+'"]', function () { updateBtn(btn); });
       updateBtn(btn);
@@ -114,6 +119,16 @@ JS;
         return $js;
     }
 
+
+    public function setTable(Table $table): static
+    {
+        parent::setTable($table);
+        $checkbox = $this->getTable()->getCell($this->getCheckboxName());
+        if (!$checkbox instanceof Table\Cell\Checkbox) {
+            throw new Table\Exception("Checkbox cell {$this->getCheckboxName()} not found in table.");
+        }
+        return $this;
+    }
 
     public function getCheckboxName(): string
     {

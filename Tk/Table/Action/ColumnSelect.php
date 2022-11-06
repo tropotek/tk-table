@@ -2,66 +2,36 @@
 namespace Tk\Table\Action;
 
 
+use Dom\Template;
 use Tk\Collection;
 
 /**
- * @author Michael Mifsud <http://www.tropotek.com/>
- * @see http://www.tropotek.com/
- * @license Copyright 2015 Michael Mifsud
+ * TODO:
+ *   This whole thing needs to be simplified the session update should be one request call at the most...
+ *   Alternatively we could do all this in a jQuery plugin. (see: https://makitweb.com/how-to-hide-and-show-the-table-column-using-jquery/)
+ *   Do we need this functionality and need to save the columns state?
+ *
+ *
+ * @author Tropotek <http://www.tropotek.com/>
  */
 class ColumnSelect extends Button
 {
 
-    /**
-     * @var array
-     */
-    protected $disabled = array();
 
-    /**
-     * @var array
-     */
-    protected $selected = array();
+    protected array $disabled = [];
 
-    /**
-     * @var array
-     */
-    protected $unselected = array();
+    protected array $selected = [];
 
-    /**
-     * @var array
-     */
-    protected $hidden = array();
+    protected array $unselected = [];
+
+    protected array $hidden = [];
 
 
-    /**
-     * @param string $name
-     * @param string $icon
-     * @param null|\Tk\Uri|string $url
-     */
-    public function __construct($name = 'columns', $icon = 'fa fa-list-alt', $url = null)
+    public function __construct(string $name = 'columns', string $icon = 'fa fa-list-alt')
     {
-        parent::__construct($name, $icon, $url);
+        parent::__construct($name, $icon);
         $this->setAttr('type', 'button');
         $this->addCss('tk-column-select-btn');
-    }
-
-    /**
-     * @param string $name
-     * @param string $icon
-     * @param null $url
-     * @return ColumnSelect
-     */
-    static function create($name = 'columns', $icon = 'fa fa-columns', $url = null)
-    {
-        return new static($name, $icon, $url);
-    }
-
-    /**
-     * @return string
-     */
-    public function getSid()
-    {
-        return $this->getTable()->getId() . '-' . $this->getName().'-'.$this->getTable()->getInstanceId();
     }
 
     public function init()
@@ -73,25 +43,13 @@ class ColumnSelect extends Button
         }
     }
 
-    /**
-     * @return mixed|void
-     */
-    public function execute()
+    public function getColumnSession(): Collection
     {
-        parent::execute();
-    }
-
-    /**
-     * @return mixed|Collection
-     */
-    public function getColumnSession()
-    {
-        $actionSession = $this->getTable()->getActionSession();
-        $columnSession = new Collection();
-        if ($actionSession->has($this->getSid())) {
-            $columnSession = $actionSession->get($this->getSid());
+        $columnSession = $this->getTable()->getTableSession()->get($this->getName());
+        if (!$columnSession) {
+            $columnSession = new Collection();
+            $this->getTable()->getTableSession()->set($this->getName(), $columnSession);
         }
-        $actionSession->set($this->getSid(), $columnSession);
         return $columnSession;
     }
 
@@ -381,7 +339,7 @@ class ColumnSelect extends Button
     /**
      * @return string|\Dom\Template
      */
-    public function show()
+    public function show(): Template
     {
         $this->initDefaultHidden();
 
@@ -416,7 +374,7 @@ JS;
     }
 
     /**
-     * ensure the array is a map and and the keys = values
+     * ensure the array is a map =>  keys = values
      *
      * @param string|array $arr
      * @return array|string

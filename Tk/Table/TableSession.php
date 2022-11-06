@@ -11,7 +11,7 @@ use Tk\Traits\SystemTrait;
 use Tk\Uri;
 
 
-class TableSession implements InstanceKey
+class TableSession extends Collection implements InstanceKey
 {
 
     protected string $tableId;

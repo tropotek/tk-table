@@ -15,25 +15,24 @@ class Checkbox extends CellInterface
      */
     protected bool $useValue = false;
 
+    /**
+     * selected values are only available on the action submit event
+     */
+    protected array $selected = [];
+
 
     public function __construct(string $property)
     {
         parent::__construct($property);
         $this->setLabel('');
-        $this->addCss('tk-tcb-cell');
+        $this->addCss('tk-tcb-cell text-center');
     }
 
     public function execute(Request $request): void
     {
-        // TODO: see if we can detect a form submission and then add the selected values to an array
-        //       Then implement getSelected() and isSelected($cellName) or similar
-
         if ($request->request->has($this->getName())) {
-            vd($request->get('id'));
-            //vd('Selected checkbox', $request->request->get($this->getName(), ''));
-
+            $this->selected = $request->get($this->getName());
         }
-
     }
 
     function show(): ?Template
@@ -76,26 +75,13 @@ class Checkbox extends CellInterface
         $js = <<<JS
 jQuery(function($) {
 
-  var init = function () {
-    var form = $(this);
-    var table = form.parent();
-    if (!table.is('.tk-table')) return;
-
-    function checkAll(headCheckbox) {
-      var _cb = $(headCheckbox);
-      var name = _cb.attr('name').match(/([a-zA-Z0-9]+)_all/i)[1];
-      var _list = _cb.parents('div.tk-table').find('.table-body input[name^=\''+name+'\']');
-	  if (_cb.prop('checked'))  {
-	    _list.prop('checked', true);
-	  } else {
-	    _list.prop('checked', false);
-	  }
-	  _list.trigger('change');
-    }
-
-    var head = form.find('.tk-tcb-head');
-    head.on('change', function(e){
-        checkAll(this);
+  let init = function () {
+    let form = $(this);
+    $('.tk-tcb-head', form).on('change', function(e) {
+      let cb = $(this);
+      let name = cb.attr('name').match(/([a-zA-Z0-9]+)_all/i)[1];
+      let list = $('.table-body input[name^=\''+name+'\']', form);
+      list.prop('checked', cb.prop('checked')).trigger('change');
     }).trigger('change');
 
   };
@@ -108,6 +94,16 @@ jQuery(function($) {
 });
 JS;
         return $js;
+    }
+
+    public function getSelected(): array
+    {
+        return $this->selected;
+    }
+
+    public function isSelected(string $value): bool
+    {
+        return in_array($value, $this->getSelected());
     }
 
     public function isUseValue(): bool

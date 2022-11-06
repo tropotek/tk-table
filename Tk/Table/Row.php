@@ -66,7 +66,7 @@ class Row implements RendererInterface
             $nc->setRow($this);
 
             if (is_object($data)) {
-                $val = ObjectUtil::getObjectPropertyValue($data, $cell->getName());
+                $val = ObjectUtil::getPropertyValue($data, $cell->getName());
                 $nc->setValue($val ?? '');
             } elseif (is_array($data)) {
                 $nc->setValue($data[$nc->getName()] ?? '');

@@ -1,132 +1,105 @@
 <?php
 namespace Tk\Table\Action;
 
-use Tk\Request;
+use Dom\Template;
+use JetBrains\PhpStorm\NoReturn;
+use Symfony\Component\HttpFoundation\Request;
+use Tk\Db\Mapper\Model;
+use Tk\Db\Mapper\Result;
+use Tk\Db\Pdo;
+use Tk\ObjectUtil;
+use Tk\Table;
 use \Tk\Table\Cell;
 
 /**
- * @author Michael Mifsud <http://www.tropotek.com/>
- * @see http://www.tropotek.com/
- * @license Copyright 2015 Michael Mifsud
+ * @author Tropotek <http://www.tropotek.com/>
  */
 class Csv extends Button
 {
 
-    /**
-     * @var \Tk\Db\Pdo
-     */
-    protected $db = null;
+    protected Pdo $db;
 
-    /**
-     * @var string
-     */
-    protected $checkboxName = 'id';
+    protected string $checkboxName = 'id';
 
+    protected string $filename = '';
 
-    protected $ignoreCellList = [
-        //'Tk\Table\Cell\Checkbox',
-        'Tk\Table\Cell\Actions',
-        'Tk\Table\Cell\ButtonCollection'
+    protected array $ignoreCells = [
+//        Actions::class,
+//        ButtonCollection::class,
     ];
 
-    /**
-     * @var string
-     */
-    protected $filename = '';
 
-
-    /**
-     * @param \Tk\Db\Pdo $db
-     * @param string $name
-     * @param string $checkboxName
-     * @param string $icon
-     */
-    public function __construct($db, $name = 'csv', $checkboxName = 'id', $icon = 'fa fa-list-alt')
+    public function __construct(string $name = 'csv', string $checkboxName = 'id', string $icon = 'fa fa-list-alt')
     {
+        $this->db = $this->getFactory()->getDb();
         parent::__construct($name, $icon);
-        $this->db = $db;
-        $this->checkboxName = $checkboxName;
+        $this->setCheckboxName($checkboxName);
         $this->addCss('tk-action-csv no-loader');
     }
 
-    /**
-     * @param string $name
-     * @param string $checkboxName
-     * @param string $icon
-     * @param \Tk\Db\Pdo $db
-     * @return Csv
-     */
-    static function create($name = 'csv', $checkboxName = 'id', $icon = 'fa fa-list-alt', $db = null)
+    public function execute(Request $request)
     {
-        if ($db === null)
-            $db = \Tk\Config::getInstance()->getDb();
-
-        return new self($db, $name, $checkboxName, $icon);
-    }
-
-    /**
-     * @return mixed|void
-     * @throws \Exception
-     */
-    public function execute()
-    {
-        parent::execute();
-
-        $request = $this->getTable()->getRequest();
+        parent::execute($request);
+        if (!$this->isTriggered()) return;
 
         $this->doCsv($request);
     }
 
-    /**
-     * @param Request $request
-     * @throws \Tk\Db\Exception
-     */
-    public function doCsv($request)
+    #[NoReturn] public function doCsv(Request $request): void
     {
-        // Headers for an download:
         ini_set('max_execution_time', 0);
 
         $file = $this->getTable()->getId() . '_' . date('Ymd') . '.csv';
         if ($this->getFilename()) {
             $file = $this->getFilename() . '_' . date('Ymd') . '.csv';
         }
-        if ($request->has('csv_name')) {
-            $file = preg_replace('/[^a-z0-9_\.-]/i', '_', basename(strip_tags(trim($request['csv_name']))));
-        }
+//        if ($request->has('csv_name')) {
+//            $file = preg_replace('/[^a-z0-9_\.-]/i', '_', basename(strip_tags(trim($request['csv_name']))));
+//        }
+
+        /** @var Table\Cell\Checkbox $checkbox */
+        $checkbox = $this->getTable()->getCell($this->getCheckboxName());
 
         // Get list with no limit...
         $list = $this->getTable()->getList();
         $fullList = $list;
-        if ($request->has($this->checkboxName) && is_array($request->get($this->checkboxName))) {
-            $fullList = array();
+        if (count($checkbox->getSelected())) {  // Only export selected rows
+            $fullList = [];
             foreach($list as $obj) {
-                if (in_array($obj->getId(), $request->get($this->checkboxName))) {
+                if (is_array($obj)) {
+                    $keyValue = $obj[$this->getCheckboxName()] ?? '';
+                } else {
+                    $keyValue = ObjectUtil::getPropertyValue($obj, $this->getCheckboxName());
+                }
+                if ($keyValue && $checkbox->isSelected($keyValue)) {
                     $fullList[] = $obj;
                 }
             }
-        } else if (is_object($list) && $list->countAll() > $list->count()) {
-            $st = $list->getStatement();
-            $sql = $st->queryString;
-            if (preg_match('/ LIMIT /i', $sql)) {
-                $sql = substr($sql, 0, strrpos($sql, 'LIMIT'));
-            }
+        } else { // Export all rows
+            if (is_array($list)) {
+                $sql = $this->getDb()->getLastQuery();
+                if (preg_match('/ LIMIT /i', $sql)) {
+                    $sql = substr($sql, 0, strrpos($sql, 'LIMIT'));
+                }
+                $stmt = $this->getDb()->prepare($sql);
+                $stmt->execute();
+                //$fullList = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+                $fullList = $stmt->fetchAll();
+            } else if ($list instanceof Result) {
+                $st = $list->getStatement();
+                $sql = $st->queryString;
+                if (preg_match('/ LIMIT /i', $sql)) {
+                    $sql = substr($sql, 0, strrpos($sql, 'LIMIT'));
+                }
 
-            $stmt = $this->db->prepare($sql);
-            $stmt->execute($st->getBindParams());
-            if ($list->getMapper()) {
-                $fullList = \Tk\Db\Map\ArrayObject::createFromMapper($list->getMapper(), $stmt);
-            } else {
-                $fullList = \Tk\Db\Map\ArrayObject::create($stmt);
+                $stmt = $this->getDb()->prepare($sql);
+                $stmt->execute($st->getBindParams() ?? []);
+                if ($list->getMapper()) {
+                    $fullList = Result::createFromMapper($list->getMapper(), $stmt);
+                } else {
+                    $fullList = Result::create($stmt);
+                }
             }
-        } else if (is_array($list)) {
-            $sql = $this->getDb()->getLastQuery();
-            if (preg_match('/ LIMIT /i', $sql)) {
-                $sql = substr($sql, 0, strrpos($sql, 'LIMIT'));
-            }
-            $stmt = $this->getDb()->prepare($sql);
-            $stmt->execute();
-            //$fullList = $stmt->fetchAll(\PDO::FETCH_ASSOC);
-            $fullList = $stmt->fetchAll();
         }
 
         // Output the CSV data
@@ -135,22 +108,28 @@ class Csv extends Button
         header('Content-Disposition: attachment; filename="' . $file . '"');
         header('Content-Transfer-Encoding: binary');
 
-        $arr = array();
+        $arr = [];
         // Write cell labels to first line of csv...
-        foreach ($this->table->getCellList() as $i => $cell) {
+        foreach ($this->getTable()->getCells() as $cell) {
             if ($this->ignoreCell($cell)) continue;
-            //$arr[] = $cell->getLabel();           // TODO: Check this change does not influence any external functionality
-            $arr[] = $cell->getProperty();
+            $arr[] = $cell->getname();
         }
         fputcsv($out, $arr);
         if ($fullList) {
             foreach ($fullList as $obj) {
-                $arr = array();
+                $rowData = $obj;
+                if ($obj instanceof Model) {
+                    $rowData = [];
+                    $obj->getMapper()->getTableMap()->loadArray($rowData, $obj);
+                } else if (is_object($obj)) {
+                    $rowData = (array)$obj;
+                }
+
+                $arr = [];
                 /* @var $cell Cell\CellInterface */
-                foreach ($this->table->getCellList() as $cell) {
+                foreach ($this->getTable()->getCells() as $cell) {
                     if ($this->ignoreCell($cell)) continue;
-                    $value = $cell->getRawValue($obj);
-                    $arr[$cell->getLabel()] = $value;
+                    $arr[$cell->getLabel()] = $rowData[$cell->getName()] ?? '';
                 }
                 fputcsv($out, $arr);
             }
@@ -158,81 +137,75 @@ class Csv extends Button
 
         fclose($out);
         exit;
-
     }
 
-    /**
-     * @return string|\Dom\Template
-     */
-    public function show()
+    public function show(): ?Template
     {
         $this->setAttr('title', 'Export records as a CSV file.');
 
         $template = parent::show();
 
-        $js = <<<JS
-jQuery(function ($) {
-  $('.tk-action-csv').each(function () {
-
-  });
-});
-JS;
-        //$template->appendJs($js);
-
         return $template;
     }
 
-    /**
-     * @return string
-     */
-    public function getFilename()
+
+    public function setTable(Table $table): static
+    {
+        parent::setTable($table);
+        $checkbox = $this->getTable()->getCell($this->getCheckboxName());
+        if (!$checkbox instanceof Table\Cell\Checkbox) {
+            throw new Table\Exception("Checkbox cell {$this->getCheckboxName()} not found in table.");
+        }
+        return $this;
+    }
+
+    public function getCheckboxName(): string
+    {
+        return $this->checkboxName;
+    }
+
+    public function setCheckboxName(string $checkboxName): static
+    {
+        $this->checkboxName = $checkboxName;
+        return $this;
+    }
+
+    public function getDb(): Pdo
+    {
+        return $this->db;
+    }
+
+    public function getFilename(): string
     {
         return $this->filename;
     }
 
-    /**
-     * @param string $filename
-     * @return $this
-     */
-    public function setFilename($filename)
+    public function setFilename(string $filename): static
     {
         $this->filename = $filename;
         return $this;
     }
 
-    /**
-     *
-     * @param \Tk\Table\Cell\CellInterface $cell
-     * @return bool
-     */
-    private function ignoreCell($cell)
+    private function ignoreCell(Cell\CellInterface $cell): bool
     {
-        return in_array(get_class($cell), $this->ignoreCellList);
+        return in_array(get_class($cell), $this->ignoreCells);
     }
 
-    /**
-     *
-     * @param \Tk\Table\Cell\CellInterface $cell
-     * @return $this
-     */
-    public function addIgnoreCell($cell)
+    public function addIgnoreCell(Cell\CellInterface $cell): static
     {
-        $this->ignoreCellList[get_class($cell)] = get_class($cell);
+        $this->ignoreCells[get_class($cell)] = get_class($cell);
         return $this;
     }
 
     /**
-     * Set the ignore cell class array or reset the array if nothing passed
+     * The ignore cell class array or reset the array if nothing passed
      *
      * Eg:
      *   array('Tk\Table\Cell\Checkbox', 'App\Ui\Subject\EnrolledCell');
-     *
-     * @param array $array
-     * @return $this
      */
-    public function setIgnoreCellList($array = array())
+    public function setIgnoreCells(array $array = []): static
     {
-        $this->ignoreCellList = $array;
+        $this->ignoreCells = $array;
         return $this;
     }
 

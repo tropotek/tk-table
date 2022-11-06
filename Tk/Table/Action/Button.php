@@ -2,7 +2,6 @@
 namespace Tk\Table\Action;
 
 
-use Dom\Mvc\Loader;
 use Dom\Template;
 use Symfony\Component\HttpFoundation\Request;
 use Tk\Uri;
@@ -18,11 +17,10 @@ class Button extends ActionInterface
     protected ?Uri $url = null;
 
 
-    public function __construct(string $name, string $icon = '', string|Uri $url = '')
+    public function __construct(string $name, string $icon = '')
     {
         parent::__construct($name);
         $this->setIcon($icon);
-        if ($url) $this->setUrl($url);
     }
 
     public function execute(Request $request)
@@ -30,6 +28,7 @@ class Button extends ActionInterface
         parent::execute($request);
 
         if (!$this->isTriggered()) return;
+
         $this->getUrl()?->redirect();
     }
 

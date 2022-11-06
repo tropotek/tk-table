@@ -21,7 +21,6 @@ class Link extends ActionInterface
         parent::__construct($name);
         if ($url) $this->setUrl($url);
         if ($icon) $this->setIcon($icon);
-        //$this->addCss('btn btn-gray btn-sm');
     }
 
     public function show(): ?Template
@@ -36,7 +35,7 @@ class Link extends ActionInterface
         } else {
             $template->setVisible('icon', false);
         }
-        $template->appendHtml('btnTitle', $this->getLabel());
+        $template->appendHtml('text', $this->getLabel());
 
         if ($this->getUrl()) {
             $template->setAttr('btn', 'href', $this->getUrl());
