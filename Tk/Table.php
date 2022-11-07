@@ -4,8 +4,8 @@ namespace Tk;
 
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Tk\Table\Action\ActionInterface;
-use Tk\Ui\Traits\AttributesTrait;
-use Tk\Ui\Traits\CssTrait;
+use Tk\Traits\EventDispatcherTrait;
+use Tk\Ui\Element;
 use Symfony\Component\HttpFoundation\Request;
 use Tk\Db\Mapper\Result;
 use Tk\Db\Tool;
@@ -13,7 +13,6 @@ use Tk\Event\TableEvent;
 use Tk\Table\TableBag;
 use Tk\Table\TableEvents;
 use Tk\Table\TableSession;
-use Tk\Traits\SystemTrait;
 use Tk\Table\Cell\CellInterface;
 use Tk\Table\Row;
 
@@ -23,18 +22,14 @@ use Tk\Table\Row;
  *
  * @author Tropotek <http://www.tropotek.com/>
  */
-class Table implements InstanceKey
+class Table extends Element implements InstanceKey
 {
-    use AttributesTrait;
-    use CssTrait;
-    use SystemTrait;
+    use EventDispatcherTrait;
 
     /**
      * This is the query string to set to reset the table session
      */
     const RESET_TABLE = 'rts';
-
-    protected ?EventDispatcherInterface $dispatcher = null;
 
     protected string $id = '';
 
@@ -61,9 +56,7 @@ class Table implements InstanceKey
         $this->cells   = new Collection();
         $this->actions = new Collection();
 
-        if ($this->getFactory()->getEventDispatcher()) {
-            $this->dispatcher = $this->getFactory()->getEventDispatcher();
-        }
+        $this->setDispatcher($this->getFactory()->getEventDispatcher());
 
         if (!$tableId) {
             $uri = \Tk\Uri::create();
@@ -151,18 +144,13 @@ class Table implements InstanceKey
         return $this;
     }
 
-    public function getDispatcher(): ?EventDispatcherInterface
-    {
-        return $this->dispatcher;
-    }
-
     /**
      * The id can only be set once unless it is cleared first
      */
     protected function setId($id): static
     {
         static $instances = [];
-        if ($this->id) return $this;
+        if ($this->getId()) return $this;
         if (!isset($instances[$id])) {
             $instances[$id] = 0;
         } else {
