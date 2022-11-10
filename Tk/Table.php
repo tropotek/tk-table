@@ -9,7 +9,7 @@ use Tk\Ui\Element;
 use Symfony\Component\HttpFoundation\Request;
 use Tk\Db\Mapper\Result;
 use Tk\Db\Tool;
-use Tk\Event\TableEvent;
+use Tk\Table\Event\TableEvent;
 use Tk\Table\TableBag;
 use Tk\Table\TableEvents;
 use Tk\Table\TableSession;

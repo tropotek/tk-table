@@ -60,10 +60,12 @@ class Text extends CellInterface
             $propValue = \Tk\Str::wordcat($propValue, $this->charLimit - 3, '...');
         }
 
-        $html = $propValue;
         if ($this->getUrl()) {
-            $this->getLink()->setUrl($this->getUrl());
-            $html = $this->getLink()->setText($propValue);
+            $link = clone $this->getLink();
+            $link->setUrl($this->getUrl());
+            $html = $link->setText($propValue);
+        } else {
+            $html = $propValue;
         }
         $template->insertHtml('td', $html);
 

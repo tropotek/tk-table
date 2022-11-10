@@ -1,5 +1,5 @@
 <?php
-namespace Tk\Event;
+namespace Tk\Table\Event;
 
 use Symfony\Contracts\EventDispatcher\Event;
 

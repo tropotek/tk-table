@@ -70,6 +70,7 @@ class Row implements RendererInterface
             } elseif (is_array($data)) {
                 $val = $data[$cell->getName()] ?? '';
             }
+
             $cell->setValue($val);
 
             $this->getCells()->set($cell->getName(), $cell);
