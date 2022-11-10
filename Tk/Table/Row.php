@@ -91,17 +91,16 @@ class Row implements RendererInterface
                 $cell->showHeader();
                 $cellTemplate->appendRepeat();
             }
-            return $template;
-        }
-
-        /** @var CellInterface $cell */
-        foreach ($this->getCells() as $cell) {
-            $cellTemplate = $template->getRepeat('td');
-            $cell->addCss('m' . ucfirst($cell->getName()));
-            $cell->setAttr('title', $cell->getName());
-            $cell->setTemplate($cellTemplate);
-            $cell->show();
-            $cellTemplate->appendRepeat();
+        } else {
+            /** @var CellInterface $cell */
+            foreach ($this->getCells() as $cell) {
+                $cellTemplate = $template->getRepeat('td');
+                $cell->addCss('m' . ucfirst($cell->getName()));
+                $cell->setAttr('title', $cell->getName());
+                $cell->setTemplate($cellTemplate);
+                $cell->show();
+                $cellTemplate->appendRepeat();
+            }
         }
 
         $template->setAttr('tr', $this->getAttrList());

@@ -2,28 +2,23 @@
 namespace Tk\Table\Cell;
 
 
+use Dom\Template;
+
 /**
- * @author Michael Mifsud <http://www.tropotek.com/>
- * @see http://www.tropotek.com/
- * @license Copyright 2015 Michael Mifsud
+ * @author Tropotek <http://www.tropotek.com/>
  */
 class Summarize extends Text
 {
 
-    /**
-     * @param mixed $obj
-     * @param int|null $rowIdx The current row being rendered (0-n) If null no rowIdx available.
-     * @return string
-     */
-    public function getCellHtml($obj, $rowIdx = null)
+    public function show(): ?Template
     {
-        if (!$this->hasAttr('title')) {
-            $this->setAttr('title', htmlspecialchars($this->getCellHeader()));
-        }
+        // This is the cell repeat
+        $template = $this->getTemplate();
 
-        $summary = htmlspecialchars(wordwrap(str_replace('. ', ".\n", $this->getPropertyValue($obj)), 80));
+        $this->decorate($template);
+
+        $summary = htmlspecialchars(wordwrap(str_replace('. ', ".\n", $this->getValue()), 80));
         $summary = str_replace("\n\n", "\n", $summary);
-        if (!$summary) return '';
         $details = '';
         if ($summary) {
             $summary = trim($summary);
@@ -34,19 +29,17 @@ class Summarize extends Text
             }
         }
 
-        $summary = htmlspecialchars($summary);
-        $url = $this->getCellUrl($obj);
-        if ($url && $this->isUrlEnabled()) {
-            $summary = sprintf('<a href="%s" %s>%s</a>', htmlentities($url->toString()), $this->linkAttrs, $summary);
+        if ($this->getUrl()) {
+            $this->getLink()->setUrl($this->getUrl());
+            $summary = $this->getLink()->setText($summary);
         }
-        if (!$details) {
-            return $summary;
+        $html = $summary;
+        if ($details) {
+            $html = sprintf('<details><summary>%s</summary>%s</details>', $summary, $details);
         }
 
-        $this->setUrlEnabled(true);     // Reset the urlEnabled status
-        return sprintf('<details><summary>%s</summary>%s</details>', $summary, $details);
+        $template->insertHtml('td', $html);
+        return $template;
     }
-
-
 
 }

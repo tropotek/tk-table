@@ -15,7 +15,7 @@ class Html extends Text
     /**
      * @return string
      */
-    public function getHtml()
+    public function __toString()
     {
         return $this->html;
     }
@@ -52,7 +52,7 @@ class Html extends Text
     public function getCellHtml($obj, $rowIdx = null)
     {
         $propValue = $this->getPropertyValue($obj);
-        if ($this->getHtml()) $propValue = $this->getHtml();
+        if ($this->__toString()) $propValue = $this->__toString();
         $str = $propValue;
         $url = $this->getCellUrl($obj);
         if ($url) {

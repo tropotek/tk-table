@@ -63,12 +63,11 @@ class Text extends CellInterface
         $html = $propValue;
         if ($this->getUrl()) {
             $this->getLink()->setUrl($this->getUrl());
-            $html = $this->getLink()->setText($propValue)->getHtml();
+            $html = $this->getLink()->setText($propValue);
         }
         $template->insertHtml('td', $html);
 
         return $template;
     }
-
 
 }

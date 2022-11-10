@@ -23,9 +23,10 @@ class Csv extends Button
 
     protected string $filename = '';
 
-    protected array $ignoreCells = [
-//        Actions::class,
-//        ButtonCollection::class,
+    protected array $excluded = [];
+
+    protected array $excludedClasses = [
+        Cell\Checkbox::class,
     ];
 
 
@@ -111,7 +112,7 @@ class Csv extends Button
         $arr = [];
         // Write cell labels to first line of csv...
         foreach ($this->getTable()->getCells() as $cell) {
-            if ($this->ignoreCell($cell)) continue;
+            if ($this->isExcluded($cell)) continue;
             $arr[] = $cell->getname();
         }
         fputcsv($out, $arr);
@@ -128,7 +129,7 @@ class Csv extends Button
                 $arr = [];
                 /* @var $cell Cell\CellInterface */
                 foreach ($this->getTable()->getCells() as $cell) {
-                    if ($this->ignoreCell($cell)) continue;
+                    if ($this->isExcluded($cell)) continue;
                     $arr[$cell->getLabel()] = $rowData[$cell->getName()] ?? '';
                 }
                 fputcsv($out, $arr);
@@ -147,7 +148,6 @@ class Csv extends Button
 
         return $template;
     }
-
 
     public function setTable(Table $table): static
     {
@@ -186,26 +186,25 @@ class Csv extends Button
         return $this;
     }
 
-    private function ignoreCell(Cell\CellInterface $cell): bool
+    private function isExcluded(Cell\CellInterface $cell): bool
     {
-        return in_array(get_class($cell), $this->ignoreCells);
+        if (in_array(get_class($cell), $this->excludedClasses)) return true;
+        return in_array($cell->getName(), $this->excluded);
     }
 
-    public function addIgnoreCell(Cell\CellInterface $cell): static
+    public function addExcluded(string $cellName): static
     {
-        $this->ignoreCells[get_class($cell)] = get_class($cell);
+        $this->excluded[] = $cellName;
         return $this;
     }
 
     /**
-     * The ignore cell class array or reset the array if nothing passed
-     *
-     * Eg:
-     *   array('Tk\Table\Cell\Checkbox', 'App\Ui\Subject\EnrolledCell');
+     * The excluded cell class array or reset the array if nothing passed
+     * Eg:  array('cellName1', 'cellName2');
      */
-    public function setIgnoreCells(array $array = []): static
+    public function setExcluded(array $array = []): static
     {
-        $this->ignoreCells = $array;
+        $this->excluded = $array;
         return $this;
     }
 

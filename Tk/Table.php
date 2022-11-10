@@ -129,7 +129,7 @@ class Table extends Element implements InstanceKey
             /** @var CellInterface $cell */
             foreach ($this->getCells() as $cell) {
                 if (!$cell->getOrderByName()) {
-                    $cell->setOrderByName($dbMap->getPropertyType($cell->getName())->getKey());
+                    $cell->setOrderByName($dbMap->getPropertyType($cell->getName())?->getKey() ?? '');
                 }
             }
         } else {
@@ -145,7 +145,7 @@ class Table extends Element implements InstanceKey
     }
 
     /**
-     * The id can only be set once unless it is cleared first
+     * ensure the id is unique
      */
     protected function setId($id): static
     {
@@ -162,9 +162,6 @@ class Table extends Element implements InstanceKey
         return $this;
     }
 
-    /**
-     * Get the table id
-     */
     public function getId(): string
     {
         return $this->id;

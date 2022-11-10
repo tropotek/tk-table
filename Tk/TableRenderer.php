@@ -97,15 +97,13 @@ class TableRenderer extends Renderer
 
         // Render table rows
         foreach ($this->getTable()->getList() as $rowId => $rowData) {
-            // TODO: $rowId needs to add offset when using pager
             $rowRepeat = $template->getRepeat('tr');
+            // TODO: $rowId needs to add offset when using pager
             $row = Row::createRow($this->getTable()->getRow(), $rowData, $rowId+1);
             $row->setTemplate($rowRepeat);
             $row->show();
             $rowRepeat->appendRepeat();
         }
-
-        // TODO: Add on Show CallbackCollection ???
 
         $template->setAttr('table', $this->getTable()->getAttrList());
         $template->addCss('table', $this->getTable()->getCssList());
