@@ -31,6 +31,7 @@ class TableSession extends Collection implements InstanceKey
 
     public function __construct(string $tableId)
     {
+        parent::__construct();
         $this->tableId = $tableId;
     }
 
@@ -111,7 +112,7 @@ class TableSession extends Collection implements InstanceKey
         return explode(' ', $this->getOrderBy());
     }
 
-    public function replace(array $all): static
+    public function replaceParams(array $all): static
     {
         if (isset($all[$this->makeInstanceKey(Tool::PARAM_ORDER_BY)])) {
             $this->setOrderBy($all[$this->makeInstanceKey(Tool::PARAM_ORDER_BY)]);
@@ -125,18 +126,13 @@ class TableSession extends Collection implements InstanceKey
         return $this;
     }
 
-    public function all($prefix = ''): array
+    public function allParams($prefix = ''): array
     {
         return [
             $prefix.Tool::PARAM_ORDER_BY => $this->getOrderBy(),
             $prefix.Tool::PARAM_LIMIT    => $this->getLimit(),
             $prefix.Tool::PARAM_OFFSET   => $this->getOffset(),
         ];
-    }
-
-    public function makeInstanceKey(string $key): string
-    {
-        return $this->getTableId() . '-' . $key;
     }
 
     public function getTool(string $defaultOrderBy = '', int $defaultLimit = 0): Tool
@@ -147,14 +143,14 @@ class TableSession extends Collection implements InstanceKey
         if ($this->orderBy === null && $defaultOrderBy) $this->setOrderBy($defaultOrderBy);
         if ($this->limit === null && $defaultLimit) $this->setLimit($defaultLimit);
 
-        $tool->updateFromArray($this->all($tool->makeInstanceKey('')));
+        $tool->updateFromArray($this->allParams($tool->makeInstanceKey('')));
 
         $request = Factory::instance()->getRequest();
         $updated = $tool->updateFromArray($request->query->all());
 
         // Redirect on update
         if ($updated) {
-            $this->replace($tool->toArray());
+            $this->replaceParams($tool->toArray());
             Uri::create()
                 ->remove($this->makeInstanceKey(Tool::PARAM_ORDER_BY))
                 ->remove($this->makeInstanceKey(Tool::PARAM_LIMIT))
@@ -163,6 +159,11 @@ class TableSession extends Collection implements InstanceKey
         }
 
         return $tool;
+    }
+
+    public function makeInstanceKey(string $key): string
+    {
+        return $this->getTableId() . '-' . $key;
     }
 
 }
