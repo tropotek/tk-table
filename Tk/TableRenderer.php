@@ -3,11 +3,17 @@ namespace Tk;
 
 use Dom\Builder;
 use Dom\Renderer\Renderer;
+use Dom\Renderer\RendererInterface;
 use Dom\Template;
+use Tk\Db\Mapper\Result;
 use Tk\Table\Action\ActionInterface;
 use Tk\Table\Action\Link;
 use \Tk\Table\Cell\CellInterface;
 use Tk\Table\Row;
+use Tk\Table\Ui\Limit;
+use Tk\Table\Ui\Pager;
+use Tk\Table\Ui\Results;
+use Tk\Table\Ui\UiInterface;
 use Tk\Traits\SystemTrait;
 
 /**
@@ -23,11 +29,23 @@ class TableRenderer extends Renderer
 
     protected Builder $builder;
 
+    /**
+     * Enable Rendering of the footer
+     */
+    private bool $footerEnabled = true;
+
+    protected Collection $footer;
+
 
     public function __construct(Table $table, string $tplFile)
     {
+        $this->footer = new Collection();
         $this->table = $table;
         $this->init($tplFile);
+
+        $this->appendFooter('results', Results::create());
+        $this->appendFooter('pager',  Pager::create());
+        $this->appendFooter('limit',  Limit::create());
     }
 
     protected function init(string $tplFile)
@@ -65,6 +83,29 @@ class TableRenderer extends Renderer
     public function getTable(): Table
     {
         return $this->table;
+    }
+
+    public function getFooterList(): Collection
+    {
+        return $this->footer;
+    }
+
+    public function appendFooter(string $name, UiInterface $renderer): static
+    {
+        $renderer->setTable($this->getTable());
+        $this->getFooterList()->append($name, $renderer);
+        return $this;
+    }
+
+    public function isFooterEnabled(): bool
+    {
+        return $this->footerEnabled;
+    }
+
+    public function setFooterEnabled(bool $b = true): static
+    {
+        $this->footerEnabled = $b;
+        return $this;
     }
 
 
@@ -107,6 +148,22 @@ class TableRenderer extends Renderer
 
         $template->setAttr('table', $this->getTable()->getAttrList());
         $template->addCss('table', $this->getTable()->getCssList());
+
+        if (count($this->getTable()->getList()) && $this->isFooterEnabled()) {
+            /** @var UiInterface $item */
+            foreach ($this->getFooterList() as $name => $item) {
+                $tpl = $this->buildTemplate('footer-' . $name);
+                if ($tpl) {
+                    if ($this->getTable()->getList() instanceof Result) {
+                        $item->initFromResult($this->getTable()->getList());
+                    }
+                    $item->setTemplate($tpl);
+                    $template->appendTemplate('footer', $item->show());
+                }
+            }
+            $template->setVisible('footer', $this->isFooterEnabled());
+        }
+
 
         return $template;
     }
