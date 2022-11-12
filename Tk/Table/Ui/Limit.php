@@ -67,7 +67,6 @@ class Limit extends UiInterface
         if (!$this->isEnabled()) return $template;
 
         $domform = $template->getForm();
-        vd($domform);
         if(!$domform) return $template;
 
         $template->addCss('limit', $this->getCssList());
@@ -87,7 +86,7 @@ class Limit extends UiInterface
 jQuery(function($) {
     // Limit onchange event
     $('.tk-limit select').change(function(e) {
-        if ($(this).val() === 0) {
+        if ($(this).val() == 0) {
             if (!confirm('WARNING: If there are many records this action could be slow.')) {
                 return false;
             }

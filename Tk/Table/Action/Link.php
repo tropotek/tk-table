@@ -1,7 +1,6 @@
 <?php
 namespace Tk\Table\Action;
 
-
 use Dom\Template;
 use Tk\Uri;
 
