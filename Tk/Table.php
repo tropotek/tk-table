@@ -118,6 +118,19 @@ class Table extends Element implements InstanceKey
         return $this->list;
     }
 
+    /**
+     * get a single list item from the array
+     */
+    public function getListItem(int $idx): mixed
+    {
+        $list = $this->getList();
+        if ($list instanceof Result) {
+            return $list->get($idx);
+        }
+        if (isset($list[$idx])) return $list[$idx];
+        return null;
+    }
+
     public function autofillOrderBy(null|array|Result $list = null): static
     {
         $list = $list ?? $this->getList();
@@ -182,6 +195,9 @@ class Table extends Element implements InstanceKey
     }
 
 
+    /**
+     * @return Collection|CellInterface[]
+     */
     public function getCells(): Collection
     {
         return $this->cells;

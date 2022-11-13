@@ -67,6 +67,15 @@ class TableRenderer extends Renderer
             $tableEl->removeAttribute($cssPre . $k);
         }
 
+        // load any cell templates
+        foreach ($this->getTable()->getCells() as $cell) {
+            $tpl = $this->buildTemplate('tpl-cell-'.lcfirst(ObjectUtil::basename($cell)));
+            if ($tpl) {
+                Log::warning('Loading table cell template: ' . 'tpl-cell-'.lcfirst(ObjectUtil::basename($cell)));
+                $cell->setTemplate($tpl);
+            }
+        }
+
         $this->setTemplate($this->buildTemplate('table'));
     }
 
