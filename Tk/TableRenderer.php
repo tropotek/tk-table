@@ -37,10 +37,13 @@ class TableRenderer extends Renderer
     protected Collection $footer;
 
 
-    public function __construct(Table $table, string $tplFile)
+    public function __construct(Table $table, string $tplFile = null)
     {
         $this->footer = new Collection();
         $this->table = $table;
+        if (!is_file($tplFile)) {
+            $tplFile = $this->makePath($this->getConfig()->get('path.template.table'));
+        }
         $this->init($tplFile);
 
         $this->appendFooter('results', Results::create());
