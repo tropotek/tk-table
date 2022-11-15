@@ -118,7 +118,7 @@ class Csv extends Button
             } else {
                 $fullList = \Tk\Db\Map\ArrayObject::create($stmt);
             }
-        } else if (is_array($list)) {
+        } else if (is_array($list) && $this->checkboxName) {
             $sql = $this->getDb()->getLastQuery();
             if (preg_match('/ LIMIT /i', $sql)) {
                 $sql = substr($sql, 0, strrpos($sql, 'LIMIT'));
