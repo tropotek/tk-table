@@ -29,19 +29,19 @@ class TableRenderer extends Renderer
 
     protected Builder $builder;
 
+    protected Collection $footer;
+
     /**
      * Enable Rendering of the footer
      */
     private bool $footerEnabled = true;
-
-    protected Collection $footer;
 
 
     public function __construct(Table $table, string $tplFile = null)
     {
         $this->footer = new Collection();
         $this->table = $table;
-        if (!is_file($tplFile)) {
+        if (!is_file($tplFile ?? '')) {
             $tplFile = $this->makePath($this->getConfig()->get('path.template.table'));
         }
         $this->init($tplFile);
