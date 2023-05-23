@@ -1,5 +1,10 @@
 #CHANGELOG#
 
+Ver 3.2.22 [2023-05-23]:
+-------------------------------
+  - Added rating average to company export table
+
+
 Ver 3.2.20 [2022-11-16]:
 -------------------------------
 
