@@ -12,9 +12,6 @@ use Tk\ObjectUtil;
 use Tk\Table;
 use Tk\Table\Cell\CellInterface;
 
-/**
- * @author Tropotek <http://www.tropotek.com/>
- */
 class Row implements RendererInterface
 {
 
@@ -135,7 +132,7 @@ class Row implements RendererInterface
 
     public function getCells(): Collection
     {
-        return$this->cells;
+        return $this->cells;
     }
 
     public function getData(): array|object

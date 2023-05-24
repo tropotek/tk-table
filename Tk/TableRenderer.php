@@ -3,7 +3,6 @@ namespace Tk;
 
 use Dom\Builder;
 use Dom\Renderer\Renderer;
-use Dom\Renderer\RendererInterface;
 use Dom\Template;
 use Tk\Db\Mapper\Result;
 use Tk\Table\Action\ActionInterface;
@@ -16,9 +15,6 @@ use Tk\Table\Ui\Results;
 use Tk\Table\Ui\UiInterface;
 use Tk\Traits\SystemTrait;
 
-/**
- * @author Tropotek <http://www.tropotek.com/>
- */
 class TableRenderer extends Renderer
 {
     use SystemTrait;

@@ -12,10 +12,6 @@ use Tk\Table;
 use Tk\Table\Row;
 use Tk\Uri;
 
-
-/**
- * @author Tropotek <http://www.tropotek.com/>
- */
 abstract class CellInterface extends Element implements RendererInterface
 {
     use RendererTrait;
