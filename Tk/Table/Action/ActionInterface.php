@@ -1,7 +1,6 @@
 <?php
 namespace Tk\Table\Action;
 
-
 use Dom\Renderer\DisplayInterface;
 use Dom\Renderer\Traits\RendererTrait;
 use Dom\Template;
@@ -10,9 +9,6 @@ use Tk\CallbackCollection;
 use Tk\Table;
 use Tk\Ui\Element;
 
-/**
- * @author Tropotek <http://www.tropotek.com/>
- */
 abstract class ActionInterface extends Element implements DisplayInterface
 {
     use RendererTrait;

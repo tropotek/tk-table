@@ -15,8 +15,6 @@ class Summarize extends Text
         // This is the cell repeat
         $template = $this->getTemplate();
 
-        $this->decorate($template);
-
         $summary = htmlspecialchars(wordwrap(str_replace('. ', ".\n", $this->getValue()), 80));
         $summary = str_replace("\n\n", "\n", $summary);
         $details = '';
@@ -28,17 +26,19 @@ class Summarize extends Text
                 $details = nl2br(implode("\n", $lines));
             }
         }
-
-        if ($this->getUrl()) {
-            $this->getLink()->setUrl($this->getUrl());
-            $summary = $this->getLink()->setText($summary);
-        }
+//        if ($this->getUrl()) {
+//            $this->getLink()->setUrl($this->getUrl());
+//            $summary = $this->getLink()->setText($summary);
+//        }
         $html = $summary;
         if ($details) {
             $html = sprintf('<details><summary>%s</summary>%s</details>', $summary, $details);
         }
 
         $template->insertHtml('td', $html);
+
+        $this->decorate($template);
+
         return $template;
     }
 

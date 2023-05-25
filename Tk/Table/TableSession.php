@@ -1,5 +1,4 @@
 <?php
-
 namespace Tk\Table;
 
 use Tk\Collection;
@@ -9,7 +8,6 @@ use Tk\InstanceKey;
 use Tk\Table\Cell\CellInterface;
 use Tk\Traits\SystemTrait;
 use Tk\Uri;
-
 
 class TableSession extends Collection implements InstanceKey
 {

@@ -11,9 +11,6 @@ use Tk\ObjectUtil;
 use Tk\Table;
 use \Tk\Table\Cell;
 
-/**
- * @author Tropotek <http://www.tropotek.com/>
- */
 class Csv extends Button
 {
 

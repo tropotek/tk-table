@@ -5,10 +5,6 @@ use Dom\Template;
 use Tk\Db\Mapper\Result;
 use Tk\Db\Tool;
 
-
-/**
- * @author Tropotek <http://www.tropotek.com/>
- */
 class Results extends UiInterface
 {
 

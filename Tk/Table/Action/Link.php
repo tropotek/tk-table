@@ -4,9 +4,6 @@ namespace Tk\Table\Action;
 use Dom\Template;
 use Tk\Uri;
 
-/**
- * @author Tropotek <http://www.tropotek.com/>
- */
 class Link extends ActionInterface
 {
 

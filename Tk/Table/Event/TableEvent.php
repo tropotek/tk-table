@@ -2,32 +2,19 @@
 namespace Tk\Table\Event;
 
 use Symfony\Contracts\EventDispatcher\Event;
+use Tk\Table;
 
-/**
- * @author Michael Mifsud <http://www.tropotek.com/>
- * @see http://www.tropotek.com/
- * @license Copyright 2016 Michael Mifsud
- */
 class TableEvent extends Event
 {
 
-    /**
-     * @var null|\Tk\Table
-     */
-    protected $table = null;
+    protected Table $table;
 
-    /**
-     * @param \Tk\Table $table
-     */
-    public function __construct($table)
+    public function __construct(Table $table)
     {
         $this->table = $table;
     }
 
-    /**
-     * @return null|\Tk\Table
-     */
-    public function getTable()
+    public function getTable(): Table
     {
         return $this->table;
     }

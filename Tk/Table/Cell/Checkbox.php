@@ -1,13 +1,10 @@
 <?php
 namespace Tk\Table\Cell;
 
-
 use Dom\Template;
 use Symfony\Component\HttpFoundation\Request;
+use Tk\Uri;
 
-/**
- * @author Tropotek <http://www.tropotek.com/>
- */
 class Checkbox extends CellInterface
 {
     /**
@@ -39,8 +36,6 @@ class Checkbox extends CellInterface
     {
         $template = $this->getTemplate();
 
-        $this->decorate($template);
-
         $prop = $this->getName();
         $propValue = $this->getValue();
 
@@ -50,6 +45,8 @@ class Checkbox extends CellInterface
         $html = sprintf('<input type="checkbox" name="%s[]" value="%s" class="tk-tcb" title="%s: %s" %s/>', $prop, htmlentities($propValue), $prop, htmlentities($propValue), $checked);
 
         $template->insertHtml('td', $html);
+
+        $this->decorate($template);
 
         return $template;
     }
@@ -114,6 +111,14 @@ JS;
     public function setUseValue(bool $useValue): static
     {
         $this->useValue = $useValue;
+        return $this;
+    }
+
+    /**
+     * Disable the URL for this cell
+     */
+    public function setUrl(string|Uri $url): static
+    {
         return $this;
     }
 

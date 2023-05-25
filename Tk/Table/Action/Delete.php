@@ -1,7 +1,6 @@
 <?php
 namespace Tk\Table\Action;
 
-
 use Dom\Template;
 use Symfony\Component\HttpFoundation\Request;
 use Tk\CallbackCollection;
@@ -10,9 +9,6 @@ use Tk\ObjectUtil;
 use Tk\Table;
 use Tk\Uri;
 
-/**
- * @author Tropotek <http://www.tropotek.com/>
- */
 class Delete extends Button
 {
 

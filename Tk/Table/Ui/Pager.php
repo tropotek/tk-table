@@ -5,9 +5,6 @@ use Dom\Template;
 use Tk\Db\Mapper\Result;
 use Tk\Uri;
 
-/**
- * @author Tropotek <http://www.tropotek.com/>
- */
 class Pager extends UiInterface
 {
 

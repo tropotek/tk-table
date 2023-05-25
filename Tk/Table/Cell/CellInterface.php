@@ -2,6 +2,7 @@
 namespace Tk\Table\Cell;
 
 use Dom\Renderer\RendererInterface;
+use Tk\ObjectUtil;
 use Tk\Ui\Element;
 use Dom\Renderer\Traits\RendererTrait;
 use Dom\Template;
@@ -10,6 +11,7 @@ use Tk\Db\Tool;
 use Tk\CallbackCollection;
 use Tk\Table;
 use Tk\Table\Row;
+use Tk\Ui\Link;
 use Tk\Uri;
 
 abstract class CellInterface extends Element implements RendererInterface
@@ -24,7 +26,7 @@ abstract class CellInterface extends Element implements RendererInterface
 
     /**
      * Only gets set on start of rendering.
-     * Accessible in teh show() method calls
+     * Accessible in the show() method calls
      */
     protected Row $row;
 
@@ -41,6 +43,8 @@ abstract class CellInterface extends Element implements RendererInterface
     protected string $orderByName = '';
 
     protected CallbackCollection $onShow;
+
+    protected ?Link $link = null;
 
     protected ?Uri $url = null;
 
@@ -95,10 +99,24 @@ abstract class CellInterface extends Element implements RendererInterface
      */
     protected function decorate(Template $template): Template
     {
-        $this->getOnShow()->execute($this);
-
         $template->setAttr('td', $this->getAttrList());
         $template->addCss('td', $this->getCssList());
+
+        $this->getOnShow()->execute($this);
+
+        // Add a URL to the cell content
+        if ($this->getLink()) {
+            $cellContent = $template->getVar('td')->nodeValue;
+            $link = clone $this->getLink();
+            $url = clone $this->getUrl();
+            if ($this->getUrlProperty()) {
+                $prop = ObjectUtil::getPropertyValue($this->getRow()->getData(), $this->getUrlProperty());
+                $url->set($this->getUrlProperty(), $prop);
+            }
+            $link->setUrl($url);
+            $html = $link->setText($cellContent);
+            $template->insertHtml('td', $html);
+        }
 
         return $template;
     }
@@ -260,6 +278,7 @@ abstract class CellInterface extends Element implements RendererInterface
 
     public function setUrl(string|Uri $url): static
     {
+        $this->link = new Link();
         $this->url = Uri::create($url);
         return $this;
     }
@@ -267,6 +286,22 @@ abstract class CellInterface extends Element implements RendererInterface
     public function getUrl(): ?Uri
     {
         return $this->url;
+    }
+
+    public function getLink(): ?Link
+    {
+        return $this->link;
+    }
+
+    public function getUrlProperty(): string
+    {
+        return $this->urlProperty;
+    }
+
+    public function setUrlProperty(string $urlProperty): static
+    {
+        $this->urlProperty = $urlProperty;
+        return $this;
     }
 
 }

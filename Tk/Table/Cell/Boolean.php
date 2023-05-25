@@ -1,12 +1,8 @@
 <?php
 namespace Tk\Table\Cell;
 
-
 use Dom\Template;
 
-/**
- * @author Tropotek <http://www.tropotek.com/>
- */
 class Boolean extends Text
 {
     public function show(): ?Template
@@ -22,6 +18,7 @@ class Boolean extends Text
         $template->insertHtml('td', $val);
 
         $this->decorate($template);
+
         return $template;
     }
 

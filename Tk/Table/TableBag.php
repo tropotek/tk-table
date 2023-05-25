@@ -1,5 +1,4 @@
 <?php
-
 namespace Tk\Table;
 
 use Symfony\Component\HttpFoundation\Session\Attribute\AttributeBag;

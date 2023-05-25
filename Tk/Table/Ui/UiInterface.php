@@ -1,5 +1,4 @@
 <?php
-
 namespace Tk\Table\Ui;
 
 use Tk\Db\Mapper\Result;
@@ -9,7 +8,6 @@ use Tk\Ui\DomElement;
 
 abstract class UiInterface extends DomElement
 {
-
     const PARAM_LIMIT = 'limit';
     const PARAM_OFFSET = 'offset';
     const PARAM_TOTAL = 'total';

@@ -7,10 +7,10 @@ use Tk\CallbackCollection;
 use Tk\Db\Mapper\Mapper;
 use Tk\Db\Mapper\Model;
 use Tk\Table;
+use Tk\Uri;
 
 /**
- * @author Tropotek <http://www.tropotek.com/>
- * @todo: move this to the Bs lib with its required javascript
+ * @todo: Maybe move this to the Bs lib with its required javascript
  * @todo: also add the columns action button too.
  */
 class OrderBy extends Text
@@ -113,6 +113,7 @@ JS;
         if ($this->getTable()->getList()->count() == $rowIdx+1) {
             $template->addCss('dnUrl', 'disabled');
         }
+        $this->setUrlProperty('');
 
         $this->decorate($template);
 
@@ -260,6 +261,14 @@ JS;
         $query = sprintf('UPDATE %s SET %s = %s', $mapper->getDb()->quoteParameter($mapper->getTable()),
             $mapper->getDb()->quoteParameter($property->getKey()), $mapper->getDb()->quoteParameter($pk));
         return $mapper->getDb()->exec($query);
+    }
+
+    /**
+     * Disable the URL for this cell
+     */
+    public function setUrl(string|Uri $url): static
+    {
+        return $this;
     }
 
 }

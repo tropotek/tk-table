@@ -1,5 +1,4 @@
 <?php
-
 namespace Tk;
 
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
@@ -20,7 +19,6 @@ use Tk\Table\Row;
  *  Add ?rts={id} to the URL request to reset this table session.
  *  And ?rts=rts to reset all table sessions on the page
  *
- * @author Tropotek <http://www.tropotek.com/>
  */
 class Table extends Element implements InstanceKey
 {

@@ -1,10 +1,6 @@
 <?php
 namespace Tk\Table;
 
-
-/**
- * @author Tropotek <http://www.tropotek.com/>
- */
 class TableEvents
 {
 
