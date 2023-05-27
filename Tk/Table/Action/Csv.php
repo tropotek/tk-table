@@ -150,9 +150,9 @@ class Csv extends Button
     {
         parent::setTable($table);
         $checkbox = $this->getTable()->getCell($this->getCheckboxName());
-        if (!$checkbox instanceof Table\Cell\Checkbox) {
-            throw new Table\Exception("Checkbox cell {$this->getCheckboxName()} not found in table.");
-        }
+//        if (!$checkbox instanceof Table\Cell\Checkbox) {
+//            throw new Table\Exception("Checkbox cell {$this->getCheckboxName()} not found in table.");
+//        }
         return $this;
     }
 
