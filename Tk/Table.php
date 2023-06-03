@@ -45,7 +45,7 @@ class Table extends Element implements InstanceKey
 
     protected Collection $actions;
 
-    protected array|Result $list;
+    protected null|array|Result $list = null;
 
 
     public function __construct(string $tableId = '')
