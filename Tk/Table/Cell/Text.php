@@ -39,12 +39,15 @@ class Text extends CellInterface
         // This is the cell repeat
         $template = $this->getTemplate();
 
+        $this->setValue($this->getOnValue()->execute($this, $this->getValue()) ?? $this->getValue());
+
         $propValue = $this->getValue();
         if ($this->charLimit && strlen($propValue) > $this->charLimit) {
             $propValue = \Tk\Str::wordcat($propValue, $this->charLimit - 3, '...');
         }
 
         $html = $propValue;
+        $html == $this->getOnShow()->execute($this, $html) ?? $html;
         $template->insertHtml('td', $html);
 
         $this->decorate($template);

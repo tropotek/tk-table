@@ -42,6 +42,8 @@ abstract class CellInterface extends Element implements RendererInterface
 
     protected string $orderByName = '';
 
+    protected CallbackCollection $onValue;
+
     protected CallbackCollection $onShow;
 
     protected ?Link $link = null;
@@ -53,6 +55,7 @@ abstract class CellInterface extends Element implements RendererInterface
 
     public function __construct(string $name, string $label = '')
     {
+        $this->onValue = CallbackCollection::create();
         $this->onShow = CallbackCollection::create();
         $this->name = $name;
 
@@ -101,8 +104,6 @@ abstract class CellInterface extends Element implements RendererInterface
     {
         $template->setAttr('td', $this->getAttrList());
         $template->addCss('td', $this->getCssList());
-
-        $this->getOnShow()->execute($this);
 
         // Add a URL to the cell content
         if ($this->getLink()) {
@@ -262,13 +263,34 @@ abstract class CellInterface extends Element implements RendererInterface
         return $this;
     }
 
+    public function getOnValue(): CallbackCollection
+    {
+        return $this->onValue;
+    }
+
+    /**
+     * Called before the value is used, set this to change the table raw data value
+     * Use this to set the cell properties before rendering
+     *
+     * Callback: function (CellInterface $cell, mixed $value) {  }
+     */
+    public function addOnValue(callable $callable, int $priority = CallbackCollection::DEFAULT_PRIORITY): static
+    {
+        $this->getOnValue()->append($callable, $priority);
+        return $this;
+    }
+
     public function getOnShow(): CallbackCollection
     {
         return $this->onShow;
     }
 
     /**
-     * Callback: function (CellInterface $cell) {  }
+     * Called after the cell is decorated
+     * Us this to modify the cell HTML after it has been rendered
+     * Note: Use Cell::setUrl(null) to remove the automatic link markup
+     *
+     * Callback: function (CellInterface $cell, string $html) {  }
      */
     public function addOnShow(callable $callable, int $priority = CallbackCollection::DEFAULT_PRIORITY): static
     {
@@ -276,10 +298,13 @@ abstract class CellInterface extends Element implements RendererInterface
         return $this;
     }
 
-    public function setUrl(string|Uri $url): static
+    public function setUrl(null|string|Uri $url): static
     {
-        $this->link = new Link();
-        $this->url = Uri::create($url);
+        $this->url = $this->link = null;
+        if (!empty($url)) {
+            $this->link = new Link();
+            $this->url = Uri::create($url);
+        }
         return $this;
     }
 

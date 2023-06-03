@@ -70,6 +70,8 @@ class OrderBy extends Text
         // This is the cell repeat
         $template = $this->getTemplate();
 
+        $this->setValue($this->getOnValue()->execute($this, $this->getValue()) ?? $this->getValue());
+
         $obj = $this->getRow()->getData();
         $rowIdx = $this->getRow()->getId();
         if (!$obj instanceof Model) return $template;
@@ -114,6 +116,11 @@ JS;
             $template->addCss('dnUrl', 'disabled');
         }
         $this->setUrlProperty('');
+
+        $html = $this->getOnShow()->execute($this, $template->getVar('td')->nodeValue);
+        if ($html !== null) {
+            $template->insertHtml('td', $html);
+        }
 
         $this->decorate($template);
 

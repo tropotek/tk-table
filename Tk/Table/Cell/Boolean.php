@@ -10,12 +10,16 @@ class Boolean extends Text
         // This is the cell repeat
         $template = $this->getTemplate();
 
+        $this->setValue($this->getOnValue()->execute($this, $this->getValue()) ?? $this->getValue());
+
         $val = 'No';
         if ($this->getValue() === $this->getName() || strtolower($this->getValue()) === 'yes' || $this->getValue() == 1) {
             $val = 'yes';
         }
 
-        $template->insertHtml('td', $val);
+        $html = $val;
+        $html == $this->getOnShow()->execute($this, $html) ?? $html;
+        $template->insertHtml('td', $html);
 
         $this->decorate($template);
 

@@ -15,6 +15,8 @@ class Summarize extends Text
         // This is the cell repeat
         $template = $this->getTemplate();
 
+        $this->setValue($this->getOnValue()->execute($this, $this->getValue()) ?? $this->getValue());
+
         $summary = htmlspecialchars(wordwrap(str_replace('. ', ".\n", $this->getValue()), 80));
         $summary = str_replace("\n\n", "\n", $summary);
         $details = '';
@@ -35,6 +37,7 @@ class Summarize extends Text
             $html = sprintf('<details><summary>%s</summary>%s</details>', $summary, $details);
         }
 
+        $html == $this->getOnShow()->execute($this, $html) ?? $html;
         $template->insertHtml('td', $html);
 
         $this->decorate($template);

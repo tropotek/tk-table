@@ -36,6 +36,8 @@ class Checkbox extends CellInterface
     {
         $template = $this->getTemplate();
 
+        $this->setValue($this->getOnValue()->execute($this, $this->getValue()) ?? $this->getValue());
+
         $prop = $this->getName();
         $propValue = $this->getValue();
 
@@ -44,6 +46,7 @@ class Checkbox extends CellInterface
             $checked = ' checked="checked"';
         $html = sprintf('<input type="checkbox" name="%s[]" value="%s" class="tk-tcb" title="%s: %s" %s/>', $prop, htmlentities($propValue), $prop, htmlentities($propValue), $checked);
 
+        $html == $this->getOnShow()->execute($this, $html) ?? $html;
         $template->insertHtml('td', $html);
 
         $this->decorate($template);
@@ -117,7 +120,7 @@ JS;
     /**
      * Disable the URL for this cell
      */
-    public function setUrl(string|Uri $url): static
+    public function setUrl(null|string|Uri $url): static
     {
         return $this;
     }
