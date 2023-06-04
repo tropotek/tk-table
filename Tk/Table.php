@@ -67,7 +67,7 @@ class Table extends Element implements InstanceKey
     /**
      * Execute any Table and cell request responses
      */
-    public function execute(Request $request)
+    public function execute(Request $request): void
     {
         /** @var CellInterface $cell */
         foreach ($this->getCells() as $cell) {
