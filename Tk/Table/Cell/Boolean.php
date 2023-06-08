@@ -18,7 +18,7 @@ class Boolean extends Text
         }
 
         $html = $val;
-        $html == $this->getOnShow()->execute($this, $html) ?? $html;
+        $html = $this->getOnShow()->execute($this, $html) ?? $html;
         $template->insertHtml('td', $html);
 
         $this->decorate($template);

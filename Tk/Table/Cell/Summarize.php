@@ -37,7 +37,7 @@ class Summarize extends Text
             $html = sprintf('<details><summary>%s</summary>%s</details>', $summary, $details);
         }
 
-        $html == $this->getOnShow()->execute($this, $html) ?? $html;
+        $html = $this->getOnShow()->execute($this, $html) ?? $html;
         $template->insertHtml('td', $html);
 
         $this->decorate($template);

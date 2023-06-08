@@ -46,7 +46,7 @@ class Checkbox extends CellInterface
             $checked = ' checked="checked"';
         $html = sprintf('<input type="checkbox" name="%s[]" value="%s" class="tk-tcb" title="%s: %s" %s/>', $prop, htmlentities($propValue), $prop, htmlentities($propValue), $checked);
 
-        $html == $this->getOnShow()->execute($this, $html) ?? $html;
+        $html = $this->getOnShow()->execute($this, $html) ?? $html;
         $template->insertHtml('td', $html);
 
         $this->decorate($template);
