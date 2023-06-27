@@ -1,5 +1,12 @@
 #CHANGELOG#
 
+Ver 8.0.0 [2023-06-27]:
+-------------------------------
+  - added history and lightbox
+  - Added form params back in
+  - update requirements to PHP 8.1
+
+
 Ver 3.2.18 [2022-10-13]:
 -------------------------------
 
