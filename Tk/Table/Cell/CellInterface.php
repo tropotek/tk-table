@@ -50,7 +50,7 @@ abstract class CellInterface extends Element implements RendererInterface
 
     protected ?Uri $url = null;
 
-    protected string $urlProperty = 'id';
+    protected string $urlProperty = '';
 
 
     public function __construct(string $name, string $label = '')
