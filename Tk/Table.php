@@ -245,7 +245,7 @@ class Table extends Element implements InstanceKey
         return $this->getActions()->append($action->getName(), $action, $refName);
     }
 
-    public function prependAction(CellInterface $action, ?string $refName = null)
+    public function prependAction(ActionInterface $action, ?string $refName = null)
     {
         if ($this->getActions()->has($action->getName())) {
             throw new \Tk\Table\Exception("Action with name '{$action->getName()}' already exists.");

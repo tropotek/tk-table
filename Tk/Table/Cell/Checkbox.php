@@ -5,6 +5,10 @@ use Dom\Template;
 use Symfony\Component\HttpFoundation\Request;
 use Tk\Uri;
 
+/**
+ *
+ * @todo Think we should rename this to CheckboxSelect or RowSelect or similar
+ */
 class Checkbox extends CellInterface
 {
     /**
