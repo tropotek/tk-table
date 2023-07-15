@@ -67,7 +67,7 @@ class Table extends Element implements InstanceKey
     /**
      * Execute any Table and cell request responses
      */
-    public function execute(Request $request): void
+    public function execute(Request $request): static
     {
         /** @var CellInterface $cell */
         foreach ($this->getCells() as $cell) {
@@ -85,6 +85,8 @@ class Table extends Element implements InstanceKey
             \Tk\Uri::create()->remove(self::RESET_TABLE)->redirect();
         }
         $this->getDispatcher()?->dispatch(new TableEvent($this), TableEvents::TABLE_EXECUTE);
+
+        return $this;
     }
 
     /**
