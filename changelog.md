@@ -1,5 +1,11 @@
 #CHANGELOG#
 
+Ver 8.0.4 [2023-07-16]:
+-------------------------------
+  - Update Edit and manager interfaces
+  - Added new EditInterface and ManagerInterface classes
+
+
 Ver 8.0.2 [2023-07-08]:
 -------------------------------
 
