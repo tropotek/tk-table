@@ -19,7 +19,7 @@ class Button extends ActionInterface
         $this->setIcon($icon);
     }
 
-    public function execute(Request $request)
+    public function execute(Request $request): void
     {
         parent::execute($request);
 

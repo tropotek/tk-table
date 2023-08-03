@@ -5,11 +5,7 @@ use Dom\Template;
 use Symfony\Component\HttpFoundation\Request;
 use Tk\Uri;
 
-/**
- *
- * @todo Think we should rename this to CheckboxSelect or RowSelect or similar
- */
-class Checkbox extends CellInterface
+class RowSelect extends CellInterface
 {
     /**
      * If true the checkbox is set to checked if the property value evaluates to true
@@ -36,26 +32,22 @@ class Checkbox extends CellInterface
         }
     }
 
-    function show(): ?Template
+    public function getCellValue(): string
     {
-        $template = $this->getTemplate();
-
-        $this->setValue($this->getOnValue()->execute($this, $this->getValue()) ?? $this->getValue());
-
-        $prop = $this->getName();
-        $propValue = $this->getValue();
+        $value = $this->getValue();
+        if (is_null($value)) return '';
 
         $checked = '';
-        if ($this->useValue && ($propValue == $prop || $propValue == 1 || strtolower($propValue) === 'true' || strtolower($propValue) === 'yes'))
+        if ($this->useValue && ($value == $this->getName() || strtolower($value) === 'true' || strtolower($value) === 'yes' || $value == 1)) {
             $checked = ' checked="checked"';
-        $html = sprintf('<input type="checkbox" name="%s[]" value="%s" class="tk-tcb" title="%s: %s" %s/>', $prop, htmlentities($propValue), $prop, htmlentities($propValue), $checked);
+        }
 
-        $html = $this->getOnShow()->execute($this, $html) ?? $html;
-        $template->insertHtml('td', $html);
-
-        $this->decorate($template);
-
-        return $template;
+        return sprintf('<input type="checkbox" name="%s[]" value="%s" class="tk-tcb" title="%s: %s" %s/>',
+            $this->getName(),
+            htmlentities($value),
+            $this->getName(),
+            htmlentities($value),
+            $checked);
     }
 
     public function showHeader(): ?Template
@@ -76,7 +68,7 @@ class Checkbox extends CellInterface
 
     protected function getJs(): string
     {
-        $js = <<<JS
+        return <<<JS
 jQuery(function($) {
 
   let init = function () {
@@ -89,15 +81,16 @@ jQuery(function($) {
     }).trigger('change');
 
   };
-  $('.tk-table .tk-table-form').each(init);
+  init();
+  $('form').on(EVENT_INIT_FORM, document, init).each(init);
 
   // TODO: See if we need to implemnt this for dynamic html updates
+  //$('.tk-table .tk-table-form').each(init);
   // $('.tk-table').on('tk-table-update', '.tk-table-form', init);
   // $('.tk-table .tk-table-form').trigger('tk-table-update');
 
 });
 JS;
-        return $js;
     }
 
     public function getSelected(): array

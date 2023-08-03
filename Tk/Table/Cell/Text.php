@@ -12,7 +12,7 @@ class Text extends CellInterface
      * The max numbers of characters to display
      *      0 = no limit
      */
-    protected int $charLimit = 0;
+    protected int $maxLength = 0;
 
 
     public function __construct(string $name, string $label = '')
@@ -20,39 +20,27 @@ class Text extends CellInterface
         parent::__construct($name, $label);
     }
 
-    /**
-     * Use 0 to disable character limit
-     */
-    public function setCharacterLimit(int $i): static
+    public function setMaxLength(int $maxLength): static
     {
-        $this->charLimit = $i;
+        $this->maxLength = $maxLength;
         return $this;
     }
 
-    public function getCharLimit(): int
+    public function getMaxLength(): int
     {
-        return $this->charLimit;
+        return $this->maxLength;
     }
 
-    public function show(): ?Template
+    public function getCellValue(): string
     {
-        // This is the cell repeat
-        $template = $this->getTemplate();
+        $value = $this->getValue();
+        if (is_null($value)) return '';
 
-        $this->setValue($this->getOnValue()->execute($this, $this->getValue()) ?? $this->getValue());
-
-        $propValue = $this->getValue();
-        if ($this->charLimit && strlen($propValue) > $this->charLimit) {
-            $propValue = \Tk\Str::wordcat($propValue, $this->charLimit - 3, '...');
+        if ($this->getMaxLength() && strlen($value) > $this->getMaxLength()) {
+            $value = \Tk\Str::wordcat($value, $this->getMaxLength() - 3, '...');
         }
 
-        $html = $propValue;
-        $html = $this->getOnShow()->execute($this, $html) ?? $html;
-        $template->insertHtml('td', $html);
-
-        $this->decorate($template);
-
-        return $template;
+        return $value;
     }
 
 }

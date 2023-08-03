@@ -1,23 +1,21 @@
 <?php
 namespace Tk\Table\Cell;
 
-
-use Dom\Template;
-
-/**
- * @author Tropotek <http://www.tropotek.com/>
- */
 class Summarize extends Text
 {
 
-    public function show(): ?Template
+    public function __construct(string $name, string $label = '')
     {
-        // This is the cell repeat
-        $template = $this->getTemplate();
+        parent::__construct($name, $label);
 
-        $this->setValue($this->getOnValue()->execute($this, $this->getValue()) ?? $this->getValue());
+        $this->addOnShow([$this, 'cellShow']);
+    }
 
-        $summary = htmlspecialchars(wordwrap(str_replace('. ', ".\n", $this->getValue()), 80));
+    public function cellShow(CellInterface $cell, string $html): string
+    {
+        $value = $this->getCellValue();
+
+        $summary = htmlspecialchars(wordwrap(str_replace('. ', ".\n", $value), 80));
         $summary = str_replace("\n\n", "\n", $summary);
         $details = '';
         if ($summary) {
@@ -28,21 +26,12 @@ class Summarize extends Text
                 $details = nl2br(implode("\n", $lines));
             }
         }
-//        if ($this->getUrl()) {
-//            $this->getLink()->setUrl($this->getUrl());
-//            $summary = $this->getLink()->setText($summary);
-//        }
         $html = $summary;
         if ($details) {
             $html = sprintf('<details><summary>%s</summary>%s</details>', $summary, $details);
         }
 
-        $html = $this->getOnShow()->execute($this, $html) ?? $html;
-        $template->insertHtml('td', $html);
-
-        $this->decorate($template);
-
-        return $template;
+        return $html;
     }
 
 }

@@ -47,7 +47,7 @@ class TableRenderer extends Renderer
         $this->appendFooter('limit',  Limit::create());
     }
 
-    protected function init(string $tplFile)
+    protected function init(string $tplFile): void
     {
         $this->builder = new Builder($tplFile);
 
@@ -140,15 +140,18 @@ class TableRenderer extends Renderer
         foreach ($this->getTable()->getCells() as $cell) {
             $headerLabels[$cell->getName()] = $cell->getLabel();
         }
-        $row = Row::createRow($this->getTable()->getRow(), $headerLabels, 0);
+
+        // header row
+        $row = clone $this->getTable()->getRow();
+        $row->init($headerLabels, 0);
         $row->setTemplate($template);
         $row->show();
 
         // Render table rows
         foreach ($this->getTable()->getList() as $rowId => $rowData) {
             $rowRepeat = $template->getRepeat('tr');
-            // TODO: $rowId needs to add offset when using pager
-            $row = Row::createRow($this->getTable()->getRow(), $rowData, $rowId+1);
+            $row = clone $this->getTable()->getRow();
+            $row->init($rowData, $rowId+1);
             $row->setTemplate($rowRepeat);
             $row->show();
             $rowRepeat->appendRepeat();

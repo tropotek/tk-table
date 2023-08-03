@@ -5,25 +5,24 @@ use Dom\Template;
 
 class Boolean extends Text
 {
-    public function show(): ?Template
+
+    public function getCellValue(): string
     {
-        // This is the cell repeat
-        $template = $this->getTemplate();
+        $value = $this->getValue();
+        if (is_null($value)) return '';
 
-        $this->setValue($this->getOnValue()->execute($this, $this->getValue()) ?? $this->getValue());
-
-        $val = 'No';
-        if ($this->getValue() === $this->getName() || strtolower($this->getValue()) === 'yes' || $this->getValue() == 1) {
-            $val = 'yes';
+        if (!is_bool($value)) {
+            $value = false;
+            if ($this->getValue() == $this->getName() ||
+                strtolower($this->getValue()) == 'yes' ||
+                strtolower($this->getValue()) == 'true' ||
+                $this->getValue() == 1
+            ) {
+                $value = true;
+            }
         }
 
-        $html = $val;
-        $html = $this->getOnShow()->execute($this, $html) ?? $html;
-        $template->insertHtml('td', $html);
-
-        $this->decorate($template);
-
-        return $template;
+        return $value ? 'Yes' : 'No';
     }
 
 }

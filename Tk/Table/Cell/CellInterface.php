@@ -32,7 +32,7 @@ abstract class CellInterface extends Element implements RendererInterface
 
     protected string $name = '';
 
-    protected string $value = '';
+    protected mixed $value = '';
 
     protected string $label = '';
 
@@ -97,9 +97,21 @@ abstract class CellInterface extends Element implements RendererInterface
         return $template;
     }
 
-    /**
-     * A basic common cell renderer.
-     */
+    public function show(): ?Template
+    {
+        // This is the cell repeat
+        $template = $this->getTemplate();
+
+        $this->setValue($this->getOnValue()->execute($this, $this->getValue()) ?? $this->getValue());
+        $html = $this->getCellValue();
+        $html = $this->getOnShow()->execute($this, $html) ?? $html;
+        $template->insertHtml('td', $html);
+
+        $this->decorate($template);
+
+        return $template;
+    }
+
     protected function decorate(Template $template): Template
     {
         $template->setAttr('td', $this->getAttrList());
@@ -192,15 +204,15 @@ abstract class CellInterface extends Element implements RendererInterface
         return $this->table;
     }
 
-    public function getRow(): Row
-    {
-        return $this->row;
-    }
-
     public function setRow(Row $row): static
     {
         $this->row = $row;
         return $this;
+    }
+
+    public function getRow(): Row
+    {
+        return $this->row;
     }
 
     public function getName(): string
@@ -208,15 +220,20 @@ abstract class CellInterface extends Element implements RendererInterface
         return $this->name;
     }
 
-    public function getValue(): string
+    public function setValue(mixed $value): CellInterface
+    {
+        $this->value = $value;
+        return $this;
+    }
+
+    public function getValue(): mixed
     {
         return $this->value;
     }
 
-    public function setValue(string $value): CellInterface
+    public function getCellValue(): string
     {
-        $this->value = $value;
-        return $this;
+        return $this->value;
     }
 
     public function setLabel(string $str): static
@@ -241,20 +258,15 @@ abstract class CellInterface extends Element implements RendererInterface
         return $this->showLabel;
     }
 
-    public function isVisible(): bool
-    {
-        return $this->visible;
-    }
-
     public function setVisible(bool $visible): static
     {
         $this->visible = $visible;
         return $this;
     }
 
-    public function getOrderByName(): string
+    public function isVisible(): bool
     {
-        return $this->orderByName;
+        return $this->visible;
     }
 
     public function setOrderByName(string $orderByName): CellInterface
@@ -263,9 +275,9 @@ abstract class CellInterface extends Element implements RendererInterface
         return $this;
     }
 
-    public function getOnValue(): CallbackCollection
+    public function getOrderByName(): string
     {
-        return $this->onValue;
+        return $this->orderByName;
     }
 
     /**
@@ -280,9 +292,9 @@ abstract class CellInterface extends Element implements RendererInterface
         return $this;
     }
 
-    public function getOnShow(): CallbackCollection
+    public function getOnValue(): CallbackCollection
     {
-        return $this->onShow;
+        return $this->onValue;
     }
 
     /**
@@ -296,6 +308,11 @@ abstract class CellInterface extends Element implements RendererInterface
     {
         $this->getOnShow()->append($callable, $priority);
         return $this;
+    }
+
+    public function getOnShow(): CallbackCollection
+    {
+        return $this->onShow;
     }
 
     public function setUrl(null|string|Uri $url): static
@@ -318,15 +335,15 @@ abstract class CellInterface extends Element implements RendererInterface
         return $this->link;
     }
 
-    public function getUrlProperty(): string
-    {
-        return $this->urlProperty;
-    }
-
     public function setUrlProperty(string $urlProperty): static
     {
         $this->urlProperty = $urlProperty;
         return $this;
+    }
+
+    public function getUrlProperty(): string
+    {
+        return $this->urlProperty;
     }
 
 }

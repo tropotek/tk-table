@@ -37,24 +37,19 @@ class Row implements RendererInterface
         $this->cells = new Collection();
     }
 
-    public static function createRow(Row $row, array|object $rowData, int $rowId): static
+    public static function createRow(Table $table, array|object $rowData, int $rowId = 0): static
     {
-        $obj = clone $row;
-        $obj->cells = new Collection();
-        $obj->data = $rowData;
-        $obj->setId($rowId);
-        $obj->init($rowData);
+        $obj = new self($table);
+        $obj->init($rowData, $rowId);
         return $obj;
     }
 
-    protected function init(array|object $rowData)
+    public function init(array|object $rowData, int $rowId = 0): Row
     {
+        $this->setId($rowId);
+        $this->data = $rowData;
+
         $data = $rowData;
-        if ($data instanceof Model) {
-            /** @var Model $rowData */
-            $data = [];
-            $rowData->getMapper()->getTableMap()->loadArray($data, $rowData);
-        }
 
         /** @var CellInterface $cell */
         foreach ($this->getTable()->getCells() as $orgCell) {
@@ -67,11 +62,11 @@ class Row implements RendererInterface
             } elseif (is_array($data)) {
                 $val = $data[$cell->getName()] ?? '';
             }
-
             $cell->setValue($val);
 
             $this->getCells()->set($cell->getName(), $cell);
         }
+        return $this;
     }
 
     function show(): ?Template

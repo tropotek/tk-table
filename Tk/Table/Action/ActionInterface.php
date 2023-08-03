@@ -42,12 +42,12 @@ abstract class ActionInterface extends Element implements DisplayInterface
         $this->addCss('a'.ucFirst($name));
     }
 
-    public function init()
+    public function init(): void
     {
         $this->getOnInit()->execute($this);
     }
 
-    public function execute(Request $request)
+    public function execute(Request $request): void
     {
         if (!$this->isTriggered()) return;
         $this->getOnExecute()->execute($this, $request);

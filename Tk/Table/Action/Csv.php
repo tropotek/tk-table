@@ -20,10 +20,11 @@ class Csv extends Button
 
     protected string $filename = '';
 
-    protected array $excluded = [];
+    protected array $excluded = ['actions'];
 
     protected array $excludedClasses = [
-        Cell\Checkbox::class,
+        Cell\RowSelect::class,
+        Cell\OrderBy::class,
     ];
 
 
@@ -35,7 +36,7 @@ class Csv extends Button
         $this->addCss('tk-action-csv no-loader');
     }
 
-    public function execute(Request $request)
+    public function execute(Request $request): void
     {
         parent::execute($request);
         if (!$this->isTriggered()) return;
@@ -51,11 +52,8 @@ class Csv extends Button
         if ($this->getFilename()) {
             $file = $this->getFilename() . '_' . date('Ymd') . '.csv';
         }
-//        if ($request->has('csv_name')) {
-//            $file = preg_replace('/[^a-z0-9_\.-]/i', '_', basename(strip_tags(trim($request['csv_name']))));
-//        }
 
-        /** @var Table\Cell\Checkbox $checkbox */
+        /** @var Table\Cell\RowSelect $checkbox */
         $checkbox = $this->getTable()->getCell($this->getCheckboxName());
 
         // Get list with no limit...
@@ -114,22 +112,15 @@ class Csv extends Button
         }
         fputcsv($out, $arr);
         if ($fullList) {
-            foreach ($fullList as $obj) {
-                $rowData = $obj;
-                if ($obj instanceof Model) {
-                    $rowData = [];
-                    $obj->getMapper()->getTableMap()->loadArray($rowData, $obj);
-                } else if (is_object($obj)) {
-                    $rowData = (array)$obj;
-                }
-
-                $arr = [];
+            foreach ($fullList as $i => $rowData) {
+                $row = Table\Row::createRow($this->getTable(), $rowData, $i+1);
+                $csvData = [];
                 /* @var $cell Cell\CellInterface */
-                foreach ($this->getTable()->getCells() as $cell) {
+                foreach ($row->getCells() as $cell) {
                     if ($this->isExcluded($cell)) continue;
-                    $arr[$cell->getLabel()] = $rowData[$cell->getName()] ?? '';
+                    $csvData[$cell->getLabel()] = $cell->getCellValue();
                 }
-                fputcsv($out, $arr);
+                fputcsv($out, $csvData);
             }
         }
 
@@ -140,20 +131,7 @@ class Csv extends Button
     public function show(): ?Template
     {
         $this->setAttr('title', 'Export records as a CSV file.');
-
-        $template = parent::show();
-
-        return $template;
-    }
-
-    public function setTable(Table $table): static
-    {
-        parent::setTable($table);
-        $checkbox = $this->getTable()->getCell($this->getCheckboxName());
-//        if (!$checkbox instanceof Table\Cell\Checkbox) {
-//            throw new Table\Exception("Checkbox cell {$this->getCheckboxName()} not found in table.");
-//        }
-        return $this;
+        return parent::show();
     }
 
     public function getCheckboxName(): string

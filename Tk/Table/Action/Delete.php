@@ -29,13 +29,13 @@ class Delete extends Button
         $this->setCheckboxName($checkboxName);
     }
 
-    public function execute(Request $request)
+    public function execute(Request $request): void
     {
         parent::execute($request);
 
         if (!$this->isTriggered()) return;
 
-        /** @var Table\Cell\Checkbox $checkbox */
+        /** @var Table\Cell\RowSelect $checkbox */
         $checkbox = $this->getTable()->getCell($this->getCheckboxName());
 
         /* @var object|array $obj */
@@ -120,7 +120,7 @@ JS;
     {
         parent::setTable($table);
         $checkbox = $this->getTable()->getCell($this->getCheckboxName());
-        if (!$checkbox instanceof Table\Cell\Checkbox) {
+        if (!$checkbox instanceof Table\Cell\RowSelect) {
             throw new Table\Exception("Checkbox cell {$this->getCheckboxName()} not found in table.");
         }
         return $this;

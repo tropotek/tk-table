@@ -65,12 +65,9 @@ class OrderBy extends Text
         return parent::setTable($table);
     }
 
-    public function show(): ?Template
+    public function getCellValue(): string
     {
-        // This is the cell repeat
         $template = $this->getTemplate();
-
-        $this->setValue($this->getOnValue()->execute($this, $this->getValue()) ?? $this->getValue());
 
         $obj = $this->getRow()->getData();
         $rowIdx = $this->getRow()->getId();
@@ -79,7 +76,7 @@ class OrderBy extends Text
         if ($this->isIconOnly())
             $this->addCss('icon-only');
 
-        $this->setAttr('data-id', $obj->id);
+        $this->setAttr('data-id', $obj->getId());
 
         $this->setAttr('title', 'Click and drag to change order');
         $this->addCss('tk-orderBy');
@@ -101,11 +98,11 @@ JS;
         $upObj = $this->getTable()->getListItem($rowIdx-1);
         $dnObj = $this->getTable()->getListItem($rowIdx+1);
         if ($upObj) {
-            $upUrl = \Tk\Uri::create()->set($this->getTable()->makeInstanceKey('orderSwp'), $obj->id.'-'.$upObj->id);
+            $upUrl = \Tk\Uri::create()->set($this->getTable()->makeInstanceKey('orderSwp'), $obj->getId().'-'.$upObj->getId());
             $template->setAttr('upUrl', 'href', $upUrl);
         }
         if ($dnObj) {
-            $upUrl = \Tk\Uri::create()->set($this->getTable()->makeInstanceKey('orderSwp'), $obj->id.'-'.$dnObj->id);
+            $upUrl = \Tk\Uri::create()->set($this->getTable()->makeInstanceKey('orderSwp'), $obj->getId().'-'.$dnObj->getId());
             $template->setAttr('dnUrl', 'href', $upUrl);
         }
 
@@ -117,14 +114,7 @@ JS;
         }
         $this->setUrlProperty('');
 
-        $html = $this->getOnShow()->execute($this, $template->getVar('td')->nodeValue);
-        if ($html !== null) {
-            $template->insertHtml('td', $html);
-        }
-
-        $this->decorate($template);
-
-        return $template;
+        return '';
     }
 
     public function execute(Request  $request): void
@@ -151,7 +141,7 @@ JS;
     /**
      * Swap 2 object orderBy locations
      */
-    public function doOrderSwap(Request $request)
+    public function doOrderSwap(Request $request): void
     {
         $orderStr = $request[$this->getTable()->makeInstanceKey('orderSwp')];
         if (!preg_match('/([0-9]+)\-([0-9]+)/', $orderStr, $regs)) {
@@ -189,7 +179,7 @@ JS;
     /**
      * Swap 2 object orderBy locations
      */
-    public function doOrderUpdate(Request $request)
+    public function doOrderUpdate(Request $request): void
     {
         $mapperClass = $this->className . 'Map';
         /* @var Mapper $mapper */
@@ -239,7 +229,7 @@ JS;
      *   5 => 5
      * );
      */
-    public function orderUpdate(Mapper $mapper, array $updateArray)
+    public function orderUpdate(Mapper $mapper, array $updateArray): void
     {
         $property = $mapper->getDbMap()->getPropertyType($this->getOrderByName());
         if (!$property) {
@@ -258,7 +248,7 @@ JS;
     /**
      * Reset the order values to id values.
      */
-    public function resetOrder(Mapper $mapper)
+    public function resetOrder(Mapper $mapper): false|int|null
     {
         $property = $mapper->getDbMap()->getPropertyType($this->getOrderByName());
         if (!$property) {
@@ -273,7 +263,7 @@ JS;
     /**
      * Disable the URL for this cell
      */
-    public function setUrl(string|Uri $url): static
+    public function setUrl(null|string|Uri $url): static
     {
         return $this;
     }
