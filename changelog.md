@@ -1,5 +1,10 @@
 #CHANGELOG#
 
+Ver 8.0.8 [2023-08-09]:
+-------------------------------
+  - Update data mapper objects
+
+
 Ver 8.0.6 [2023-08-09]:
 -------------------------------
   - removed table map requirement
