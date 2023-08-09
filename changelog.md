@@ -1,5 +1,10 @@
 #CHANGELOG#
 
+Ver 8.0.6 [2023-08-09]:
+-------------------------------
+  - removed table map requirement
+
+
 Ver 8.0.4 [2023-07-16]:
 -------------------------------
   - Update Edit and manager interfaces
