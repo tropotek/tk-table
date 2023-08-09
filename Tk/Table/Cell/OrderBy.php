@@ -10,8 +10,10 @@ use Tk\Table;
 use Tk\Uri;
 
 /**
- * @todo: Maybe move this to the Bs lib with its required javascript
- * @todo: also add the columns action button too.
+ * @todo: Move this to the Bs lib with its required javascript ???
+ * @todo: Test this still works
+ *
+ *
  */
 class OrderBy extends Text
 {
