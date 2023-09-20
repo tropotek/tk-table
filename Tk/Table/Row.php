@@ -7,7 +7,6 @@ use Tk\Ui\Traits\CssTrait;
 use Dom\Renderer\Traits\RendererTrait;
 use Dom\Template;
 use Tk\Collection;
-use Tk\Db\Mapper\Model;
 use Tk\ObjectUtil;
 use Tk\Table;
 use Tk\Table\Cell\CellInterface;
