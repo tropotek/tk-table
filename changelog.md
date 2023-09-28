@@ -1,5 +1,10 @@
 #CHANGELOG#
 
+Ver 8.0.10 [2023-09-28]:
+-------------------------------
+  - Some template updates
+
+
 Ver 8.0.8 [2023-08-09]:
 -------------------------------
   - Update data mapper objects
