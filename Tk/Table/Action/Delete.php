@@ -162,7 +162,7 @@ class Delete extends Button
             if (in_array($keyValue, $selected) && !in_array($keyValue, $this->getExcludeIdList())) {
                 $propagate = true;
                 $r = $this->getOnDelete()->execute($this, $obj);
-                if ($r !== null && is_bool($r)) $propagate = $r;
+                if (is_bool($r)) $propagate = $r;
                 if ($propagate) {
                     $obj->delete();
                 }
@@ -179,7 +179,7 @@ class Delete extends Button
     {
 
         if (!$this->hasAttr('title'))
-            $this->setAttr('title', 'Delete Selected Records');
+            $this->setAttr('title', $this->getName() . ' Selected Records');
         if (!$this->hasAttr('data-confirm'))
             $this->setAttr('data-confirm', $this->getConfirmStr());
 
