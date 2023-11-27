@@ -43,6 +43,11 @@ class Pager extends Iface
      */
     protected $enablePageButtons = true;
 
+    /**
+     * @var bool
+     */
+    protected $isSmall = false;
+
 
 
     /**
@@ -214,6 +219,12 @@ class Pager extends Iface
         return $this;
     }
 
+    public function setSmall(bool $b): Pager
+    {
+        $this->isSmall = $b;
+        return $this;
+    }
+
     /**
      * show
      *
@@ -262,6 +273,9 @@ class Pager extends Iface
 
             // TODO: can cause conflicts with javasacript, keep testing, remove if required
 //            $pageUrl->setFragment(substr($this->makeInstanceKey(''), 0, -1));
+            if ($this->isSmall) {
+                $template->addCss('pager', 'pagination-sm');
+            }
 
             $pageUrl->remove($this->makeInstanceKey(self::PARAM_OFFSET));
             if ($this->enablePageButtons) {
