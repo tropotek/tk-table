@@ -1,7 +1,6 @@
 <?php
 namespace Tk\Table\Action;
 
-
 use Tk\Callback;
 
 /**
@@ -219,26 +218,32 @@ class Delete extends Button
         $js = <<<JS
 jQuery(function($) {
   var init = function () {
+    var form = $(this);
+    var table = form.closest('.tk-table');
+    
     function updateBtn(btn) {
       var cbName = btn.data('cb-name');
-      if(btn.closest('.tk-table').find('.table-body input[name^="'+cbName+'"]:checked').length) {
+      if($('.table-body input[name^="'+cbName+'"]:checked', table).length) {
         btn.removeAttr('disabled');
       } else {
         btn.attr('disabled', 'disabled');
       }
     }
     
-    $('.tk-action-delete').each(function () {
+    $('.tk-action-delete', form).each(function () {
       var btn = $(this);
       var cbName = btn.data('cb-name');
+      
+      table.on('change', '.table-body input[name^="'+cbName+'"]', function () { updateBtn(btn); });
+      updateBtn(btn);
+      
       btn.on('click', function () {
-        var selected = $(this).closest('.tk-table').find('.table-body input[name^="'+cbName+'"]:checked');
+        var selected = $('.table-body input[name^="'+cbName+'"]:checked', table);
         return selected.length > 0;
       });
-      btn.closest('.tk-table').on('change', '.table-body input[name^="'+cbName+'"]', function () { updateBtn(btn); });
-      updateBtn(btn);
     });
   }
+  
   $('.tk-table form').on('init', document, init).each(init);
 });
 JS;
