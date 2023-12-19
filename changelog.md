@@ -1,5 +1,15 @@
 #CHANGELOG#
 
+Ver 3.2.26 [2023-12-19]:
+-------------------------------
+  - Implemented company and contact objects and tables
+  - Remove delete from user rename to enable/disable
+  - Tagging and releasing branch `3.2` with version `3.2.24`.
+  - Tagging and releasing branch `3.2` with version `3.2.22`.
+  - Added rating average to company export table
+  - Tagging and releasing branch `3.2` with version `3.2.20`.
+
+
 Ver 3.2.24 [2023-11-18]:
 -------------------------------
   - Tagging and releasing branch `3.2` with version `3.2.22`.
