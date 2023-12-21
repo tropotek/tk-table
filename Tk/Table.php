@@ -280,7 +280,7 @@ class Table extends Element implements InstanceKey
         return $this;
     }
 
-    public function getTool(string $defaultOrderBy = '', int $defaultLimit = 0): Tool
+    public function getTool(string $defaultOrderBy = '', int $defaultLimit = 25): Tool
     {
         return $this->getTableSession()->getTool($defaultOrderBy, $defaultLimit);
     }
