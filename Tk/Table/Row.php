@@ -3,7 +3,6 @@ namespace Tk\Table;
 
 use Dom\Renderer\RendererInterface;
 use Tk\Ui\Traits\AttributesTrait;
-use Tk\Ui\Traits\CssTrait;
 use Dom\Renderer\Traits\RendererTrait;
 use Dom\Template;
 use Tk\Collection;
@@ -15,7 +14,6 @@ class Row implements RendererInterface
 {
 
     use AttributesTrait;
-    use CssTrait;
     use RendererTrait;
 
 

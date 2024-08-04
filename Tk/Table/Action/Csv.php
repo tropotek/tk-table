@@ -4,17 +4,16 @@ namespace Tk\Table\Action;
 use Dom\Template;
 use JetBrains\PhpStorm\NoReturn;
 use Symfony\Component\HttpFoundation\Request;
-use Tk\Db\Mapper\Model;
 use Tk\Db\Mapper\Result;
-use Tk\Db\Pdo;
 use Tk\ObjectUtil;
 use Tk\Table;
 use \Tk\Table\Cell;
+use Tt\Db;
 
 class Csv extends Button
 {
 
-    protected Pdo $db;
+    protected Db $db;
 
     protected string $checkboxName = 'id';
 
@@ -72,6 +71,9 @@ class Csv extends Button
                 }
             }
         } else { // Export all rows
+            // TODO: re-running the query is not going to work anymore,
+            //       need to locate the query and bind params from somewhere else...
+
             if (is_array($list)) {
                 $sql = $this->getDb()->getLastQuery();
                 if (preg_match('/ LIMIT /i', $sql)) {
@@ -90,10 +92,12 @@ class Csv extends Button
 
                 $stmt = $this->getDb()->prepare($sql);
                 $stmt->execute($st->getBindParams() ?? []);
+                $rows = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+
                 if ($list->getMapper()) {
-                    $fullList = Result::createFromMapper($list->getMapper(), $stmt);
+                    $fullList = Result::createFromMapper($list->getMapper(), $rows);
                 } else {
-                    $fullList = Result::create($stmt);
+                    $fullList = Result::create($rows);
                 }
             }
         }
@@ -145,7 +149,7 @@ class Csv extends Button
         return $this;
     }
 
-    public function getDb(): Pdo
+    public function getDb(): Db
     {
         return $this->db;
     }

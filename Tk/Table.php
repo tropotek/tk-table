@@ -1,19 +1,20 @@
 <?php
 namespace Tk;
 
-use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+use Symfony\Component\HttpFoundation\Request;
 use Tk\Table\Action\ActionInterface;
 use Tk\Traits\EventDispatcherTrait;
-use Tk\Ui\Element;
-use Symfony\Component\HttpFoundation\Request;
-use Tk\Db\Mapper\Result;
-use Tk\Db\Tool;
 use Tk\Table\Event\TableEvent;
 use Tk\Table\TableBag;
 use Tk\Table\TableEvents;
 use Tk\Table\TableSession;
 use Tk\Table\Cell\CellInterface;
 use Tk\Table\Row;
+use Tk\Ui\Element;
+
+// todo remove these imports
+use Tk\Db\Mapper\Result;
+use Tk\Db\Tool;
 
 /**
  *  Add ?rts={id} to the URL request to reset this table session.
@@ -45,7 +46,7 @@ class Table extends Element implements InstanceKey
 
     protected Collection $actions;
 
-    protected null|array|Result $list = null;
+    protected array|Result $list = [];
 
 
     public function __construct(string $tableId = '')
@@ -113,9 +114,9 @@ class Table extends Element implements InstanceKey
     /**
      * Get the data list
      */
-    public function getList(): null|array|Result
+    public function getList(): array|Result
     {
-        return $this->list;
+        return $this->list ?? [];
     }
 
     /**
@@ -193,7 +194,6 @@ class Table extends Element implements InstanceKey
     {
         return $this->row;
     }
-
 
     /**
      * @return Collection|CellInterface[]
