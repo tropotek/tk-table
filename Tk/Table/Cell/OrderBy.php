@@ -8,10 +8,12 @@ use Tk\Db\Mapper\Mapper;
 use Tk\Db\Mapper\Model;
 use Tk\Table;
 use Tk\Uri;
+use Tt\Db;
 
 /**
  * @todo: Move this to the Bs lib with its required javascript ???
  * @todo: Test this still works
+ * @todo: refactor all queries to use bew Db methods
  *
  *
  */
@@ -207,15 +209,15 @@ JS;
 
         $pk = $mapper->getPrimaryType()->getKey();
         $query = sprintf('UPDATE %s SET %s = %s WHERE %s = %d',
-            $mapper->getDb()->quoteParameter($mapper->getTable()),
-            $mapper->getDb()->quoteParameter($property->getKey()), (int)$toObj->{$property->getProperty()},
-            $mapper->getDb()->quoteParameter($pk), (int)$fromObj->$pk);
-        $mapper->getDb()->exec($query);
+            $this->quoteParameter($mapper->getTable()),
+            $this->quoteParameter($property->getKey()), (int)$toObj->{$property->getProperty()},
+            $this->quoteParameter($pk), (int)$fromObj->$pk);
+        Db::execute($query);
         $query = sprintf('UPDATE %s SET %s = %s WHERE %s = %d',
-            $mapper->getDb()->quoteParameter($mapper->getTable()),
-            $mapper->getDb()->quoteParameter($property->getKey()), (int)$fromObj->{$property->getProperty()},
-            $mapper->getDb()->quoteParameter($pk), (int)$toObj->$pk);
-        $mapper->getDb()->exec($query);
+            $this->quoteParameter($mapper->getTable()),
+            $this->quoteParameter($property->getKey()), (int)$fromObj->{$property->getProperty()},
+            $this->quoteParameter($pk), (int)$toObj->$pk);
+        Db::execute($query);
         return 2;
     }
 
@@ -240,10 +242,11 @@ JS;
         $pk = $mapper->getPrimaryType()->getKey();
         foreach ($updateArray as $order => $id) {
             $query = sprintf('UPDATE %s SET %s = %s WHERE %s = %d',
-                $mapper->getDb()->quoteParameter($mapper->getTable()),
-                $mapper->getDb()->quoteParameter($property->getKey()), (int)$order,
-                $mapper->getDb()->quoteParameter($pk), (int)$id);
-            $mapper->getDb()->exec($query);
+                $this->quoteParameter($mapper->getTable()),
+                $this->quoteParameter($property->getKey()), (int)$order,
+                $this->quoteParameter($pk), (int)$id);
+            Db::execute($query);
+            //$mapper->getDb()->exec($query);
         }
     }
 
@@ -257,9 +260,10 @@ JS;
             return null;
         }
         $pk = $mapper->getPrimaryType()->getKey();
-        $query = sprintf('UPDATE %s SET %s = %s', $mapper->getDb()->quoteParameter($mapper->getTable()),
-            $mapper->getDb()->quoteParameter($property->getKey()), $mapper->getDb()->quoteParameter($pk));
-        return $mapper->getDb()->exec($query);
+        $query = sprintf('UPDATE %s SET %s = %s', $this->quoteParameter($mapper->getTable()),
+            $this->quoteParameter($property->getKey()), $this->quoteParameter($pk));
+        return Db::execute($query);
+        //return $mapper->getDb()->exec($query);
     }
 
     /**
@@ -268,6 +272,14 @@ JS;
     public function setUrl(null|string|Uri $url): static
     {
         return $this;
+    }
+    /**
+     * Quote a parameter or table name based on the quote system
+     * if the param exists in the reserved words list
+     */
+    public function quoteParameter(string $str): string
+    {
+        return  sprintf('`%s`', $str);
     }
 
 }

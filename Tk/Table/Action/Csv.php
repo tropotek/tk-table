@@ -13,8 +13,6 @@ use Tt\Db;
 class Csv extends Button
 {
 
-    protected Db $db;
-
     protected string $checkboxName = 'id';
 
     protected string $filename = '';
@@ -29,7 +27,6 @@ class Csv extends Button
 
     public function __construct(string $name = 'csv', string $checkboxName = 'id', string $icon = 'fa fa-list-alt')
     {
-        $this->db = $this->getFactory()->getDb();
         parent::__construct($name, $icon);
         $this->setCheckboxName($checkboxName);
         $this->addCss('tk-action-csv no-loader');
@@ -75,22 +72,23 @@ class Csv extends Button
             //       need to locate the query and bind params from somewhere else...
 
             if (is_array($list)) {
-                $sql = $this->getDb()->getLastQuery();
+                $sql = Db::getLastQuery();
                 if (preg_match('/ LIMIT /i', $sql)) {
                     $sql = substr($sql, 0, strrpos($sql, 'LIMIT'));
                 }
-                $stmt = $this->getDb()->prepare($sql);
+                $stmt = Db::getPdo()->prepare($sql);
                 $stmt->execute();
                 //$fullList = $stmt->fetchAll(\PDO::FETCH_ASSOC);
                 $fullList = $stmt->fetchAll();
             } else if ($list instanceof Result) {
-                $st = $list->getStatement();
+               // $st = $list->getStatement();
+                $st = Db::getLastStatement();
                 $sql = $st->queryString;
                 if (preg_match('/ LIMIT /i', $sql)) {
                     $sql = substr($sql, 0, strrpos($sql, 'LIMIT'));
                 }
 
-                $stmt = $this->getDb()->prepare($sql);
+                $stmt = Db::getPdo()->prepare($sql);
                 $stmt->execute($st->getBindParams() ?? []);
                 $rows = $stmt->fetchAll(\PDO::FETCH_ASSOC);
 
@@ -147,11 +145,6 @@ class Csv extends Button
     {
         $this->checkboxName = $checkboxName;
         return $this;
-    }
-
-    public function getDb(): Db
-    {
-        return $this->db;
     }
 
     public function getFilename(): string
