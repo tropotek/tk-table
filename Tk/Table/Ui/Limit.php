@@ -93,7 +93,6 @@ jQuery(function($) {
         location.search = searchParams.toString();
         return false;
     });
-
 });
 JS;
         $template->appendJs($js);

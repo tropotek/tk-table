@@ -8,7 +8,6 @@ use Tk\Db\Mapper\Result;
 use Tk\Table\Action\ActionInterface;
 use Tk\Table\Action\Link;
 use Tk\Table\Cell\CellInterface;
-use Tk\Table\Row;
 use Tk\Table\Ui\Limit;
 use Tk\Table\Ui\Pager;
 use Tk\Table\Ui\Results;
