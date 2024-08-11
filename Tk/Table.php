@@ -183,11 +183,11 @@ class Table extends Element implements InstanceKey
 
     /**
      * Create request keys with prepended string
-     * returns: `{id}-{$key}`
+     * returns: `{id}_{$key}`
      */
     public function makeInstanceKey($key): string
     {
-        return $this->getId() . '-' . $key;
+        return $this->getId() . '_' . $key;
     }
 
     public function getRow(): Row
