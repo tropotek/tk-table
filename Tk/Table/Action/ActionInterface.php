@@ -65,8 +65,7 @@ abstract class ActionInterface extends Element implements DisplayInterface
      */
     public function isTriggered(): bool
     {
-        $request = $this->getRequest();
-        return $request->request->has($this->getTable()->makeInstanceKey($this->getName()));
+        return isset($_POST[$this->getTable()->makeInstanceKey($this->getName())]);
     }
 
     public function getName(): string
