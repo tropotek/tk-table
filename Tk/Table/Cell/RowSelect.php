@@ -82,7 +82,7 @@ jQuery(function($) {
 
   };
   init();
-  $('form').on(EVENT_INIT_FORM, document, init).each(init);
+  //$('form').on(EVENT_INIT_FORM, document, init).each(init);
 
   // TODO: See if we need to implemnt this for dynamic html updates
   //$('.tk-table .tk-table-form').each(init);
