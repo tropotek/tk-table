@@ -71,23 +71,14 @@ class RowSelect extends CellInterface
         return <<<JS
 jQuery(function($) {
 
-  let init = function () {
-    let form = $(this);
-    $('.tk-tcb-head', form).on('change', function(e) {
+  tkRegisterInit(function () {
+    $('.tk-table .tk-tcb-head', this).on('change', function(e) {
       let cb = $(this);
       let name = cb.attr('name').match(/([a-zA-Z0-9]+)_all/i)[1];
       let list = $('.table-body input[name^=\''+name+'\']', form);
       list.prop('checked', cb.prop('checked')).trigger('change');
     }).trigger('change');
-
-  };
-  init();
-  //$('form').on(EVENT_INIT_FORM, document, init).each(init);
-
-  // TODO: See if we need to implemnt this for dynamic html updates
-  //$('.tk-table .tk-table-form').each(init);
-  // $('.tk-table').on('tk-table-update', '.tk-table-form', init);
-  // $('.tk-table .tk-table-form').trigger('tk-table-update');
+  });
 
 });
 JS;
