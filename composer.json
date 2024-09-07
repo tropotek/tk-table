@@ -20,11 +20,11 @@
     }
   },
   "require": {
-    "ttek/tk-framework": "~8.0.0"
+    "ttek/tk-framework": "~8.2.0"
   },
   "extra": {
     "branch-alias": {
-      "dev-master": "8.0.x-dev"
+      "dev-master": "8.2.x-dev"
     }
   }
 }
