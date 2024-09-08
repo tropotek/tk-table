@@ -1,149 +1,118 @@
 <?php
 namespace Tk\Table\Action;
 
-use Dom\Template;
-use JetBrains\PhpStorm\NoReturn;
-use Symfony\Component\HttpFoundation\Request;
-use Tk\ObjectUtil;
-use Tk\Table;
-use \Tk\Table\Cell;
-use Tk\Db;
+use Tk\CallbackCollection;
+use Tk\Uri;
+use Tk\Table\Action;
+use Tk\Table\Cell;
+use Tk\Table\Cell\RowSelect;
 
-class Csv extends Button
+/**
+ *
+ * NOTE: This Action does not call the onExecute() or onShow() callback queues
+ */
+class Csv extends Select
 {
-
-    protected string $checkboxName = 'id';
-
-    protected string $filename = '';
-
-    protected array $excluded = ['actions'];
-
-    protected array $excludedClasses = [
-        Cell\RowSelect::class,
-        Cell\OrderBy::class,
+    const EXCLUDED_CELLS = [
+        RowSelect::class,
     ];
 
+    protected string    $filename = '';
+    protected array     $excluded = [];
 
-    public function __construct(string $name = 'csv', string $checkboxName = 'id', string $icon = 'fa fa-list-alt')
+
+    public function __construct(string $name)
     {
-        parent::__construct($name, $icon);
-        $this->setCheckboxName($checkboxName);
-        $this->addCss('tk-action-csv no-loader');
+        parent::__construct($name);
+        $this->setAttr('title', 'Export Records');
+        $this->removeAttr('disabled');
     }
 
-    public function execute(Request $request): void
+    public static function create(RowSelect $rowSelect, string $name = 'export', $icon = 'fa fa-fw fa-list-alt'): static
     {
-        parent::execute($request);
-        if (!$this->isTriggered()) return;
-
-        $this->doCsv($request);
+        $obj = parent::create($rowSelect, $name, $icon);
+        $obj->setConfirmStr('Export selected records to CSV?');
+        return $obj;
     }
 
-    #[NoReturn] public function doCsv(Request $request): void
+    public function execute(): void
     {
-        ini_set('max_execution_time', 0);
+        $val = $this->getTable()->makeRequestKey($this->getName());
+        $this->setActive(($_POST[$this->getName()] ?? '') == $val);
+        if (!$this->isActive()) return;
 
-        $file = $this->getTable()->getId() . '_' . date('Ymd') . '.csv';
-        if ($this->getFilename()) {
-            $file = $this->getFilename() . '_' . date('Ymd') . '.csv';
+        $selected = $_POST[$this->rowSelect->getName()] ?? [];
+        $rows = $this->getOnCsv()->execute($this, $selected);
+        if (!count($rows)) {
+            Uri::create()->redirect();
         }
 
-        /** @var Table\Cell\RowSelect $checkbox */
-        $checkbox = $this->getTable()->getCell($this->getCheckboxName());
-
-        // Get list with no limit...
-        $list = $this->getTable()->getList();
-        $fullList = $list;
-        if (count($checkbox->getSelected())) {  // Only export selected rows
-            $fullList = [];
-            foreach($list as $obj) {
-                if (is_array($obj)) {
-                    $keyValue = $obj[$this->getCheckboxName()] ?? '';
-                } else {
-                    $keyValue = ObjectUtil::getPropertyValue($obj, $this->getCheckboxName());
-                }
-                if ($keyValue && $checkbox->isSelected($keyValue)) {
-                    $fullList[] = $obj;
-                }
-            }
-        } else { // Export all rows
-            // TODO: re-running the query is not going to work anymore,
-            //       need to locate the query and bind params from somewhere else...
-
-            if (is_array($list)) {
-                $sql = Db::getLastQuery();
-                if (preg_match('/ LIMIT /i', $sql)) {
-                    $sql = substr($sql, 0, strrpos($sql, 'LIMIT'));
-                }
-                $stmt = Db::getPdo()->prepare($sql);
-                $stmt->execute();
-                //$fullList = $stmt->fetchAll(\PDO::FETCH_ASSOC);
-                $fullList = $stmt->fetchAll();
-            } else if ($list instanceof Result) {
-               // $st = $list->getStatement();
-                $st = Db::getLastStatement();
-                $sql = $st->queryString;
-                if (preg_match('/ LIMIT /i', $sql)) {
-                    $sql = substr($sql, 0, strrpos($sql, 'LIMIT'));
-                }
-
-                $stmt = Db::getPdo()->prepare($sql);
-                $stmt->execute($st->getBindParams() ?? []);
-                $rows = $stmt->fetchAll(\PDO::FETCH_ASSOC);
-
-                if ($list->getMapper()) {
-                    $fullList = Result::createFromMapper($list->getMapper(), $rows);
-                } else {
-                    $fullList = Result::create($rows);
-                }
-            }
+        $filename = $this->getTable()->getId() . '_' . date('Ymd') . '.csv';
+        if ($this->getFilename()) {
+            $filename = $this->getFilename() . '_' . date('Ymd') . '.csv';
         }
 
         // Output the CSV data
         $out = fopen('php://output', 'w');
         header('Content-Type: application/octet-stream');
-        header('Content-Disposition: attachment; filename="' . $file . '"');
+        header('Content-Disposition: attachment; filename="' . $filename . '"');
         header('Content-Transfer-Encoding: binary');
 
         $arr = [];
         // Write cell labels to first line of csv...
+            /* @var $cell Cell */
         foreach ($this->getTable()->getCells() as $cell) {
             if ($this->isExcluded($cell)) continue;
-            $arr[] = $cell->getname();
+            $arr[] = $cell->getHeader();
         }
         fputcsv($out, $arr);
-        if ($fullList) {
-            foreach ($fullList as $i => $rowData) {
-                $row = Table\Row::createRow($this->getTable(), $rowData, $i+1);
-                $csvData = [];
-                /* @var $cell Cell\CellInterface */
-                foreach ($row->getCells() as $cell) {
-                    if ($this->isExcluded($cell)) continue;
-                    $csvData[$cell->getLabel()] = $cell->getCellValue();
-                }
-                fputcsv($out, $csvData);
+
+        foreach ($rows as $i => $row) {
+            $csvData = [];
+            /* @var $cell Cell */
+            foreach ($this->getTable()->getCells() as $cell) {
+                if ($this->isExcluded($cell)) continue;
+                $csvData[$cell->getName()] = $cell->getValue($row);
             }
+            fputcsv($out, $csvData);
         }
 
         fclose($out);
         exit;
     }
 
-    public function show(): ?Template
+    /**
+     * @callable function (\Tk\Table\Action\Delete $action, $obj): ?bool { }
+     */
+    public function addOnCsv(callable $callable, int $priority = CallbackCollection::DEFAULT_PRIORITY): static
     {
-        $this->setAttr('title', 'Export records as a CSV file.');
-        return parent::show();
-    }
-
-    public function getCheckboxName(): string
-    {
-        return $this->checkboxName;
-    }
-
-    public function setCheckboxName(string $checkboxName): static
-    {
-        $this->checkboxName = $checkboxName;
+        $this->getOnSelect()->append($callable, $priority);
         return $this;
+    }
+
+    public function getOnCsv(): CallbackCollection
+    {
+        return $this->getOnSelect();
+    }
+
+    public function getExcluded(): array
+    {
+        return $this->excluded;
+    }
+
+    /**
+     * An array of cell names to exclude from the CSV data
+     */
+    public function setExcluded(array $excluded): Csv
+    {
+        $this->excluded = $excluded;
+        return $this;
+    }
+
+    private function isExcluded(Cell $cell): bool
+    {
+        if (in_array(get_class($cell), self::EXCLUDED_CELLS)) return true;
+        return in_array($cell->getName(), $this->excluded);
     }
 
     public function getFilename(): string
@@ -151,31 +120,9 @@ class Csv extends Button
         return $this->filename;
     }
 
-    public function setFilename(string $filename): static
+    public function setFilename(string $filename): Csv
     {
         $this->filename = $filename;
-        return $this;
-    }
-
-    private function isExcluded(Cell\CellInterface $cell): bool
-    {
-        if (in_array(get_class($cell), $this->excludedClasses)) return true;
-        return in_array($cell->getName(), $this->excluded);
-    }
-
-    public function addExcluded(string $cellName): static
-    {
-        $this->excluded[] = $cellName;
-        return $this;
-    }
-
-    /**
-     * The excluded cell class array or reset the array if nothing passed
-     * Eg:  array('cellName1', 'cellName2');
-     */
-    public function setExcluded(array $array = []): static
-    {
-        $this->excluded = $array;
         return $this;
     }
 

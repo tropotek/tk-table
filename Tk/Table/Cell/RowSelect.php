@@ -1,116 +1,36 @@
 <?php
 namespace Tk\Table\Cell;
 
-use Dom\Template;
-use Symfony\Component\HttpFoundation\Request;
-use Tk\Uri;
+use Tk\Table\Cell;
 
-class RowSelect extends CellInterface
+class RowSelect extends Cell
 {
-    /**
-     * If true the checkbox is set to checked if the property value evaluates to true
-     */
-    protected bool $useValue = false;
+    protected string $property = '';
 
-    /**
-     * selected values are only available on the action submit event
-     */
-    protected array $selected = [];
-
-
-    public function __construct(string $property)
+    public function __construct(string $name, string $property = '')
     {
-        parent::__construct($property);
-        $this->setLabel('');
-        $this->addCss('tk-tcb-cell text-center');
+        parent::__construct($name);
+        $this->property = $property ?: $name;
+
+        $this->addCss('text-center');
+        $this->setHeader(sprintf('<input type="checkbox" name="%s_all" title="Select All" class="tk-tcb-head" />', $name));
     }
 
-    public function execute(Request $request): void
+    public static function create(string $name, string $property = ''): static
     {
-        if ($request->request->has($this->getName())) {
-            $this->selected = $request->get($this->getName());
-        }
+        return new static($name, $property);
     }
 
-    public function getCellValue(): string
+    public function getValue(array|object $row): string
     {
-        $value = $this->getValue();
-        if (is_null($value)) return '';
-
-        $checked = '';
-        if ($this->useValue && ($value == $this->getName() || strtolower($value) === 'true' || strtolower($value) === 'yes' || $value == 1)) {
-            $checked = ' checked="checked"';
-        }
-
-        return sprintf('<input type="checkbox" name="%s[]" value="%s" class="tk-tcb" title="%s: %s" %s/>',
-            $this->getName(),
-            htmlentities($value),
-            $this->getName(),
-            htmlentities($value),
-            $checked);
+        if (is_array($row)) $row = (object)$row;
+        $id = $row->{$this->getProperty()} ?? '';
+        return sprintf('<input type="checkbox" name="%s[]" value="%s" class="tk-tcb"/>', $this->getName(), e($id));
     }
 
-    public function showHeader(): ?Template
+    public function getProperty(): string
     {
-        if ($this->getLabel()) return parent::showHeader();
-
-        // This is the cell repeat
-        $template = $this->getTemplate();
-        if (!$this->getRow()->isHead()) return $template;
-
-        $template->appendJs($this->getJs());
-
-        $html = sprintf('<span><input type="checkbox" name="%s_all" title="Select All" class="tk-tcb-head" /></span>', $this->getName());
-
-        $template->insertHtml('td', $html);
-        return $template;
-    }
-
-    protected function getJs(): string
-    {
-        return <<<JS
-jQuery(function($) {
-
-  tkRegisterInit(function () {
-    $('.tk-table .tk-tcb-head', this).on('change', function(e) {
-      let cb = $(this);
-      let name = cb.attr('name').match(/([a-zA-Z0-9]+)_all/i)[1];
-      let list = $('.table-body input[name^=\''+name+'\']', form);
-      list.prop('checked', cb.prop('checked')).trigger('change');
-    }).trigger('change');
-  });
-
-});
-JS;
-    }
-
-    public function getSelected(): array
-    {
-        return $this->selected;
-    }
-
-    public function isSelected(string $value): bool
-    {
-        return in_array($value, $this->getSelected());
-    }
-
-    public function isUseValue(): bool
-    {
-        return $this->useValue;
-    }
-
-    public function setUseValue(bool $useValue): static
-    {
-        $this->useValue = $useValue;
-        return $this;
-    }
-
-    /**
-     * Disable the URL for this cell
-     */
-    public function setUrl(null|string|Uri $url): static
-    {
-        return $this;
+        return $this->property;
     }
 
 }

@@ -1,158 +1,56 @@
 <?php
 namespace Tk;
 
-use Symfony\Component\HttpFoundation\Request;
-use Tk\Table\Action\ActionInterface;
-use Tk\Traits\EventDispatcherTrait;
-use Tk\Table\Event\TableEvent;
-use Tk\Table\TableBag;
-use Tk\Table\TableEvents;
-use Tk\Table\TableSession;
-use Tk\Table\Cell\CellInterface;
-use Tk\Table\Row;
-use Tk\Ui\Element;
+use Tk\Ui\Attributes;
+use Tk\Ui\Traits\AttributesTrait;
+use Tk\Table\Action;
+use Tk\Table\Cell;
 
-// todo remove these imports
-use Tk\Db\Mapper\Result;
-use Tk\Db\Tool;
-
-/**
- *  Add ?rts={id} to the URL request to reset this table session.
- *  And ?rts=rts to reset all table sessions on the page
- *
- */
-class Table extends Element implements InstanceKey
+class Table
 {
-    use EventDispatcherTrait;
+    use AttributesTrait;
 
-    /**
-     * This is the query string to set to reset the table session
-     */
-    const RESET_TABLE = 'rts';
+    const PARAM_LIMIT    = 'limit';
+    const PARAM_OFFSET   = 'offset';
+    const PARAM_PAGE     = 'page';
+    const PARAM_TOTAL    = 'total';
+    const PARAM_ORDERBY  = 'orderBy';
 
-    protected string $id = '';
+    protected string     $id        = '';
+    protected int        $limit     = 0;
+    protected int        $page      = 1;
+    protected string     $orderBy   = '';
+    protected int        $totalRows = 0;
 
-    /**
-     * A row to set the defaults and will be cloned
-     * on each row render
-     */
-    private Row $row;
-
-    /**
-     * The default cells that will be cloned
-     * on each row render
-     */
     protected Collection $cells;
-
     protected Collection $actions;
+    protected Attributes $rowAttrs;
+    protected Attributes $headerAttrs;
 
-    protected array|Result $list = [];
 
-
-    public function __construct(string $tableId = '')
+    public function __construct(string $tableId = 'tbl')
     {
-        $this->row     = new Row($this);
-        $this->cells   = new Collection();
-        $this->actions = new Collection();
-
-        $this->setDispatcher($this->getFactory()->getEventDispatcher());
-
-        if (!$tableId) {
-            $uri = \Tk\Uri::create();
-            $uri = str_replace('.'.$uri->getExtension(), '', $uri->basename());
-            $tableId = trim(strtolower(preg_replace('/[A-Z]/', '-$0', $uri . \Tk\ObjectUtil::basename(get_class($this)) )), '-');
-        }
+        $this->rowAttrs    = new Attributes();
+        $this->headerAttrs = new Attributes();
+        $this->cells       = new Collection();
+        $this->actions     = new Collection();
         $this->setId($tableId);
     }
 
     /**
-     * Execute any Table and cell request responses
+     * Execute table actions
      */
-    public function execute(Request $request): static
+    public function execute(): static
     {
-        /** @var CellInterface $cell */
-        foreach ($this->getCells() as $cell) {
-            $cell->execute($request);
-        }
-
-        /* @var ActionInterface $action */
+        /* @var Action $action */
         foreach ($this->getActions() as $action) {
-            $action->init();
-            $action->execute($request);
+            $action->execute();
         }
 
-        if ($request->query->has(self::RESET_TABLE) && $request->query->has(self::RESET_TABLE) == $this->getId()) {
-            $this->resetTableSession();
-            \Tk\Uri::create()->remove(self::RESET_TABLE)->redirect();
-        }
-        $this->getDispatcher()?->dispatch(new TableEvent($this), TableEvents::TABLE_EXECUTE);
-
-        return $this;
-    }
-
-    /**
-     * Set the data list
-     */
-    public function setList(array|Result $list, ?int $rowTotal = null): static
-    {
-        $this->list = $list;
-        if (!$rowTotal) {
-            $rowTotal = count($list);
-            if ($list instanceof Result) $rowTotal = $list->countAll();
-        }
-        $this->getTableSession()->setRowTotal($rowTotal);
-
-        // TODO: Not sure if this should happen here or should it be called manually
-        //       See how this goes over time
-        if ($list instanceof Result) $this->autofillOrderBy();
-
-        $this->getDispatcher()?->dispatch(new TableEvent($this), TableEvents::TABLE_INIT);
-
-        return $this;
-    }
-
-    /**
-     * Get the data list
-     */
-    public function getList(): array|Result
-    {
-        return $this->list ?? [];
-    }
-
-    /**
-     * get a single list item from the array
-     */
-    public function getListItem(int $idx): mixed
-    {
-        $list = $this->getList();
-        if ($list instanceof Result) {
-            return $list->get($idx);
-        }
-        if (isset($list[$idx])) return $list[$idx];
-        return null;
-    }
-
-    public function autofillOrderBy(null|array|Result $list = null): static
-    {
-        $list = $list ?? $this->getList();
-        if (!$list) throw new \Tk\Table\Exception('Cannot autofill orderBy names without setting the list first.');
-
-        if ($list instanceof Result) {
-            $dbMap = $list->getMapper()->getDbMap();
-            // Auto populate orderBy fields
-            /** @var CellInterface $cell */
-            foreach ($this->getCells() as $cell) {
-                if (!$cell->getOrderByName()) {
-                    $cell->setOrderByName($dbMap->getPropertyType($cell->getName())?->getKey() ?? '');
-                }
-            }
-        } else {
-            /** @var CellInterface $cell */
-            foreach ($this->getCells() as $cell) {
-                if (!$cell->getOrderByName()) {
-                    $cell->setOrderByName($cell->getName());
-                }
-            }
+        // get the order by value from the request (if any)
+        $orderByKey = $this->makeRequestKey(self::PARAM_ORDERBY);
+        if (isset($_REQUEST[$orderByKey])) {
+            $this->setOrderBy(trim($_REQUEST[$orderByKey]));
         }
 
         return $this;
@@ -165,14 +63,13 @@ class Table extends Element implements InstanceKey
     {
         static $instances = [];
         if ($this->getId()) return $this;
-        if (!isset($instances[$id])) {
-            $instances[$id] = 0;
-        } else {
+        if (isset($instances[$id])) {
             $instances[$id]++;
+        } else {
+            $instances[$id] = 0;
         }
-        if ($instances[$id] > 0) $id = $id.$instances[$id];
+        if ($instances[$id] > 0) $id = $instances[$id].$id;
         $this->id = $id;
-        $this->setAttr('id', $this->getId());
         return $this;
     }
 
@@ -181,44 +78,79 @@ class Table extends Element implements InstanceKey
         return $this->id;
     }
 
-    /**
-     * Create request keys with prepended string
-     * returns: `{id}_{$key}`
-     */
-    public function makeInstanceKey($key): string
+    public function getOrderBy(): string
     {
-        return $this->getId() . '_' . $key;
+        return $this->orderBy;
     }
 
-    public function getRow(): Row
+    public function setOrderBy(string $orderBy): Table
     {
-        return $this->row;
+        $this->orderBy = $orderBy;
+        return $this;
     }
 
-    /**
-     * @return Collection|CellInterface[]
-     */
+    public function getRowAttrs(): Attributes
+    {
+        return $this->rowAttrs;
+    }
+
+    public function setRowAttrs(Attributes $rowAttrs): Table
+    {
+        $this->rowAttrs = $rowAttrs;
+        return $this;
+    }
+
+    public function getHeaderAttrs(): Attributes
+    {
+        return $this->headerAttrs;
+    }
+
+    public function getTotalRows(): int
+    {
+        return $this->totalRows;
+    }
+
+    public function setTotalRows(int $totalRows): Table
+    {
+        $this->totalRows = ($totalRows < 0) ? 0 : $totalRows;
+        return $this;
+    }
+
+    public function getLimit(): int
+    {
+        return $this->limit;
+    }
+
+    public function setLimit(int $limit): Table
+    {
+        $this->limit = ($limit < 0) ? 0 : $limit;
+        return $this;
+    }
+
+    public function getPage(): int
+    {
+        return $this->page;
+    }
+
+    public function setPage(int $page): Table
+    {
+        $this->page = ($page < 1) ? 1 : $page;
+        return $this;
+    }
+
+    public function getOffset(): int
+    {
+        return $this->getLimit() * ($this->getPage()-1);
+    }
+
     public function getCells(): Collection
     {
         return $this->cells;
     }
 
-    public function appendCell(CellInterface $cell, ?string $refName = null): CellInterface
+    public function getCell(string $name): ?Cell
     {
-        if ($this->getCells()->has($cell->getName())) {
-            throw new \Tk\Table\Exception("Cell with name '{$cell->getName()}' already exists.");
-        }
-        $cell->setTable($this);
-        return $this->getCells()->append($cell->getName(), $cell, $refName);
-    }
-
-    public function prependCell(CellInterface $cell, ?string $refName = null)
-    {
-        if ($this->getCells()->has($cell->getName())) {
-            throw new \Tk\Table\Exception("Cell with name '{$cell->getName()}' already exists.");
-        }
-        $cell->setTable($this);
-        return $this->getCells()->prepend($cell->getName(), $cell, $refName);
+        return $this->getCells()->get($name);
     }
 
     public function removeCell($cellName): static
@@ -227,33 +159,38 @@ class Table extends Element implements InstanceKey
         return $this;
     }
 
-    public function getCell(string $name): ?CellInterface
+    public function appendCell(string|Cell $cell, ?string $refName = null): Cell
     {
-        return $this->getCells()->get($name);
+        if (is_string($cell)) {
+            $cell = new Cell($cell);
+        }
+        if ($this->getCells()->has($cell->getName())) {
+            throw new \Exception("Cell with name '{$cell->getName()}' already exists.");
+        }
+        $cell->setTable($this);
+        return $this->getCells()->append($cell->getName(), $cell, $refName);
     }
 
+    public function prependCell(string|Cell $cell, ?string $refName = null): Cell
+    {
+        if (is_string($cell)) {
+            $cell = new Cell($cell);
+        }
+        if ($this->getCells()->has($cell->getName())) {
+            throw new \Exception("Cell with name '{$cell->getName()}' already exists.");
+        }
+        $cell->setTable($this);
+        return $this->getCells()->prepend($cell->getName(), $cell, $refName);
+    }
 
     public function getActions(): Collection
     {
         return $this->actions;
     }
 
-    public function appendAction(ActionInterface $action, ?string $refName = null): ActionInterface
+    public function getAction(string $name): ?Action
     {
-        if ($this->getActions()->has($action->getName())) {
-            throw new \Tk\Table\Exception("Action with name '{$action->getName()}' already exists.");
-        }
-        $action->setTable($this);
-        return $this->getActions()->append($action->getName(), $action, $refName);
-    }
-
-    public function prependAction(ActionInterface $action, ?string $refName = null)
-    {
-        if ($this->getActions()->has($action->getName())) {
-            throw new \Tk\Table\Exception("Action with name '{$action->getName()}' already exists.");
-        }
-        $action->setTable($this);
-        return $this->getActions()->prepend($action->getName(), $action, $refName);
+        return $this->getActions()->get($name);
     }
 
     public function removeAction($actionName): static
@@ -262,27 +199,37 @@ class Table extends Element implements InstanceKey
         return $this;
     }
 
-    public function getAction(string $name): ?ActionInterface
+    public function appendAction(string|Action $action, ?string $refName = null): Action
     {
-        return $this->getActions()->get($name);
+        if (is_string($action)) {
+            $action = new Action($action);
+        }
+        if ($this->getActions()->has($action->getName())) {
+            throw new \Tk\Table\Exception("Action with name '{$action->getName()}' already exists.");
+        }
+        $action->setTable($this);
+        return $this->getActions()->append($action->getName(), $action, $refName);
     }
 
-
-    public function getTableSession(): TableSession
+    public function prependAction(string|Action $action, ?string $refName = null): Action
     {
-        return TableBag::getTableSession($this->getId());
+        if (is_string($action)) {
+            $action = new Action($action);
+        }
+        if ($this->getActions()->has($action->getName())) {
+            throw new \Tk\Table\Exception("Action with name '{$action->getName()}' already exists.");
+        }
+        $action->setTable($this);
+        return $this->getActions()->prepend($action->getName(), $action, $refName);
     }
 
-    public function resetTableSession(): static
+    /**
+     * Create request key with prepended string
+     * returns: `{id}_{$key}`
+     */
+    public function makeRequestKey($key): string
     {
-        \Tk\Log::warning('Resetting Table Session.');
-        TableBag::removeTableSession($this->getId());
-        return $this;
-    }
-
-    public function getTool(string $defaultOrderBy = '', int $defaultLimit = 25): Tool
-    {
-        return $this->getTableSession()->getTool($defaultOrderBy, $defaultLimit);
+        return $this->getId() . '_' . $key;
     }
 
 }
