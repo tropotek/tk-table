@@ -1,5 +1,16 @@
 #CHANGELOG#
 
+Ver 8.0.14 [2024-09-08]:
+-------------------------------
+  - Update libs with new table object
+  - migrate new objects to libs
+  - fixed select dialogs
+  - minimise symfony request usage
+  - Added Bs\Table with filter form
+  - Make DB static
+  - add new table objects
+
+
 Ver 8.0.12 [2024-04-16]:
 -------------------------------
   - move template paths
