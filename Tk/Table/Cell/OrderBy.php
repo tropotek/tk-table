@@ -8,7 +8,7 @@ use Tk\Db\Mapper\Mapper;
 use Tk\Db\Mapper\Model;
 use Tk\Table;
 use Tk\Uri;
-use Tt\Db;
+use Tk\Db;
 
 /**
  * @todo: Move this to the Bs lib with its required javascript ???

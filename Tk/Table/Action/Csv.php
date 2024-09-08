@@ -4,11 +4,10 @@ namespace Tk\Table\Action;
 use Dom\Template;
 use JetBrains\PhpStorm\NoReturn;
 use Symfony\Component\HttpFoundation\Request;
-use Tk\Db\Mapper\Result;
 use Tk\ObjectUtil;
 use Tk\Table;
 use \Tk\Table\Cell;
-use Tt\Db;
+use Tk\Db;
 
 class Csv extends Button
 {
