@@ -50,7 +50,7 @@ class DomRenderer extends TableRenderer implements RendererInterface
         foreach ($this->getTable()->getCells() as $cell) {
             $tpl = $this->buildTemplate('tpl-cell-' . lcfirst(ObjectUtil::basename($cell)));
             if ($tpl) {
-                Log::warning('Loading table cell template: ' . 'tpl-cell-' . lcfirst(ObjectUtil::basename($cell)));
+                Log::notice('Loading table cell template: ' . 'tpl-cell-' . lcfirst(ObjectUtil::basename($cell)));
                 $cell->setTemplate($tpl);
             }
         }
