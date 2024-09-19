@@ -165,7 +165,7 @@ class Table
             $cell = new Cell($cell);
         }
         if ($this->getCells()->has($cell->getName())) {
-            throw new \Exception("Cell with name '{$cell->getName()}' already exists.");
+            throw new \Tk\Exception("Cell with name '{$cell->getName()}' already exists.");
         }
         $cell->setTable($this);
         return $this->getCells()->append($cell->getName(), $cell, $refName);
@@ -177,7 +177,7 @@ class Table
             $cell = new Cell($cell);
         }
         if ($this->getCells()->has($cell->getName())) {
-            throw new \Exception("Cell with name '{$cell->getName()}' already exists.");
+            throw new \Tk\Exception("Cell with name '{$cell->getName()}' already exists.");
         }
         $cell->setTable($this);
         return $this->getCells()->prepend($cell->getName(), $cell, $refName);
@@ -205,7 +205,7 @@ class Table
             $action = new Action($action);
         }
         if ($this->getActions()->has($action->getName())) {
-            throw new \Tk\Table\Exception("Action with name '{$action->getName()}' already exists.");
+            throw new \Tk\Exception("Action with name '{$action->getName()}' already exists.");
         }
         $action->setTable($this);
         return $this->getActions()->append($action->getName(), $action, $refName);
@@ -217,7 +217,7 @@ class Table
             $action = new Action($action);
         }
         if ($this->getActions()->has($action->getName())) {
-            throw new \Tk\Table\Exception("Action with name '{$action->getName()}' already exists.");
+            throw new \Tk\Exception("Action with name '{$action->getName()}' already exists.");
         }
         $action->setTable($this);
         return $this->getActions()->prepend($action->getName(), $action, $refName);
