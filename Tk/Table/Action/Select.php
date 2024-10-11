@@ -32,9 +32,9 @@ class Select extends Action
         $this->setAttr('data-confirm', $this->confirmStr);
     }
 
-    public static function create(RowSelect $rowSelect, string $name = 'select', $icon = 'fa fa-fw fa-check'): static
+    public static function create(RowSelect $rowSelect, string $name = 'select', string $icon = 'fa fa-fw fa-check'): self
     {
-        $obj = new static($name);
+        $obj = new self($name);
         $obj->rowSelect = $rowSelect;
         $obj->icon = $icon;
         $obj->setAttr('data-row-select', $rowSelect->getName());

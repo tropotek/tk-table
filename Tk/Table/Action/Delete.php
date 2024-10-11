@@ -17,10 +17,13 @@ class Delete extends Select
         $this->setAttr('title', 'Delete Selected Records');
     }
 
-    public static function create(RowSelect $rowSelect, string $name = 'delete', $icon = 'fa fa-fw fa-trash'): static
+    public static function create(RowSelect $rowSelect, string $name = 'delete', string $icon = 'fa fa-fw fa-trash'): self
     {
-        $obj = parent::create($rowSelect, $name, $icon);
+        $obj = new self($name);
+        $obj->rowSelect = $rowSelect;
+        $obj->icon = $icon;
         $obj->setConfirmStr('Delete the selected records?');
+        $obj->setAttr('data-row-select', $rowSelect->getName());
         return $obj;
     }
 

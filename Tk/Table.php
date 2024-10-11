@@ -59,7 +59,7 @@ class Table
     /**
      * ensure the id is unique
      */
-    protected function setId($id): static
+    protected function setId(string $id): static
     {
         static $instances = [];
         if ($this->getId()) return $this;
@@ -153,7 +153,7 @@ class Table
         return $this->getCells()->get($name);
     }
 
-    public function removeCell($cellName): static
+    public function removeCell(string $cellName): static
     {
         $this->getCells()->remove($cellName);
         return $this;
@@ -193,7 +193,7 @@ class Table
         return $this->getActions()->get($name);
     }
 
-    public function removeAction($actionName): static
+    public function removeAction(string $actionName): static
     {
         $this->getActions()->remove($actionName);
         return $this;
@@ -227,7 +227,7 @@ class Table
      * Create request key with prepended string
      * returns: `{id}_{$key}`
      */
-    public function makeRequestKey($key): string
+    public function makeRequestKey(string $key): string
     {
         return $this->getId() . '_' . $key;
     }

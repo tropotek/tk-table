@@ -16,9 +16,9 @@ class RowSelect extends Cell
         $this->setHeader(sprintf('<input type="checkbox" name="%s_all" title="Select All" class="tk-tcb-head" />', $name));
     }
 
-    public static function create(string $name, string $property = ''): static
+    public static function create(string $name, string $property = ''): self
     {
-        return new static($name, $property);
+        return new self($name, $property);
     }
 
     public function getValue(array|object $row): string

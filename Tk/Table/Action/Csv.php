@@ -28,10 +28,13 @@ class Csv extends Select
         $this->removeAttr('disabled');
     }
 
-    public static function create(RowSelect $rowSelect, string $name = 'export', $icon = 'fa fa-fw fa-list-alt'): static
+    public static function create(RowSelect $rowSelect, string $name = 'export', string $icon = 'fa fa-fw fa-list-alt'): self
     {
-        $obj = parent::create($rowSelect, $name, $icon);
+        $obj = new self($name);
+        $obj->rowSelect = $rowSelect;
+        $obj->icon = $icon;
         $obj->setConfirmStr('Export selected records to CSV?');
+        $obj->setAttr('data-row-select', $rowSelect->getName());
         return $obj;
     }
 
@@ -103,7 +106,7 @@ class Csv extends Select
     /**
      * An array of cell names to exclude from the CSV data
      */
-    public function setExcluded(array $excluded): Csv
+    public function setExcluded(array $excluded): static
     {
         $this->excluded = $excluded;
         return $this;
@@ -120,7 +123,7 @@ class Csv extends Select
         return $this->filename;
     }
 
-    public function setFilename(string $filename): Csv
+    public function setFilename(string $filename): static
     {
         $this->filename = $filename;
         return $this;

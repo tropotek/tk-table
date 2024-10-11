@@ -160,9 +160,9 @@ class DomRenderer extends TableRenderer implements RendererInterface
             $to = $total;
         }
 
-        $template->setText('results-from', $from);
-        $template->setText('results-to', $to);
-        $template->setText('results-total', $total);
+        $template->setText('results-from', strval($from));
+        $template->setText('results-to', strval($to));
+        $template->setText('results-total', strval($total));
 
         $template->setVisible('results-wrap');
     }
@@ -205,9 +205,9 @@ class DomRenderer extends TableRenderer implements RendererInterface
 
         for ($i = $startPage; $i <= $endPage; $i++) {
             $repeat = $template->getRepeat('page');
-            $repeat->setText('pageUrl', $i);
+            $repeat->setText('pageUrl', strval($i));
             $repeat->setAttr('pageUrl', 'title', 'Page ' . ($i));
-            $pageUrl->set($pageKey, $i);
+            $pageUrl->set($pageKey, strval($i));
             $repeat->setAttr('pageUrl', 'href', $pageUrl->toString());
             if ($i == $page) {
                 $repeat->addCss('page', self::CSS_SELECTED);
@@ -216,9 +216,9 @@ class DomRenderer extends TableRenderer implements RendererInterface
         }
 
         if ($page > 1) {
-            $pageUrl->set($pageKey, $page-1);
+            $pageUrl->set($pageKey, strval($page-1));
             $template->setAttr('backUrl', 'href', $pageUrl->toString());
-            $pageUrl->set($pageKey, 1);
+            $pageUrl->set($pageKey, '1');
             $template->setAttr('startUrl', 'href', $pageUrl->toString());
         } else {
             $template->addCss('start', self::CSS_DISABLED);
@@ -226,9 +226,9 @@ class DomRenderer extends TableRenderer implements RendererInterface
         }
 
         if ($page < $endPage) {
-            $pageUrl->set($pageKey, $page+1);
+            $pageUrl->set($pageKey, strval($page+1));
             $template->setAttr('nextUrl', 'href', $pageUrl->toString());
-            $pageUrl->set($pageKey, $numPages);
+            $pageUrl->set($pageKey, strval($numPages));
             $template->setAttr('endUrl', 'href', $pageUrl->toString());
         } else {
             $template->addCss('end', self::CSS_DISABLED);
@@ -250,13 +250,13 @@ class DomRenderer extends TableRenderer implements RendererInterface
         if (!($select instanceof Select)) return;
 
         foreach(self::LIMIT_LIST as $k => $v) {
-            $select->appendOption($k, $v);
+            $select->appendOption($k, strval($v));
         }
 
-        $select->setValue($this->getTable()->getLimit());
+        $select->setValue(strval($this->getTable()->getLimit()));
         $select->setAttribute('data-name', $this->getTable()->makeRequestKey(Table::PARAM_LIMIT));
         $select->setAttribute('data-page', $this->getTable()->makeRequestKey(Table::PARAM_PAGE));
-        $select->setAttribute('data-total', $total);
+        $select->setAttribute('data-total', strval($total));
         $select->setAttribute('name', null);
 
         $template->setVisible('limit-wrap');
