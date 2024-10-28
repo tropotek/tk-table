@@ -48,9 +48,9 @@ class DomRenderer extends TableRenderer implements RendererInterface
 
         // load any cell templates
         foreach ($this->getTable()->getCells() as $cell) {
-            $tpl = $this->buildTemplate('tpl-cell-' . lcfirst(ObjectUtil::basename($cell)));
+            $tpl = $this->buildTemplate('tpl-cell-' . lcfirst(strval(ObjectUtil::basename($cell))));
             if ($tpl) {
-                Log::notice('Loading table cell template: ' . 'tpl-cell-' . lcfirst(ObjectUtil::basename($cell)));
+                Log::notice('Loading table cell template: ' . 'tpl-cell-' . lcfirst(strval(ObjectUtil::basename($cell))));
                 $cell->setTemplate($tpl);
             }
         }
@@ -250,7 +250,7 @@ class DomRenderer extends TableRenderer implements RendererInterface
         if (!($select instanceof Select)) return;
 
         foreach(self::LIMIT_LIST as $k => $v) {
-            $select->appendOption($k, strval($v));
+            $select->appendOption(strval($k), strval($v));
         }
 
         $select->setValue(strval($this->getTable()->getLimit()));

@@ -57,13 +57,17 @@ class Csv extends Select
 
         // Output the CSV data
         $out = fopen('php://output', 'w');
+        if ($out === false) {
+            throw new \Exception("failed to open output stream");
+        }
+
         header('Content-Type: application/octet-stream');
         header('Content-Disposition: attachment; filename="' . $filename . '"');
         header('Content-Transfer-Encoding: binary');
 
         $arr = [];
         // Write cell labels to first line of csv...
-            /* @var $cell Cell */
+        /* @var $cell Cell */
         foreach ($this->getTable()->getCells() as $cell) {
             if ($this->isExcluded($cell)) continue;
             $arr[] = $cell->getHeader();

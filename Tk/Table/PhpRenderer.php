@@ -18,6 +18,6 @@ class PhpRenderer extends TableRenderer
     {
         ob_start();
         include ($this->path);
-        return ob_get_clean();
+        return strval(ob_get_clean());
     }
 }
