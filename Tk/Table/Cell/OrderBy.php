@@ -61,12 +61,7 @@ class OrderBy extends Cell
         if (!($fromObj && $toObj)) {
             return;
         }
-        $this->orderSwap($fromObj, $toObj);
 
-    }
-
-    public function orderSwap(Model $fromObj, Model $toObj): bool
-    {
         $map     = $fromObj::getDataMap();
         $table   = $fromObj::getDbTable();
         $col     = $map->getTypeByProperty($this->getName())->getColumn();
@@ -77,16 +72,14 @@ class OrderBy extends Cell
         $ok = Db::update($table, $priCol, [$priCol => (int)$fromObj->$priProp, $col => (int)$toObj->$prop]);
         if ($ok === false) {
             Log::error("failed to update order on {$table} for id {$toObj->$prop}");
-            return false;
+            return;
         }
 
         $ok = Db::update($table, $priCol, [$priCol => (int)$toObj->$priProp, $col => (int)$fromObj->$prop]);
         if ($ok === false) {
             Log::error("failed to update order on {$table} for id {$fromObj->$prop}");
-            return false;
+            return;
         }
-
-        return true;
     }
 
     public function doOrderUpdate(): void
@@ -138,13 +131,11 @@ class OrderBy extends Cell
             $nextCss = '';
         }
 
-
         $this->setAttr('title', 'Click or drag to change order');
         $this->addCss('align-middle p-1');
         $this->setAttr('data-orderby-id', $row->getId());
 
-
-        $html = <<<HTML
+        return <<<HTML
 <div class="text-center p-0">
   <div title="Click And Drag" rel="nofollow" class="float-start drag">
     <i class="fas fa-grip-vertical"></i>
@@ -155,7 +146,6 @@ class OrderBy extends Cell
   </div>
 </div>
 HTML;
-        return $html;
     }
 
     public function setTable(?Table $table): Cell
