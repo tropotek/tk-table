@@ -72,7 +72,9 @@ jQuery(function ($) {
 
 });
 
-
+/**
+ * This plugin for class \Tk\Tabl\Cell\OrderBy
+ */
 (function($) {
   var tableOrderBy = function(element, options) {
     // Current instance of the object
@@ -120,14 +122,12 @@ jQuery(function ($) {
 
     plugin.sortableStop = function(e, ui) {
       var url = ui.item.find('.tk-orderBy .btn-group a').not('.disabled').attr('href');
-      //var url = document.location.href;
       var order = {};
 
       $element.find('tr').each(function (i) {
         order[i] = $(this).find('.tk-orderBy').data('orderbyId');
       });
-console.log(url);
-console.log({newOrder: order});
+
       $.post(url, {newOrder: order}, function (data) {
         $element.empty().append($(data).find(plugin.settings.selector).find('tr'));
       } );
