@@ -19,6 +19,7 @@ class Select extends Action
 
     protected string             $confirmStr = 'Execute the selected records?';
     protected string             $icon       = '';
+    protected array              $actions    = [];
     protected RowSelect          $rowSelect;
     protected CallbackCollection $onSelect;
 
@@ -43,12 +44,13 @@ class Select extends Action
 
     public function execute(): void
     {
-        $val = $this->getTable()->makeRequestKey($this->getName());
-        $this->setActive(($_POST[$this->getName()] ?? '') == $val);
+        $selectName = $this->getTable()->makeRequestKey($this->getName());
+        $this->setActive(isset($_POST[$selectName]));
         if (!$this->isActive()) return;
 
         $selected = $_POST[$this->rowSelect->getName()] ?? [];
-        $this->getOnSelect()->execute($this, $selected);
+        $value = trim($_POST[$selectName]);
+        $this->getOnSelect()->execute($this, $selected, $value);
         Uri::create()->redirect();
     }
 
@@ -57,12 +59,36 @@ class Select extends Action
      */
     public function getHtml(): string
     {
-        $val = $this->getTable()->makeRequestKey($this->getName());
-
-        return <<<HTML
-<button type="submit" name="{$this->getName()}" value="{$val}" class="{$this->getCssString()}" {$this->getAttrString()}>
+        $selectName = $this->getTable()->makeRequestKey($this->getName());
+        if (empty($this->actions)) {
+            return <<<HTML
+<button type="submit" name="{$selectName}" value="{$selectName}" class="{$this->getCssString()}" {$this->getAttrString()}>
     <i class="{$this->icon}"></i> {$this->getLabel()}
 </button>
+HTML;
+        }
+
+        $attr = '';
+        if ($this->getAttr('data-confirm')) {
+            $attr = sprintf('data-confirm="%s"', $this->getAttr('data-confirm'));
+            $this->removeAttr('data-confirm');
+        }
+        $buttonHtml = '';
+        foreach ($this->actions as $name => $val) {
+            $buttonHtml .= sprintf('<li><button class="dropdown-item" type="submit" name="%s" value="%s" %s>%s</button></li>',
+                $selectName, $val, $attr, $name);
+        }
+
+        return <<<HTML
+<div class="btn-group" role="group">
+    <button type="button" class="{$this->getCssString()} dropdown-toggle"  {$this->getAttrString()} data-bs-toggle="dropdown" aria-expanded="false">
+      {$this->getLabel()}
+      <i class="mdi mdi-chevron-down"></i>
+    </button>
+    <ul class="dropdown-menu">
+        {$buttonHtml}
+    </ul>
+</div>
 HTML;
     }
 
@@ -79,7 +105,7 @@ HTML;
     }
 
     /**
-     * @callable function (\Tk\Table\Action\Delete $action, $obj): ?bool { }
+     * @callable function (\Tk\Table\Action\Select $action, array $selected, string $value): ?bool { }
      */
     public function addOnSelect(callable $callable, int $priority = CallbackCollection::DEFAULT_PRIORITY): static
     {
@@ -90,6 +116,12 @@ HTML;
     public function getOnSelect(): CallbackCollection
     {
         return $this->onSelect;
+    }
+
+    public function setActions(array $actions): static
+    {
+        $this->actions = $actions;
+        return $this;
     }
 
 }

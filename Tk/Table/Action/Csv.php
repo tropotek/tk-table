@@ -28,7 +28,7 @@ class Csv extends Select
         $this->removeAttr('disabled');
     }
 
-    public static function create(RowSelect $rowSelect, string $name = 'export', string $icon = 'fa fa-fw fa-list-alt'): self
+    public static function create(RowSelect $rowSelect, string $name = 'export', string $icon = 'far fa-fw fa-list-alt'): self
     {
         $obj = new self($name);
         $obj->rowSelect = $rowSelect;

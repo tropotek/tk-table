@@ -10,11 +10,11 @@ class Table
 {
     use AttributesTrait;
 
-    const PARAM_LIMIT    = 'limit';
-    const PARAM_OFFSET   = 'offset';
-    const PARAM_PAGE     = 'page';
-    const PARAM_TOTAL    = 'total';
-    const PARAM_ORDERBY  = 'orderBy';
+    const string PARAM_LIMIT    = 'limit';
+    const string PARAM_OFFSET   = 'offset';
+    const string PARAM_PAGE     = 'page';
+    const string PARAM_TOTAL    = 'total';
+    const string PARAM_ORDERBY  = 'orderBy';
 
     protected string     $id        = '';
     protected int        $limit     = 0;
