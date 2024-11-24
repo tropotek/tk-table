@@ -5,6 +5,7 @@ use Tk\CallbackCollection;
 use Tk\Uri;
 use Tk\Table\Action;
 use Tk\Table\Cell;
+use Tk\Table\Cell\OrderBy;
 use Tk\Table\Cell\RowSelect;
 
 /**
@@ -13,7 +14,8 @@ use Tk\Table\Cell\RowSelect;
  */
 class Csv extends Select
 {
-    const EXCLUDED_CELLS = [
+    const array EXCLUDED_CELLS = [
+        OrderBy::class,
         RowSelect::class,
     ];
 
@@ -28,24 +30,26 @@ class Csv extends Select
         $this->removeAttr('disabled');
     }
 
-    public static function create(RowSelect $rowSelect, string $name = 'export', string $icon = 'far fa-fw fa-list-alt'): self
+    public static function create(string $name = 'export', string $icon = 'far fa-fw fa-list-alt'): self
     {
         $obj = new self($name);
-        $obj->rowSelect = $rowSelect;
         $obj->icon = $icon;
         $obj->setConfirmStr('Export selected records to CSV?');
-        $obj->setAttr('data-row-select', $rowSelect->getName());
         return $obj;
     }
 
     public function execute(): void
     {
-        $val = $this->getTable()->makeRequestKey($this->getName());
-        $this->setActive(($_POST[$this->getName()] ?? '') == $val);
+        $selectName = $this->getTable()->makeRequestKey($this->getName());
+        $this->setActive(isset($_POST[$selectName]));
         if (!$this->isActive()) return;
 
-        $selected = $_POST[$this->rowSelect->getName()] ?? [];
-        $rows = $this->getOnCsv()->execute($this, $selected);
+        $selected = $this->getOnGetSelected()->execute();
+        if (!is_array($selected)) {
+            $selected = [];
+        }
+
+        $rows = $this->getOnExecute()->execute($this, $selected);
         if (!count($rows)) {
             Uri::create()->redirect();
         }
@@ -93,13 +97,8 @@ class Csv extends Select
      */
     public function addOnCsv(callable $callable, int $priority = CallbackCollection::DEFAULT_PRIORITY): static
     {
-        $this->getOnSelect()->append($callable, $priority);
+        $this->getOnExecute()->append($callable, $priority);
         return $this;
-    }
-
-    public function getOnCsv(): CallbackCollection
-    {
-        return $this->getOnSelect();
     }
 
     public function getExcluded(): array

@@ -21,36 +21,42 @@ class Select extends Action
     protected string             $icon       = '';
     protected array              $actions    = [];
     protected RowSelect          $rowSelect;
-    protected CallbackCollection $onSelect;
+    protected CallbackCollection $onGetSelected;
 
 
     public function __construct(string $name)
     {
         parent::__construct($name);
-        $this->onSelect = CallbackCollection::create();
+
+        $this->onGetSelected = CallbackCollection::create();
+
         $this->addCss('btn btn-sm btn-light tk-action-select');
         $this->setAttr('disabled');
         $this->setAttr('data-confirm', $this->confirmStr);
     }
 
-    public static function create(RowSelect $rowSelect, string $name = 'select', string $icon = 'fa fa-fw fa-check'): self
+    public static function create(string $name = 'select', string $icon = 'fa fa-fw fa-check'): self
     {
         $obj = new self($name);
-        $obj->rowSelect = $rowSelect;
         $obj->icon = $icon;
-        $obj->setAttr('data-row-select', $rowSelect->getName());
         return $obj;
     }
 
     public function execute(): void
     {
+
         $selectName = $this->getTable()->makeRequestKey($this->getName());
         $this->setActive(isset($_POST[$selectName]));
         if (!$this->isActive()) return;
 
-        $selected = $_POST[$this->rowSelect->getName()] ?? [];
+        $selected = $this->getOnGetSelected()->execute();
+        if (!is_array($selected)) {
+            $selected = [];
+        }
+
         $value = trim($_POST[$selectName]);
-        $this->getOnSelect()->execute($this, $selected, $value);
+        $this->getOnExecute()->execute($this, $selected, $value);
+
         Uri::create()->redirect();
     }
 
@@ -60,6 +66,7 @@ class Select extends Action
     public function getHtml(): string
     {
         $selectName = $this->getTable()->makeRequestKey($this->getName());
+
         if (empty($this->actions)) {
             return <<<HTML
 <button type="submit" name="{$selectName}" value="{$selectName}" class="{$this->getCssString()}" {$this->getAttrString()}>
@@ -73,6 +80,7 @@ HTML;
             $attr = sprintf('data-confirm="%s"', $this->getAttr('data-confirm'));
             $this->removeAttr('data-confirm');
         }
+
         $buttonHtml = '';
         foreach ($this->actions as $name => $val) {
             $buttonHtml .= sprintf('<li><button class="dropdown-item" type="submit" name="%s" value="%s" %s>%s</button></li>',
@@ -109,13 +117,22 @@ HTML;
      */
     public function addOnSelect(callable $callable, int $priority = CallbackCollection::DEFAULT_PRIORITY): static
     {
-        $this->getOnSelect()->append($callable, $priority);
+        $this->getOnExecute()->append($callable, $priority);
         return $this;
     }
 
-    public function getOnSelect(): CallbackCollection
+    /**
+     * @callable function (\Tk\Table\Action\Select $action, array $selected, string $value): ?bool { }
+     */
+    public function addOnGetSelected(callable $callable, int $priority = CallbackCollection::DEFAULT_PRIORITY): static
     {
-        return $this->onSelect;
+        $this->getOnGetSelected()->append($callable, $priority);
+        return $this;
+    }
+
+    public function getOnGetSelected(): CallbackCollection
+    {
+        return $this->onGetSelected;
     }
 
     public function setActions(array $actions): static

@@ -17,13 +17,11 @@ class Delete extends Select
         $this->setAttr('title', 'Delete Selected Records');
     }
 
-    public static function create(RowSelect $rowSelect, string $name = 'delete', string $icon = 'fa fa-fw fa-trash'): self
+    public static function create(string $name = 'delete', string $icon = 'fa fa-fw fa-trash'): self
     {
         $obj = new self($name);
-        $obj->rowSelect = $rowSelect;
         $obj->icon = $icon;
         $obj->setConfirmStr('Delete the selected records?');
-        $obj->setAttr('data-row-select', $rowSelect->getName());
         return $obj;
     }
 
@@ -32,13 +30,8 @@ class Delete extends Select
      */
     public function addOnDelete(callable $callable, int $priority = CallbackCollection::DEFAULT_PRIORITY): static
     {
-        $this->addOnSelect($callable, $priority);
+        $this->addOnExecute($callable, $priority);
         return $this;
-    }
-
-    public function getOnDelete(): CallbackCollection
-    {
-        return $this->getOnSelect();
     }
 
 }

@@ -38,7 +38,7 @@ jQuery(function ($) {
     // Class: \Tk\Table\Action\Select
     function updateBtn(btn) {
       if (!btn.data('selectedOnly')) return;
-      var rsName = btn.data('rowSelect');
+      var rsName = $('table[data-row-select]', tkTable).data('rowSelect');
       btn.prop('disabled', false);
       if(!$(`input[name^="${rsName}"]:checked`, tkTable).length) {
         btn.prop('disabled', true);
@@ -46,7 +46,7 @@ jQuery(function ($) {
     }
     $('.tk-action-select', tkTable).each(function () {
       var btn = $(this);
-      var rsName = btn.data('rowSelect');
+      var rsName = $('table[data-row-select]', tkTable).data('rowSelect');
       btn.data('selectedOnly', btn.prop('disabled'))
       btn.on('click', function () {
         return $(`input[name^="${rsName}"]:checked`, tkTable).length > 0;

@@ -170,6 +170,7 @@ class DomRenderer extends TableRenderer implements RendererInterface
     protected function showPager(Template $template): void
     {
         $total = max(count($this->rows), $this->getTable()->getTotalRows());
+        
         if (!$total) return;
         if ($this->getTable()->getLimit() == 0 || $total < $this->getTable()->getLimit()) return;
 

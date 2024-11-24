@@ -35,22 +35,21 @@ class Table
         $this->cells       = new Collection();
         $this->actions     = new Collection();
         $this->setId($tableId);
+
+        // get the order by value from the request (if any)
+        $this->setLimit(intval($_REQUEST[$this->makeRequestKey(self::PARAM_LIMIT)] ?? $this->getLimit()));
+        $this->setPage(intval($_REQUEST[$this->makeRequestKey(self::PARAM_PAGE)] ?? $this->getPage()));
+        $this->setOrderBy(trim($_REQUEST[$this->makeRequestKey(self::PARAM_ORDERBY)] ?? $this->getOrderBy()));
     }
 
     /**
-     * Execute table actions
+     * Execute table actions, should be called after all cells, filters and actions are added to the table
      */
     public function execute(): static
     {
         /* @var Action $action */
         foreach ($this->getActions() as $action) {
             $action->execute();
-        }
-
-        // get the order by value from the request (if any)
-        $orderByKey = $this->makeRequestKey(self::PARAM_ORDERBY);
-        if (isset($_REQUEST[$orderByKey])) {
-            $this->setOrderBy(trim($_REQUEST[$orderByKey]));
         }
 
         return $this;
@@ -85,7 +84,7 @@ class Table
 
     public function setOrderBy(string $orderBy): Table
     {
-        $this->orderBy = $orderBy;
+        $this->orderBy = preg_replace("/(\r|\n)/", '', $orderBy);
         return $this;
     }
 

@@ -1,6 +1,7 @@
 <?php
 namespace Tk\Table\Cell;
 
+use Tk\Table;
 use Tk\Table\Cell;
 
 class RowSelect extends Cell
@@ -31,6 +32,20 @@ class RowSelect extends Cell
     public function getProperty(): string
     {
         return $this->property;
+    }
+
+    public function getSelected()
+    {
+        return $_POST[$this->getName()] ?? [];
+    }
+
+    public function setTable(?Table $table): Cell
+    {
+        if ($table instanceof Table) {
+            $table->setAttr('data-row-select', $this->getName());
+        }
+        parent::setTable($table);
+        return $this;
     }
 
 }
