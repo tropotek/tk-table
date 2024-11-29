@@ -35,11 +35,6 @@ class Table
         $this->cells       = new Collection();
         $this->actions     = new Collection();
         $this->setId($tableId);
-
-        // get the order by value from the request (if any)
-        $this->setLimit(intval($_REQUEST[$this->makeRequestKey(self::PARAM_LIMIT)] ?? $this->getLimit()));
-        $this->setPage(intval($_REQUEST[$this->makeRequestKey(self::PARAM_PAGE)] ?? $this->getPage()));
-        $this->setOrderBy(trim($_REQUEST[$this->makeRequestKey(self::PARAM_ORDERBY)] ?? $this->getOrderBy()));
     }
 
     /**
@@ -47,9 +42,19 @@ class Table
      */
     public function execute(): static
     {
+        // get the pager values from the request (if any)
+        $this->setLimit(intval($_REQUEST[$this->makeRequestKey(self::PARAM_LIMIT)] ?? $this->getLimit()));
+        $this->setPage(intval($_REQUEST[$this->makeRequestKey(self::PARAM_PAGE)] ?? $this->getPage()));
+        $this->setOrderBy(trim($_REQUEST[$this->makeRequestKey(self::PARAM_ORDERBY)] ?? $this->getOrderBy()));
+
         /* @var Action $action */
         foreach ($this->getActions() as $action) {
             $action->execute();
+        }
+
+        /* @var Cell $action */
+        foreach ($this->getCells() as $cells) {
+            $cells->execute();
         }
 
         return $this;

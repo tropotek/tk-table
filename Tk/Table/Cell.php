@@ -39,6 +39,11 @@ class Cell
         $this->setHeader($header);
     }
 
+    /**
+     * called by Table::execute()
+     */
+    public function execute(): void { }
+
     public function getName(): string
     {
         return $this->name;

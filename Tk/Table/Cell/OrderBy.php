@@ -33,8 +33,9 @@ class OrderBy extends Cell
         return new self($name, $modelClass);
     }
 
-    protected function execute(): void
+    public function execute(): void
     {
+        $this->getTable()->setAttr('data-offset', $this->getTable()->getOffset());
         $orderSwapKey = $this->getTable()->makeRequestKey('orderSwap');
         if (!isset($_GET[$orderSwapKey])) return;
 
@@ -152,7 +153,6 @@ HTML;
     {
         $table->addCss('tk-sortable');
         parent::setTable($table);
-        $this->execute();
         return $this;
     }
 

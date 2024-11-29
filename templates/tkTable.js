@@ -40,7 +40,7 @@ jQuery(function ($) {
       if (!btn.data('selectedOnly')) return;
       var rsName = $('table[data-row-select]', tkTable).data('rowSelect');
       btn.prop('disabled', false);
-      if(!$(`input[name^="${rsName}"]:checked`, tkTable).length) {
+      if(!$(`td input[name^="${rsName}"]:checked`, tkTable).length) {
         btn.prop('disabled', true);
       }
     }
@@ -49,7 +49,7 @@ jQuery(function ($) {
       var rsName = $('table[data-row-select]', tkTable).data('rowSelect');
       btn.data('selectedOnly', btn.prop('disabled'))
       btn.on('click', function () {
-        return $(`input[name^="${rsName}"]:checked`, tkTable).length > 0;
+        return $(`td input[name^="${rsName}"]:checked`, tkTable).length > 0;
       });
       btn.closest('.tk-table').on('change', `input[name^="${rsName}"]`, function () {
         updateBtn(btn);
@@ -110,7 +110,13 @@ jQuery(function ($) {
           console.error('Error: Sortable Jquery UI (http://jqueryui.com/) required for tableOrderBy plugin.');
         return;
       }
+
       $element.sortable($.extend({}, plugin.settings.sortableOptions, {handle: plugin.settings.handle})).disableSelection();
+
+      // disable first and last order buttons
+      $('.tk-orderBy:first a:first', $element).addClass('disabled').attr('href', 'javascript:;');
+      $('.tk-orderBy:last a:last', $element).addClass('disabled').attr('href', 'javascript:;');
+
     };
 
     plugin.sortableHelper = function(e, ui) {
@@ -123,6 +129,9 @@ jQuery(function ($) {
     plugin.sortableStop = function(e, ui) {
       var url = ui.item.find('.tk-orderBy .btn-group a').not('.disabled').attr('href');
       var order = {};
+
+      // TODO: when dragging and dropping an item we need to update the entire rowset not just the visible page????
+      //       Added a `data-offest` property to the table use that...
 
       $element.find('tr').each(function (i) {
         order[i] = $(this).find('.tk-orderBy').data('orderbyId');
