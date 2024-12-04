@@ -47,14 +47,14 @@ class Table
         $this->setPage(intval($_REQUEST[$this->makeRequestKey(self::PARAM_PAGE)] ?? $this->getPage()));
         $this->setOrderBy(trim($_REQUEST[$this->makeRequestKey(self::PARAM_ORDERBY)] ?? $this->getOrderBy()));
 
-        /* @var Action $action */
-        foreach ($this->getActions() as $action) {
-            $action->execute();
-        }
-
         /* @var Cell $action */
         foreach ($this->getCells() as $cells) {
             $cells->execute();
+        }
+
+        /* @var Action $action */
+        foreach ($this->getActions() as $action) {
+            $action->execute();
         }
 
         return $this;
