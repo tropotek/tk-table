@@ -14,7 +14,7 @@ jQuery(function ($) {
 
     // Class: \Tk\Table
     // Table limit on-change event
-    $('.tk-limit select', tkTable).change(function (e) {
+    $('.tk-limit select', tkTable).on('change.tkTable', function (e) {
       if ($(this).val() == 0 && $(this).data('total') > 1000) {
         if (!confirm('WARNING: There are large number of records, page load time may be slowed.')) return false;
       }

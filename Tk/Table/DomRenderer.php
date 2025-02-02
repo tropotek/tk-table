@@ -258,7 +258,9 @@ class DomRenderer extends TableRenderer implements RendererInterface
         $select->setAttribute('data-name', $this->getTable()->makeRequestKey(Table::PARAM_LIMIT));
         $select->setAttribute('data-page', $this->getTable()->makeRequestKey(Table::PARAM_PAGE));
         $select->setAttribute('data-total', strval($total));
-        $select->setAttribute('name', null);
+
+        $select->setAttribute('name', $this->getTable()->makeRequestKey(Table::PARAM_LIMIT));
+        // $select->setAttribute('name', null); // TODO: why did I do this, test to find out
 
         $template->setVisible('limit-wrap');
     }

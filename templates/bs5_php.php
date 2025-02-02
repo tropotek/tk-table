@@ -60,7 +60,7 @@ $pageUrl->remove($pageKey);
 
 ?>
 <!-- TODO: Include this script in the master template -->
-<script src="/vendor/ttek/tk-table/templates/tkTable.js" data-priority="1"></script>
+<!--<script src="/vendor/ttek/tk-table/templates/tkTable.js" data-priority="1"></script>-->
 
 <div class="tk-table" id="<?= $table->getId() ?>">
 
