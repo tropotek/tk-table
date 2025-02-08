@@ -180,16 +180,16 @@ class DomRenderer extends TableRenderer implements RendererInterface
         if ($numPages < 2) return;
 
         $startPage = 1;
-        $endPage = self::MAX_PAGES;
-        $center = floor(self::MAX_PAGES / 2);
+        $endPage = $this->getMaxPages();
+        $center = floor($this->getMaxPages() / 2);
 
         if ($page > $center) {
             $startPage = $page - $center;
-            $endPage = $startPage + self::MAX_PAGES;
+            $endPage = $startPage + $this->getMaxPages();
         }
 
-        if ($startPage > $numPages - self::MAX_PAGES) {
-            $startPage = $numPages - self::MAX_PAGES;
+        if ($startPage > $numPages - $this->getMaxPages()) {
+            $startPage = $numPages - $this->getMaxPages();
             $endPage = $numPages;
         }
 

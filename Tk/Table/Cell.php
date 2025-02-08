@@ -2,6 +2,7 @@
 namespace Tk\Table;
 
 use Tk\CallbackCollection;
+use Tk\Str;
 use Tk\Ui\Attributes;
 use Tk\Ui\Traits\AttributesTrait;
 use Tk\Uri;
@@ -15,6 +16,7 @@ class Cell
     protected ?string    $value       = null;
     protected string     $header      = '';
     protected bool       $visible     = true;
+    protected string     $orderBy     = '';
     protected bool       $sortable    = false;
     protected ?Table     $table       = null;
 
@@ -24,10 +26,11 @@ class Cell
 
     public function __construct(string $name, string $header = '')
     {
-        $this->name = $name;
+        $this->name    = $name;
+        $this->orderBy = Str::toSnake($name);
         $this->onValue = CallbackCollection::create();
-
         $this->headerAttrs = new Attributes();
+
         $this->addCss('m'.ucfirst($name));
         $this->headerAttrs->addCss('mh'.ucfirst($name));
 
@@ -145,6 +148,16 @@ class Cell
         return $this;
     }
 
+    public function getOrderBy(): string
+    {
+        return $this->orderBy;
+    }
+
+    public function setOrderBy(string $orderBy): void
+    {
+        $this->orderBy = $orderBy;
+    }
+
     public function getTable(): ?Table
     {
         return $this->table;
@@ -167,6 +180,7 @@ class Cell
 
         $key = $this->getTable()->makeRequestKey(Table::PARAM_ORDERBY);
         $url = Uri::create()->remove($key);
+        $orderBy = $this->getOrderBy();
 
         $col = $this->getTable()->getOrderBy();
         $dir = '-';
@@ -175,14 +189,14 @@ class Cell
             $dir = '';
         }
 
-        if ($col == $this->getName()) {
+        if ($col == $orderBy) {
             if ($dir == '-') {
                 $url->set($key, $dir.$col);
             } else {
                 $url->set($key, '');
             }
         } else {
-            $url->set($key, $this->getName());
+            $url->set($key, $orderBy);
         }
 
         return $url;

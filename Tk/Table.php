@@ -1,6 +1,7 @@
 <?php
 namespace Tk;
 
+use Tk\Db\Session;
 use Tk\Ui\Attributes;
 use Tk\Ui\Traits\AttributesTrait;
 use Tk\Table\Action;
@@ -37,15 +38,76 @@ class Table
         $this->setId($tableId);
     }
 
+    public function getSessionId(): string
+    {
+        return "tbl_{$this->getId()}";
+    }
+
+    public function resetTableSession(): static
+    {
+        Session::remove($this->getSessionId());
+        return $this;
+    }
+
+    public function getTableSession(): Collection
+    {
+        $session = Session::get($this->getSessionId());
+        if (is_null($session)) {
+            $session = new Collection();
+        }
+        Session::set($this->getSessionId(), $session, 60*10);
+        return $session;
+    }
+
+    /**
+     * manage all pager properties
+     * checks if the is values in the session uses them first
+     * then checks the request query for any pager values to update
+     * Saves new values to session
+     * redirects if a change has occurred
+     */
+    protected function initPager(): void
+    {
+        $kLimit   = $this->makeRequestKey(self::PARAM_LIMIT);
+        $kPage    = $this->makeRequestKey(self::PARAM_PAGE);
+        $kOrderBy = $this->makeRequestKey(self::PARAM_ORDERBY);
+        $ses      = $this->getTableSession();
+        $reload   = false;
+
+        // first check session for vals
+        $this->setLimit($ses->get($kLimit, $this->getLimit()));
+        $this->setPage($ses->get($kPage, $this->getPage()));
+        $this->setOrderBy($ses->get($kOrderBy, $this->getOrderBy()));
+
+        // Second check request for any changes and redirect removing query params if found
+        if (isset($_REQUEST[$kPage])) {
+            $this->setPage((int)$_REQUEST[$kPage]);
+            $reload = true;
+        }
+        if (isset($_REQUEST[$kOrderBy])) {
+            $this->setOrderBy(trim($_REQUEST[$kOrderBy]));
+            $reload = true;
+        }
+        if (isset($_REQUEST[$kLimit])) {
+            $this->setLimit((int)$_REQUEST[$kLimit]);
+            $this->setPage(1);
+            $reload = true;
+        }
+
+        // save session
+        $ses->set($kLimit, $this->getLimit())->set($kPage, $this->getPage())->set($kOrderBy, $this->getOrderBy());
+
+        if ($reload) {
+            Uri::create()->remove($kLimit)->remove($kPage)->remove($kOrderBy)->redirect();
+        }
+    }
+
     /**
      * Execute table actions, should be called after all cells, filters and actions are added to the table
      */
     public function execute(): static
     {
-        // get the pager values from the request (if any)
-        $this->setLimit(intval($_REQUEST[$this->makeRequestKey(self::PARAM_LIMIT)] ?? $this->getLimit()));
-        $this->setPage(intval($_REQUEST[$this->makeRequestKey(self::PARAM_PAGE)] ?? $this->getPage()));
-        $this->setOrderBy(trim($_REQUEST[$this->makeRequestKey(self::PARAM_ORDERBY)] ?? $this->getOrderBy()));
+        $this->initPager();
 
         /* @var Cell $action */
         foreach ($this->getCells() as $cells) {

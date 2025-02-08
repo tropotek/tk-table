@@ -34,16 +34,16 @@ $numPages = ceil($total / $limit);
 if ($numPages < 2) return;
 
 $startPage = 1;
-$endPage = TableRenderer::MAX_PAGES;
-$center = floor(TableRenderer::MAX_PAGES / 2);
+$endPage = $renderer->getMaxPages();
+$center = floor($renderer->getMaxPages() / 2);
 
 if ($page > $center) {
     $startPage = $page - $center;
-    $endPage = $startPage + TableRenderer::MAX_PAGES;
+    $endPage = $startPage + $renderer->getMaxPages();
 }
 
-if ($startPage > $numPages - TableRenderer::MAX_PAGES) {
-    $startPage = $numPages - TableRenderer::MAX_PAGES;
+if ($startPage > $numPages - $renderer->getMaxPages()) {
+    $startPage = $numPages - $renderer->getMaxPages();
     $endPage = $numPages;
 }
 

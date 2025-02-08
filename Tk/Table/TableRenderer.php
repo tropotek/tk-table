@@ -5,13 +5,11 @@ use Tk\Table;
 
 abstract class TableRenderer extends Renderer
 {
-    // max page links to how in the pager
-    const MAX_PAGES = 10;
 
-    const CSS_SELECTED = 'active';
-    const CSS_DISABLED = 'disabled';
+    const string CSS_SELECTED = 'active';
+    const string CSS_DISABLED = 'disabled';
 
-    const LIMIT_LIST   = [
+    const array LIMIT_LIST   = [
         '-- All --' => 0,
         '10'  => 10,
         '25'  => 25,
@@ -23,6 +21,7 @@ abstract class TableRenderer extends Renderer
     protected string  $path          = '';
     protected array   $footer        = [];
     protected array   $rows          = [];
+    protected int     $maxPages      = 10;
     protected bool    $footerEnabled = true;
 
     public function __construct(Table $table, string $templatePath = '')
@@ -51,6 +50,16 @@ abstract class TableRenderer extends Renderer
     public function getPath(): string
     {
         return $this->path;
+    }
+
+    public function getMaxPages(): int
+    {
+        return $this->maxPages;
+    }
+
+    public function setMaxPages(int $maxPages): void
+    {
+        $this->maxPages = $maxPages;
     }
 
     public function isFooterEnabled(): bool
