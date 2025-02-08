@@ -17,10 +17,8 @@ class Select extends Action
 {
     use AttributesTrait;
 
-    protected string             $confirmStr = 'Execute the selected records?';
     protected string             $icon       = '';
     protected array              $actions    = [];
-    protected RowSelect          $rowSelect;
     protected CallbackCollection $onGetSelected;
 
 
@@ -32,7 +30,6 @@ class Select extends Action
 
         $this->addCss('btn btn-sm btn-light tk-action-select');
         $this->setAttr('disabled');
-        $this->setAttr('data-confirm', $this->confirmStr);
     }
 
     public static function create(string $name = 'select', string $icon = 'fa fa-fw fa-check'): self
@@ -78,8 +75,8 @@ HTML;
         $attr = '';
         if ($this->getAttr('data-confirm')) {
             $attr = sprintf('data-confirm="%s"', $this->getAttr('data-confirm'));
-            $this->removeAttr('data-confirm');
         }
+        $this->removeAttr('data-confirm');
 
         $buttonHtml = '';
         foreach ($this->actions as $name => $val) {
@@ -100,15 +97,18 @@ HTML;
 HTML;
     }
 
-    protected function getConfirmStr(): string
+    protected function getConfirmStr(): ?string
     {
-        return $this->confirmStr;
+        return $this->getAttr('data-confirm', null);
     }
 
-    public function setConfirmStr(string $confirmStr): static
+    public function setConfirmStr(?string $confirmStr): static
     {
-        $this->confirmStr = $confirmStr;
-        $this->setAttr('data-confirm', $this->confirmStr);
+        if (empty($confirmStr)) {
+            $this->removeAttr('data-confirm');
+        } else {
+            $this->setAttr('data-confirm', $confirmStr);
+        }
         return $this;
     }
 

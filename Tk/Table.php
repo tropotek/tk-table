@@ -80,16 +80,16 @@ class Table
         $this->setOrderBy($ses->get($kOrderBy, $this->getOrderBy()));
 
         // Second check request for any changes and redirect removing query params if found
-        if (isset($_REQUEST[$kPage])) {
-            $this->setPage((int)$_REQUEST[$kPage]);
+        if (isset($_GET[$kPage])) {
+            $this->setPage((int)$_GET[$kPage]);
             $reload = true;
         }
-        if (isset($_REQUEST[$kOrderBy])) {
-            $this->setOrderBy(trim($_REQUEST[$kOrderBy]));
+        if (isset($_GET[$kOrderBy])) {
+            $this->setOrderBy(trim($_GET[$kOrderBy]));
             $reload = true;
         }
-        if (isset($_REQUEST[$kLimit])) {
-            $this->setLimit((int)$_REQUEST[$kLimit]);
+        if (isset($_GET[$kLimit])) {
+            $this->setLimit((int)$_GET[$kLimit]);
             $this->setPage(1);
             $reload = true;
         }

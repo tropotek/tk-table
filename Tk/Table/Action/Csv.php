@@ -12,7 +12,7 @@ use Tk\Table\Cell\RowSelect;
  *
  * NOTE: This Action does not call the onExecute() or onShow() callback queues
  */
-class Csv extends Select
+class Csv extends Button
 {
     const array EXCLUDED_CELLS = [
         OrderBy::class,
@@ -27,6 +27,7 @@ class Csv extends Select
     {
         parent::__construct($name);
         $this->setAttr('title', 'Export Records');
+        $this->addCss('btn btn-sm btn-light tk-action-csv');
         $this->removeAttr('disabled');
     }
 
@@ -34,7 +35,6 @@ class Csv extends Select
     {
         $obj = new self($name);
         $obj->icon = $icon;
-        $obj->setConfirmStr('Export selected records to CSV?');
         return $obj;
     }
 
@@ -44,12 +44,7 @@ class Csv extends Select
         $this->setActive(isset($_POST[$selectName]));
         if (!$this->isActive()) return;
 
-        $selected = $this->getOnGetSelected()->execute();
-        if (!is_array($selected)) {
-            $selected = [];
-        }
-
-        $rows = $this->getOnExecute()->execute($this, $selected);
+        $rows = $this->getOnExecute()->execute($this);
         if (!count($rows)) {
             Uri::create()->redirect();
         }
