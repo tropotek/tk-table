@@ -225,7 +225,7 @@ class Table
         return $this;
     }
 
-    public function appendCell(string|Cell $cell, ?string $refName = null): Cell
+    public function appendCell(string|Cell $cell, ?string $after = null): Cell
     {
         if (is_string($cell)) {
             $cell = new Cell($cell);
@@ -234,10 +234,10 @@ class Table
             throw new \Tk\Exception("Cell with name '{$cell->getName()}' already exists.");
         }
         $cell->setTable($this);
-        return $this->getCells()->append($cell->getName(), $cell, $refName);
+        return $this->getCells()->append($cell->getName(), $cell, $after);
     }
 
-    public function prependCell(string|Cell $cell, ?string $refName = null): Cell
+    public function prependCell(string|Cell $cell, ?string $before = null): Cell
     {
         if (is_string($cell)) {
             $cell = new Cell($cell);
@@ -246,7 +246,7 @@ class Table
             throw new \Tk\Exception("Cell with name '{$cell->getName()}' already exists.");
         }
         $cell->setTable($this);
-        return $this->getCells()->prepend($cell->getName(), $cell, $refName);
+        return $this->getCells()->prepend($cell->getName(), $cell, $before);
     }
 
     public function getActions(): Collection
@@ -265,7 +265,7 @@ class Table
         return $this;
     }
 
-    public function appendAction(string|Action $action, ?string $refName = null): Action
+    public function appendAction(string|Action $action, ?string $after = null): Action
     {
         if (is_string($action)) {
             $action = new Action($action);
@@ -274,10 +274,10 @@ class Table
             throw new \Tk\Exception("Action with name '{$action->getName()}' already exists.");
         }
         $action->setTable($this);
-        return $this->getActions()->append($action->getName(), $action, $refName);
+        return $this->getActions()->append($action->getName(), $action, $after);
     }
 
-    public function prependAction(string|Action $action, ?string $refName = null): Action
+    public function prependAction(string|Action $action, ?string $before = null): Action
     {
         if (is_string($action)) {
             $action = new Action($action);
@@ -286,7 +286,7 @@ class Table
             throw new \Tk\Exception("Action with name '{$action->getName()}' already exists.");
         }
         $action->setTable($this);
-        return $this->getActions()->prepend($action->getName(), $action, $refName);
+        return $this->getActions()->prepend($action->getName(), $action, $before);
     }
 
     /**
