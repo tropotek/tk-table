@@ -153,9 +153,10 @@ class Cell
         return $this->orderBy;
     }
 
-    public function setOrderBy(string $orderBy): void
+    public function setOrderBy(string $orderBy): static
     {
         $this->orderBy = $orderBy;
+        return $this;
     }
 
     public function getTable(): ?Table

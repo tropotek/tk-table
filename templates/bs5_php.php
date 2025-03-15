@@ -91,7 +91,7 @@ $pageUrl->remove($pageKey);
                                         $order = substr($order, 1);
                                         $dir = '-';
                                     }
-                                    if ($order == $cell->getName()) {
+                                    if ($order == $cell->getOrderBy()) {
                                         $orderCss = ($dir == '-') ? 'desc' : 'asc';
                                     }
                                 ?>
