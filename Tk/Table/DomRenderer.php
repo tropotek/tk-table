@@ -9,6 +9,7 @@ use Dom\Template;
 use Tk\Log;
 use Tk\ObjectUtil;
 use Tk\Table;
+use Tk\Uri;
 
 class DomRenderer extends TableRenderer implements RendererInterface
 {
@@ -244,23 +245,16 @@ class DomRenderer extends TableRenderer implements RendererInterface
         $total = max(count($this->rows), $this->getTable()->getTotalRows());
         if (!$total) return;
 
-        $form = $template->getForm('tk-table-form');
-        $template->removeAttr('form', 'id');
-
-        $select = $form->getFormElement('limit');
-        if (!($select instanceof Select)) return;
-
         foreach(self::LIMIT_LIST as $k => $v) {
-            $select->appendOption(strval($k), strval($v));
+            $option = $template->getRepeat('limit-option');
+            $option->setText('limit-option', strval($k));
+            $url = Uri::create()->set($this->getTable()->makeRequestKey(Table::PARAM_LIMIT), strval($k));
+            $option->setAttr('limit-option', 'href', $url);
+            $option->appendRepeat();
         }
 
-        $select->setValue(strval($this->getTable()->getLimit()));
-        $select->setAttribute('data-name', $this->getTable()->makeRequestKey(Table::PARAM_LIMIT));
-        $select->setAttribute('data-page', $this->getTable()->makeRequestKey(Table::PARAM_PAGE));
-        $select->setAttribute('data-total', strval($total));
-
-        $select->setAttribute('name', $this->getTable()->makeRequestKey(Table::PARAM_LIMIT));
-        // $select->setAttribute('name', null); // TODO: why did I do this, test to find out
+        $limit = $this->getTable()->getLimit() == 0 ? 'All' : strval($this->getTable()->getLimit());
+        $template->setText('limit-label', $limit);
 
         $template->setVisible('limit-wrap');
     }

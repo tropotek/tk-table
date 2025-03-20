@@ -9,7 +9,7 @@ abstract class TableRenderer extends Renderer
     const string CSS_SELECTED = 'active';
     const string CSS_DISABLED = 'disabled';
 
-    const array LIMIT_LIST   = [
+    const array LIMIT_LIST    = [
         '-- All --' => 0,
         '10'  => 10,
         '25'  => 25,

@@ -12,20 +12,6 @@ jQuery(function ($) {
   function initTable() {
     let tkTable = $(this);
 
-    // Class: \Tk\Table
-    // Table limit on-change event
-    $('.tk-limit select', tkTable).on('change.tkTable', function (e) {
-      if ($(this).val() == 0 && $(this).data('total') > 1000) {
-        if (!confirm('WARNING: There are large number of records, page load time may be slowed.')) return false;
-      }
-      const searchParams = new URLSearchParams(location.search);
-      searchParams.set($(this).data('name'), $(this).val());
-      searchParams.delete($(this).data('page'));
-      location.search = searchParams.toString();
-      return false;
-    });
-
-
     // Class: \Tk\Table\Cell\RowSelect
     $('.tk-tcb-head', tkTable).on('change', function(e) {
       let cbh = $(this);

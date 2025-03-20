@@ -3,6 +3,7 @@
 use Tk\Table;
 use Tk\Table\PhpRenderer;
 use Tk\Table\TableRenderer;
+use Tk\Uri;
 
 /** @var \Tk\Table\Cell $cell */
 
@@ -184,11 +185,17 @@ $pageUrl->remove($pageKey);
                 <div class="tk-limit col-3">
                     <div class="row justify-content-end">
                         <div class="col-auto">
-                            <select class="form-select form-select-sm" data-name="<?= $table->makeRequestKey(Table::PARAM_LIMIT) ?>" data-page="<?= $table->makeRequestKey(Table::PARAM_PAGE) ?>" data-total="<?= $total ?>">
-                                <? foreach (TableRenderer::LIMIT_LIST as $k => $v): ?>
-                                    <option value="<?= eattr($v)?>" <?= ($table->getLimit() == $v) ? 'selected' : ''?>><?= e($k) ?></option>
-                                <? endforeach ?>
-                            </select>
+                            <div class="btn-group dropup mb-2 me-1">
+                                <? $limitLabel = $this->getTable()->getLimit() == 0 ? 'All' : strval($this->getTable()->getLimit()); ?>
+                                <button type="button" class="btn btn-sm btn-light dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" title="Results per page"><span><?= $limitLabel ?></span> <i class="mdi mdi-chevron-up"></i></button>
+                                <div class="dropdown-menu">
+                                    <a class="limit-link dropdown-item" href="#" repeat="limit-option">10</a>
+                                    <? foreach (TableRenderer::LIMIT_LIST as $k => $v): ?>
+                                        <? $url = Uri::create()->set($this->getTable()->makeRequestKey(Table::PARAM_LIMIT), strval($k)); ?>
+                                        <a class="limit-link dropdown-item" href="<?= $url->toString() ?>"><?= strval($k) ?></a>
+                                    <? endforeach ?>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>

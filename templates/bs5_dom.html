@@ -71,7 +71,12 @@
       <div class="tk-limit col-3">
         <div class="row justify-content-end" choice="limit-wrap">
           <div class="col-auto">
-            <select class="form-select form-select-sm" name="limit" var="limit-select"></select>
+            <div class="btn-group dropup mb-2 me-1">
+              <button type="button" class="btn btn-sm btn-light dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" title="Results per page"><span var="limit-label">Limit</span> <i class="mdi mdi-chevron-up"></i></button>
+              <div class="dropdown-menu">
+                <a class="limit-link dropdown-item" href="#" repeat="limit-option">10</a>
+              </div>
+            </div>
           </div>
         </div>
       </div>
