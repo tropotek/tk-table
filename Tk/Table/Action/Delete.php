@@ -14,14 +14,15 @@ class Delete extends Select
     public function __construct(string $name)
     {
         parent::__construct($name);
+        $this->icon = 'fa fa-fw fa-trash';
         $this->setAttr('title', 'Delete Selected Records');
+        $this->setConfirmStr('Delete the selected records?');
     }
 
     public static function create(string $name = 'delete', string $icon = 'fa fa-fw fa-trash'): self
     {
         $obj = new self($name);
         $obj->icon = $icon;
-        $obj->setConfirmStr('Delete the selected records?');
         return $obj;
     }
 

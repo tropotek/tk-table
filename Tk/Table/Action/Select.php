@@ -30,6 +30,7 @@ class Select extends Action
 
         $this->addCss('btn btn-sm btn-light tk-action-select');
         $this->setAttr('disabled');
+        $this->setAttr('type', 'submit');
     }
 
     public static function create(string $name = 'select', string $icon = 'fa fa-fw fa-check'): self
@@ -66,7 +67,7 @@ class Select extends Action
 
         if (empty($this->actions)) {
             return <<<HTML
-<button type="submit" name="{$selectName}" value="{$selectName}" class="{$this->getCssString()}" {$this->getAttrString()}>
+<button name="{$selectName}" value="{$selectName}" class="{$this->getCssString()}" {$this->getAttrString()}>
     <i class="{$this->icon}"></i> {$this->getLabel()}
 </button>
 HTML;
