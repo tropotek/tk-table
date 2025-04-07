@@ -85,7 +85,6 @@ class DomRenderer extends TableRenderer implements RendererInterface
         $template->addCss('thr', $this->getTable()->getHeaderAttrs()->getCssList());
         /** @var Cell $cell */
         foreach ($this->getTable()->getCells() as $cell) {
-            $cell->getHeaderAttrs()->addCss('table-light');    // bs5 style
             $th = $template->getRepeat('th');
             $th->setAttr('th', $cell->getHeaderAttrs()->getAttrList());
             $th->addCss('th', $cell->getHeaderAttrs()->getCssList());
