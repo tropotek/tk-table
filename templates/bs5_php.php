@@ -76,7 +76,7 @@ $pageUrl->remove($pageKey);
         <? endif ?>
 
         <div class="tk-table-wrapper table-responsive">
-            <table class="table table-bordered table-hover <?= $table->getCssString() ?>" <?= $table->getAttrString() ?>>
+            <table class="table table-hover <?= $table->getCssString() ?>" <?= $table->getAttrString() ?>>
                 <thead class="table-light">
                 <tr>
                     <? foreach ($table->getCells() as $cell): ?>
