@@ -52,6 +52,11 @@ class Cell
         return $this->name;
     }
 
+    public function getRowAttrs(): Attributes
+    {
+        return $this->getTable()->getRowAttrs();
+    }
+
     /**
      * Callbacks are executed when getValue() is called
      * @callable function (array|object $row, Cell $cell) {  }
