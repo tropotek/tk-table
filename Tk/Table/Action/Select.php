@@ -98,9 +98,9 @@ HTML;
 HTML;
     }
 
-    protected function getConfirmStr(): ?string
+    protected function getConfirmStr(): string
     {
-        return $this->getAttr('data-confirm', null);
+        return $this->getAttr('data-confirm');
     }
 
     public function setConfirmStr(?string $confirmStr): static

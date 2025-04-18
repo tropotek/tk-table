@@ -57,8 +57,8 @@ class OrderBy extends Cell
             throw new Exception('Invalid order change parameters');
         }
 
-        $fromObj = $this->modelClass::find(intval($regs[1] ?? 0));
-        $toObj   = $this->modelClass::find(intval($regs[2] ?? 0));
+        $fromObj = $this->modelClass::find(intval($regs[1]));
+        $toObj   = $this->modelClass::find(intval($regs[2]));
         if (!($fromObj && $toObj)) {
             return;
         }

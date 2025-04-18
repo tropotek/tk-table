@@ -125,7 +125,7 @@ class Cell
         return $this;
     }
 
-    public function setHeaderAttr(array|string $name, string $value = null): static
+    public function setHeaderAttr(array|string $name, ?string $value = null): static
     {
         $this->headerAttrs->setAttr($name, $value);
         return $this;

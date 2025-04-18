@@ -34,7 +34,7 @@ class RowSelect extends Cell
         return $this->property;
     }
 
-    public function getSelected()
+    public function getSelected(): array
     {
         return $_POST[$this->getName()] ?? [];
     }
