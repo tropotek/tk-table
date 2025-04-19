@@ -1,5 +1,16 @@
 #CHANGELOG#
 
+Ver 8.0.24 [2025-04-20]:
+-------------------------------
+  - Added hx files componenet
+  - Added students and updated settings
+  - update csv export action
+  - Implement htmx table UI
+  - Add checkSelect field and persistand form fields
+  - Updated table and action classes
+  - Added orderBy table cell
+
+
 Ver 8.0.22 [2024-11-03]:
 -------------------------------
   - phpstan lvl7
