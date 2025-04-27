@@ -42,7 +42,6 @@ class Select extends Action
 
     public function execute(): void
     {
-
         $selectName = $this->getTable()->makeRequestKey($this->getName());
         $this->setActive(isset($_POST[$selectName]));
         if (!$this->isActive()) return;
