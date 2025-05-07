@@ -16,16 +16,16 @@ class Button extends Action
 
     protected string $icon = '';
 
-    public function __construct(string $name)
+    public function __construct(string $name, string $icon = '')
     {
         parent::__construct($name);
+        $this->icon = $icon;
         $this->addCss('btn btn-sm btn-light');
     }
 
     public static function create(string $name, string $icon = ''): self
     {
-        $obj = new self($name);
-        $obj->icon = $icon;
+        $obj = new self($name, $icon);
         return $obj;
     }
 
