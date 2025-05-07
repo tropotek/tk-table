@@ -129,14 +129,14 @@ $pageUrl->remove($pageKey);
         <? if($renderer->isFooterEnabled() && $total): ?>
             <div class="tk-foot row">
 
-                <div class="tk-results col-3">
+                <div class="tk-results col-md-3">
                     <? if($total): ?>
                         <small>
                             <span><?= $from ?></span>-<span><?= $to ?></span> of <span><?= $total ?></span> rows
                         </small>
                     <? endif ?>
                 </div>
-                <div class="tk-pager paging_simple_numbers col-6">
+                <div class="tk-pager paging_simple_numbers col-md-6">
                     <? if($numPages > 1 && $this->getTable()->getLimit() != 0 && $total > $this->getTable()->getLimit()): ?>
                         <div class="row justify-content-center">
                             <ul class="pagination pagination-sm pagination-rounded col-auto">
@@ -151,8 +151,8 @@ $pageUrl->remove($pageKey);
                                         $disabled = TableRenderer::CSS_DISABLED;
                                     }
                                 ?>
-                                <li class="paginate_button page-item <?= $disabled ?>"><a class="page-link" href="<?= $startUrl ?>" title="Start Page" rel="nofollow">&lt;&lt;</a></li>
-                                <li class="paginate_button page-item <?= $disabled ?>"><a class="page-link" href="<?= $backUrl ?>" title="Previous Page">&lt;</a></li>
+                                <li class="page-item <?= $disabled ?>"><a class="page-link" href="<?= $startUrl ?>" title="Start Page" rel="nofollow">&lt;&lt;</a></li>
+                                <li class="page-item <?= $disabled ?>"><a class="page-link" href="<?= $backUrl ?>" title="Previous Page">&lt;</a></li>
 
                                 <? for ($i = $startPage; $i <= $endPage; $i++): ?>
                                     <?
@@ -161,7 +161,7 @@ $pageUrl->remove($pageKey);
                                         $pageUrl->set($pageKey, $i);
                                         $url = $pageUrl->toString();
                                     ?>
-                                    <li class="paginate_button page-item <?= $selected ?>"><a class="page-link" href="<?= $url ?>" title="Page <?= $i ?>" rel="nofollow"><?= $i ?></a></li>
+                                    <li class="page-item <?= $selected ?>"><a class="page-link" href="<?= $url ?>" title="Page <?= $i ?>" rel="nofollow"><?= $i ?></a></li>
                                 <? endfor ?>
 
                                 <?
@@ -175,14 +175,14 @@ $pageUrl->remove($pageKey);
                                         $disabled = TableRenderer::CSS_DISABLED;
                                     }
                                 ?>
-                                <li class="paginate_button page-item <?= $disabled ?>"><a class="page-link" href="<?= $nextUrl ?>" title="Next Page">&gt;</a></li>
-                                <li class="paginate_button page-item <?= $disabled ?>"><a class="page-link" href="<?= $endUrl ?>" title="Last Page" rel="nofollow">&gt;&gt;</a></li>
+                                <li class="page-item <?= $disabled ?>"><a class="page-link" href="<?= $nextUrl ?>" title="Next Page">&gt;</a></li>
+                                <li class="page-item <?= $disabled ?>"><a class="page-link" href="<?= $endUrl ?>" title="Last Page" rel="nofollow">&gt;&gt;</a></li>
                             </ul>
                         </div>
                     <? endif ?>
                 </div>
 
-                <div class="tk-limit col-3">
+                <div class="tk-limit col-md-3">
                     <div class="row justify-content-end">
                         <div class="col-auto">
                             <div class="btn-group dropup mb-2 me-1">
