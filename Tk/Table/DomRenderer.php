@@ -80,12 +80,34 @@ class DomRenderer extends TableRenderer implements RendererInterface
             $template->setVisible('actions');
         }
 
-        // Render table header elements
+        // Render table rows first to capture and events triggered in the getValue() method
+        $rowAttrs = clone $this->getTable()->getRowAttrs();
+        foreach ($this->getRows() as $row) {
+            $tr = $template->getRepeat('tr');
+            foreach ($this->getTable()->getCells() as $cell) {
+                $td = $tr->getRepeat('td');
+                $cellAttrs = $cell->getAttrList();
+                $td->setHtml('td', $cell->getValue($row) ?? '');
+                $td->setAttr('td', $cell->getAttrList());
+                $td->addCss('td', $cell->getCssList());
+                $cell->setAttrList($cellAttrs);
+                $td->appendRepeat();
+            }
+
+            $tr->setAttr('tr', $this->getTable()->getRowAttrs()->getAttrList());
+            $tr->addCss('tr', $this->getTable()->getRowAttrs()->getCssList());
+            $tr->appendRepeat();
+
+            $this->getTable()->setRowAttrs(clone $rowAttrs);
+        }
+
+        // Render table headers after table rows
         $template->setAttr('thr', $this->getTable()->getHeaderAttrs()->getAttrList());
         $template->addCss('thr', $this->getTable()->getHeaderAttrs()->getCssList());
         /** @var Cell $cell */
         foreach ($this->getTable()->getCells() as $cell) {
             $th = $template->getRepeat('th');
+            $th->setAttr('data-test', 'test');
             $th->setAttr('th', $cell->getHeaderAttrs()->getAttrList());
             $th->addCss('th', $cell->getHeaderAttrs()->getCssList());
 
@@ -110,27 +132,6 @@ class DomRenderer extends TableRenderer implements RendererInterface
                 $th->setHtml('th', $cell->getHeader());
             }
             $th->appendRepeat();
-        }
-
-        // Render table rows
-        $rowAttrs = clone $this->getTable()->getRowAttrs();
-        foreach ($this->getRows() as $row) {
-            $tr = $template->getRepeat('tr');
-            foreach ($this->getTable()->getCells() as $cell) {
-                $td = $tr->getRepeat('td');
-                $cellAttrs = $cell->getAttrList();
-                $td->setHtml('td', $cell->getValue($row) ?? '');
-                $td->setAttr('td', $cell->getAttrList());
-                $td->addCss('td', $cell->getCssList());
-                $cell->setAttrList($cellAttrs);
-                $td->appendRepeat();
-            }
-
-            $tr->setAttr('tr', $this->getTable()->getRowAttrs()->getAttrList());
-            $tr->addCss('tr', $this->getTable()->getRowAttrs()->getCssList());
-            $tr->appendRepeat();
-
-            $this->getTable()->setRowAttrs(clone $rowAttrs);
         }
 
         $template->setAttr('tk-table', 'id', $this->getTable()->getId());

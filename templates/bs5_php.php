@@ -58,7 +58,20 @@ $pageUrl = \Tk\Uri::create();
 $pageKey = $this->getTable()->makeRequestKey(Table::PARAM_PAGE);
 $pageUrl->remove($pageKey);
 
+// Render table rows first to capture and events triggered in the getValue() method
+$tr = [];
+foreach ($rows as $row) {
 
+    $td = [];
+    foreach ($table->getCells() as $cell) {
+        $cellAttrs = $cell->getAttrList();
+        $val = $cell->getValue($row);
+        $td[] = sprintf('<td %s>%s</td>', $cell->getAttrString(true), $val);
+        $cell->setAttrList($cellAttrs);
+    }
+    $tr[] = sprintf('<tr %s>%s</tr>', $table->getRowAttrs()->getAttrString(true), implode("\n", $td));
+    $table->setRowAttrs(clone $rowAttrs);
+}
 ?>
 <!-- TODO: Include this script in the master template -->
 <!--<script src="/vendor/ttek/tk-table/templates/tkTable.js" data-priority="1"></script>-->
@@ -83,7 +96,7 @@ $pageUrl->remove($pageKey);
                         <th <?= $cell->getHeaderAttrs()->getAttrString(true) ?>>
                             <? if ($cell->isSortable()): ?>
                                 <?
-                                    // set header orderBy URL and css class
+                                    // Render table headers after table rows.
                                     $orderUrl = $cell->getOrderByUrl();
                                     $orderCss = '';
                                     $order = $this->getTable()->getOrderBy();
@@ -105,23 +118,7 @@ $pageUrl->remove($pageKey);
                 </tr>
                 </thead>
                 <tbody>
-                <? foreach ($rows as $row): ?>
-                    <?
-                    $td = [];
-                    foreach ($table->getCells() as $cell) {
-                        $cellAttrs = $cell->getAttrList();
-                        $val = $cell->getValue($row);
-                        $td[$cell->getName()] = sprintf('<td %s>%s</td>', $cell->getAttrString(true), $val);
-                        $cell->setAttrList($cellAttrs);
-                    }
-                    ?>
-                    <tr <?= $table->getRowAttrs()->getAttrString(true) ?>>
-                        <? foreach ($table->getCells() as $cell): ?>
-                            <?= $td[$cell->getName()] ?>
-                        <? endforeach ?>
-                    </tr>
-                    <? $table->setRowAttrs(clone $rowAttrs); ?>
-                <? endforeach ?>
+                    <?= implode("\n", $tr) ?>
                 </tbody>
             </table>
         </div>
