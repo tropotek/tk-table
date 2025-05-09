@@ -1,7 +1,7 @@
 {
     "name": "ttek/tk-table",
     "type": "library",
-    "description": "A dynamic table lib to manage table rendering",
+    "description": "Tk8 Lib: Table rendering with DOM and PHP templates",
     "keywords":  [
         "tropotek",
         "Table"
