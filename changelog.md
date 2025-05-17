@@ -1,5 +1,12 @@
 #CHANGELOG#
 
+Ver 8.0.28 [2025-05-18]:
+-------------------------------
+  - Update to use static methods for Registry and Config
+  - Merge branch '8.0' of https://github.com/tropotek/tk-table into 8.0
+  - Tagging and releasing branch `8.0` with version `8.0.26`.
+
+
 Ver 8.0.26 [2025-05-08]:
 -------------------------------
 
