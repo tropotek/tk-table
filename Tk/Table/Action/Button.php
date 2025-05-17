@@ -1,11 +1,9 @@
 <?php
 namespace Tk\Table\Action;
 
-use Tk\CallbackCollection;
 use Tk\Ui\Traits\AttributesTrait;
 use Tk\Uri;
 use Tk\Table\Action;
-use Tk\Table\Cell\RowSelect;
 
 /**
  * NOTE: This Action does not call the onExecute() or onShow() callback queues

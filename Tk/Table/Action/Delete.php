@@ -2,7 +2,6 @@
 namespace Tk\Table\Action;
 
 use Tk\CallbackCollection;
-use Tk\Table\Cell\RowSelect;
 
 /**
  *

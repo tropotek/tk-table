@@ -3,7 +3,6 @@ namespace Tk\Table\Action;
 
 use Tk\CallbackCollection;
 use Tk\Uri;
-use Tk\Table\Action;
 use Tk\Table\Cell;
 use Tk\Table\Cell\OrderBy;
 use Tk\Table\Cell\RowSelect;

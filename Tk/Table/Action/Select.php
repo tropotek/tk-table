@@ -5,7 +5,6 @@ use Tk\CallbackCollection;
 use Tk\Ui\Traits\AttributesTrait;
 use Tk\Uri;
 use Tk\Table\Action;
-use Tk\Table\Cell\RowSelect;
 
 /**
  * This action depends on \Tk\Table\Cell\RowSelect Cell

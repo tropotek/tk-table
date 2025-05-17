@@ -2,7 +2,6 @@
 namespace Tk\Table;
 
 use Dom\Builder;
-use Dom\Form\Select;
 use Dom\Renderer\RendererInterface;
 use Dom\Renderer\Traits\RendererTrait;
 use Dom\Template;
