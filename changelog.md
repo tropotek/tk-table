@@ -1,5 +1,9 @@
 #CHANGELOG#
 
+Ver 8.0.30 [2025-05-22]:
+-------------------------------
+
+
 Ver 8.0.28 [2025-05-18]:
 -------------------------------
   - Update to use static methods for Registry and Config
