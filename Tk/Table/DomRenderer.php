@@ -24,7 +24,7 @@ class DomRenderer extends TableRenderer implements RendererInterface
             $templatePath = dirname(__DIR__, 2) . '/templates/bs5_dom.html';
         }
         parent::__construct($table, $templatePath);
-        $this->init($this->path);
+        $this->init($this->templatePath);
     }
 
     protected function init(string $tplFile): void
@@ -81,7 +81,7 @@ class DomRenderer extends TableRenderer implements RendererInterface
 
         // Render table rows first to capture and events triggered in the getValue() method
         $rowAttrs = clone $this->getTable()->getRowAttrs();
-        foreach ($this->getRows() as $row) {
+        foreach ($this->getTable()->getRows() as $row) {
             $tr = $template->getRepeat('tr');
             foreach ($this->getTable()->getCells() as $cell) {
                 $td = $tr->getRepeat('td');

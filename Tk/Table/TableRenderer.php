@@ -18,11 +18,12 @@ abstract class TableRenderer extends Renderer
         '250' => 250,
     ];
 
-    protected string  $path          = '';
+    protected string  $templatePath  = '';
     protected array   $footer        = [];
     protected array   $rows          = [];
     protected int     $maxPages      = 10;
     protected bool    $footerEnabled = true;
+
 
     public function __construct(Table $table, string $templatePath = '')
     {
@@ -30,26 +31,29 @@ abstract class TableRenderer extends Renderer
             throw new \Exception("File not found: $templatePath");
         }
         $this->setTable($table);
-        $this->path = $templatePath;
+        $this->templatePath = $templatePath;
     }
 
+    /**
+     * @deprecated use Table::getRows())
+     */
     public function getRows(): ?array
     {
-        return $this->rows;
+        return $this->getTable()->getRows();
     }
 
+    /**
+     * @deprecated use Table::setRows()
+     */
     public function setRows(array $rows, ?int $totalRows = null): static
     {
-        if (!is_null($totalRows)) {
-            $this->getTable()->setTotalRows($totalRows);
-        }
-        $this->rows = $rows;
+        $this->getTable()->setRows($rows, $totalRows);
         return $this;
     }
 
-    public function getPath(): string
+    public function getTemplatePath(): string
     {
-        return $this->path;
+        return $this->templatePath;
     }
 
     public function getMaxPages(): int

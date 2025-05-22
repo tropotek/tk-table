@@ -23,6 +23,9 @@ class Table
     protected string     $orderBy   = '';
     protected int        $totalRows = 0;
 
+    /** @var array<int|string, mixed> */
+    protected array      $rows      = [];
+
     protected Collection $cells;
     protected Collection $actions;
     protected Attributes $rowAttrs;
@@ -171,15 +174,38 @@ class Table
         return $this->headerAttrs;
     }
 
+    /**
+     * returns the total found rows if supplied with Table::setRows()
+     */
     public function getTotalRows(): int
     {
         return $this->totalRows;
     }
 
-    public function setTotalRows(int $totalRows): Table
+    /**
+     * @return null|array<int|string, mixed>
+     */
+    public function getRows(): ?array
     {
-        $this->totalRows = ($totalRows < 0) ? 0 : $totalRows;
+        return $this->rows;
+    }
+
+    /**
+     * @param array<int|string, mixed> $rows
+     */
+    public function setRows(array $rows, ?int $totalRows = null): static
+    {
+        $this->rows = $rows;
+        $this->totalRows = is_null($totalRows) ? count($rows) : $totalRows;
         return $this;
+    }
+
+    /**
+     * return the total rows for this page
+     */
+    public function getRowCount(): int
+    {
+        return count($this->getRows());
     }
 
     public function getLimit(): int
