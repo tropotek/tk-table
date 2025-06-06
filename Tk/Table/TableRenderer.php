@@ -28,7 +28,7 @@ abstract class TableRenderer extends Renderer
     public function __construct(Table $table, string $templatePath = '')
     {
         if (!is_file($templatePath)) {
-            throw new \Exception("File not found: $templatePath");
+            throw new Exception("File not found: $templatePath");
         }
         $this->setTable($table);
         $this->templatePath = $templatePath;

@@ -2,6 +2,7 @@
 namespace Tk\Table\Action;
 
 use Tk\CallbackCollection;
+use Tk\Table\Exception;
 use Tk\Uri;
 use Tk\Table\Cell;
 use Tk\Table\Cell\OrderBy;
@@ -56,7 +57,7 @@ class Csv extends Button
         // Output the CSV data
         $out = fopen('php://output', 'w');
         if ($out === false) {
-            throw new \Exception("failed to open output stream");
+            throw new Exception("failed to open output stream");
         }
 
         header('Content-Type: application/octet-stream');

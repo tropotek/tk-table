@@ -3,7 +3,7 @@ namespace Tk\Table\Cell;
 
 use Tk\Db;
 use Tk\Db\Model;
-use Tk\Exception;
+use Tk\Table\Exception;
 use Tk\Log;
 use Tk\Table;
 use Tk\Table\Cell;
