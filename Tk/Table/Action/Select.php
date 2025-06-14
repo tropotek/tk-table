@@ -86,7 +86,7 @@ HTML;
         return <<<HTML
 <div class="btn-group" role="group">
     <button type="button" class="{$this->getCssString()} dropdown-toggle"  {$this->getAttrString()} data-bs-toggle="dropdown" aria-expanded="false">
-      {$this->getLabel()}
+      <i class="{$this->icon}"></i> {$this->getLabel()}
       <i class="mdi mdi-chevron-down"></i>
     </button>
     <ul class="dropdown-menu">
