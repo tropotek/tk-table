@@ -1,5 +1,10 @@
 #CHANGELOG#
 
+Ver 8.0.34 [2025-06-21]:
+-------------------------------
+  - Add component interface so they can return null content
+
+
 Ver 8.0.32 [2025-06-10]:
 -------------------------------
   - Add table exception class
