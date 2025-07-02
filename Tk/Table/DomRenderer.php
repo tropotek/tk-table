@@ -106,9 +106,6 @@ class DomRenderer extends TableRenderer implements RendererInterface
         /** @var Cell $cell */
         foreach ($this->getTable()->getCells() as $cell) {
             $th = $template->getRepeat('th');
-            $th->setAttr('data-test', 'test');
-            $th->setAttr('th', $cell->getHeaderAttrs()->getAttrList());
-            $th->addCss('th', $cell->getHeaderAttrs()->getCssList());
 
             if ($cell->isSortable()) {
                 // set header orderBy URL and css class
@@ -125,11 +122,13 @@ class DomRenderer extends TableRenderer implements RendererInterface
                 }
                 $th->addCss('a', $orderCss);
                 $th->setAttr('a', 'href', $orderUrl->toString());
-
                 $th->setHtml('a', $cell->getHeader());
             } else {
                 $th->setHtml('th', $cell->getHeader());
             }
+
+            $th->setAttr('th', $cell->getHeaderAttrs()->getAttrList());
+            $th->addCss('th', $cell->getHeaderAttrs()->getCssList());
             $th->appendRepeat();
         }
 
