@@ -15,7 +15,7 @@ class Cell
     protected string     $name        = '';
     protected ?string    $value       = null;
     protected string     $header      = '';
-    protected bool       $visible     = true;
+    //protected bool       $visible     = true;
     protected string     $orderBy     = '';
     protected bool       $sortable    = false;
     protected ?Table     $table       = null;
@@ -131,16 +131,16 @@ class Cell
         return $this;
     }
 
-    public function setVisible(bool $visible): static
-    {
-        $this->visible = $visible;
-        return $this;
-    }
-
-    public function isVisible(): bool
-    {
-        return $this->visible;
-    }
+//    public function setVisible(bool $visible): static
+//    {
+//        $this->visible = $visible;
+//        return $this;
+//    }
+//
+//    public function isVisible(): bool
+//    {
+//        return $this->visible;
+//    }
 
     public function isSortable(): bool
     {

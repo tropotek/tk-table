@@ -235,6 +235,9 @@ class Table
         return $this->getLimit() * ($this->getPage()-1);
     }
 
+    /**
+     * @return array<string,Cell>
+     */
     public function getCells(): Collection
     {
         return $this->cells;

@@ -61,7 +61,14 @@ jQuery(function ($) {
 });
 
 /**
- * This plugin for class \Tk\Tabl\Cell\OrderBy
+ * jQuery plugin for class \Tk\Tabl\Cell\OrderBy
+ *
+ * ```
+ *     $('tbody', this).tableOrderBy({
+ *         selector: '.tk-sortable tbody',
+ *         handle: '.tk-orderBy .drag',
+ *     });
+ * ```
  */
 (function ($) {
     var tableOrderBy = function (element, options) {
