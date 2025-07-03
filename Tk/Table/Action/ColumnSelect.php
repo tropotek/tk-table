@@ -14,7 +14,7 @@ use Tk\Table\Action;
 /**
  * Allow users to show/hide table columns
  *
- * @note When using ColumnSelect you must ensure the jQuery plugin `columnSelect` is installed
+ * @note When using ColumnSelect, you must ensure the jQuery plugin `columnSelect` is installed
  * @depends /tk-table/templates/tkTable.js
  */
 class ColumnSelect extends Action
@@ -23,9 +23,9 @@ class ColumnSelect extends Action
 
     const string SID = 'columnSelect';
 
-    // do not include column in selectable list
+    // ignore cell in the select list
     const string ATTR_IGNORE = 'data-column-ignore';
-    // Hide column on default view
+    // hide cell in the default visible list
     const string ATTR_HIDE = 'data-column-hide';
 
     protected string $icon = '';
@@ -64,7 +64,7 @@ class ColumnSelect extends Action
             $this->session->remove(self::SID);
         }
 
-        // create default visible list
+        // create the default visible list
         $defaultVisible = [];
         foreach ($this->getTable()->getCells() as $cell) {
             if ($this->isVisible($cell)) {
@@ -74,7 +74,7 @@ class ColumnSelect extends Action
         $this->visible = $this->session->get(self::SID, $defaultVisible);
         $this->session->set(self::SID, $this->visible);
 
-        // get submitted column list
+        // get the submitted column list
         $action = trim($_POST['action'] ?? '');
         if ($action !== $actionId) return;
         $this->visible = $_POST[$this->getName()];
