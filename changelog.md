@@ -1,5 +1,11 @@
 #CHANGELOG#
 
+Ver 8.0.36 [2025-07-04]:
+-------------------------------
+  - loads of minor updates
+  - fix table header sort arrows
+
+
 Ver 8.0.34 [2025-06-21]:
 -------------------------------
   - Add component interface so they can return null content
