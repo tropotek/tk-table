@@ -14,6 +14,7 @@ class RowSelect extends Cell
         $this->property = $property ?: $name;
 
         $this->addCss('text-center');
+        $this->addHeaderCss('text-center');
         $this->setHeader(sprintf('<input type="checkbox" name="%s_all" title="Select All" class="tk-tcb-head" />', $name));
     }
 

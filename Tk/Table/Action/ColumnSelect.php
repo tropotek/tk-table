@@ -105,7 +105,7 @@ class ColumnSelect extends Action
 
         $action = $this->getTable()->makeRequestKey($this->getName());
         return <<<HTML
-<div class="btn-group float-end" role="group">
+<div class="btn-group dropstart float-end" role="group">
     <button class="{$this->getCssString()} dropdown-toggle" {$this->getAttrString()} data-bs-auto-close="outside" data-bs-toggle="dropdown" aria-expanded="false">
       <i class="{$this->icon}"></i> {$this->getLabel()}
       <i class="mdi mdi-chevron-down"></i>
