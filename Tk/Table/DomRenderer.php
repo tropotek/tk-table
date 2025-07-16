@@ -86,7 +86,8 @@ class DomRenderer extends TableRenderer implements RendererInterface
             foreach ($this->getTable()->getCells() as $cell) {
                 $td = $tr->getRepeat('td');
                 $cellAttrs = $cell->getAttrList();
-                $td->setHtml('td', $cell->getValue($row) ?? '');
+                //$td->setHtml('td', $cell->getValue($row) ?? '');
+                $td->setHtml('td', $cell->getHtml($row) ?? '');
                 $td->setAttr('td', $cell->getAttrList());
                 $td->addCss('td', $cell->getCssList());
                 $cell->setAttrList($cellAttrs);

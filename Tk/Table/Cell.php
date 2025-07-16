@@ -21,6 +21,7 @@ class Cell
 
     protected Attributes $headerAttrs;
     protected CallbackCollection $onValue;
+    protected CallbackCollection $onHtml;
 
 
     public function __construct(string $name, string $header = '')
@@ -28,6 +29,7 @@ class Cell
         $this->name    = $name;
         $this->orderBy = Str::toSnake($name);
         $this->onValue = CallbackCollection::create();
+        $this->onHtml  = CallbackCollection::create();
         $this->headerAttrs = new Attributes();
 
         $this->addCss('m'.ucfirst($name));
@@ -75,17 +77,16 @@ class Cell
     }
 
     /**
-     * Get the cell value:
-     *     1. execute callbacks return non-null value
-     *     2. return non-null value from this cells value property
-     *     3. return the value if exists in the $row
-     *
+     * Return the value of a cell, not a HTML rendered value
+     * This value should be valid for any table output, CSV, PDF, HTML, etc
      */
-    public function getValue(array|object $row): mixed
+    public function getValue(null|array|object $row = null): mixed
     {
-        if (is_array($row)) $row = (object)$row;
-        $return = $this->getOnValue()->execute($row, $this);
-        if (!is_null($return)) return $return;
+        if (!is_null($row)) {
+            if (is_array($row)) $row = (object)$row;
+            $value = $this->getOnValue()->execute($row, $this);
+            if (!is_null($value)) return $value;
+        }
         if (!is_null($this->value)) return $this->value;
         return $row->{$this->getName()} ?? null;
     }
@@ -94,6 +95,36 @@ class Cell
     {
         $this->value = $value;
         return $this;
+    }
+
+    /**
+     * Callbacks are executed when getHtml() is called by a renderer
+     * @callable function (array|object $row, Cell $cell) {  }
+     */
+    public function addOnHtml(callable $callable, int $priority = CallbackCollection::DEFAULT_PRIORITY): static
+    {
+        $this->getOnHtml()->append($callable, $priority);
+        return $this;
+    }
+
+    /**
+     * an array of callable types, called with call_user_func_array()
+     */
+    public function getOnHtml(): CallbackCollection
+    {
+        return $this->onHtml;
+    }
+
+    /**
+     * Return a HTML representation of the value.
+     * This will be called by the renderer for HTML rendered tables
+     */
+    public function getHtml(null|array|object $row = null): mixed
+    {
+        $value = $this->getValue($row);
+        $html = $this->getOnHtml()->execute($row, $this);
+        if (!is_null($html)) return $html;
+        return $value;
     }
 
     public function setHeader(string $header): static

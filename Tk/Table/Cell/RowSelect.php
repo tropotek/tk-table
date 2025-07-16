@@ -23,10 +23,18 @@ class RowSelect extends Cell
         return new self($name, $property);
     }
 
-    public function getValue(array|object $row): string
+    public function getValue(null|array|object $row = null): string
     {
+        if (is_null($row)) return '';
         if (is_array($row)) $row = (object)$row;
-        $id = $row->{$this->getProperty()} ?? '';
+        return $row->{$this->getProperty()} ?? '';
+    }
+
+    public function getHtml(null|array|object $row = null): string
+    {
+        if (is_null($row)) return '';
+        if (is_array($row)) $row = (object)$row;
+        $id = $this->getValue($row);
         return sprintf('<input type="checkbox" name="%s[]" value="%s" class="tk-tcb"/>', $this->getName(), e($id));
     }
 

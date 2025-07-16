@@ -104,8 +104,10 @@ class OrderBy extends Cell
         }
     }
 
-    public function getValue(array|object $row): string
+    public function getHtml(null|array|object $row = null): string
     {
+        if (is_null($row)) return '';
+
         /** @var Model $row */
         if (!$row instanceof Model) {
             Log::warning(self::class . " only works with " . Model::class . " objects");

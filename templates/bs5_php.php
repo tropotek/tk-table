@@ -65,7 +65,8 @@ foreach ($rows as $row) {
     $td = [];
     foreach ($table->getCells() as $cell) {
         $cellAttrs = $cell->getAttrList();
-        $val = $cell->getValue($row);
+        //$val = $cell->getValue($row);
+        $val = $cell->getHtml($row);
         $td[] = sprintf('<td %s>%s</td>', $cell->getAttrString(true), $val);
         $cell->setAttrList($cellAttrs);
     }
