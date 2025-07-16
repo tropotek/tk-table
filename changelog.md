@@ -1,5 +1,10 @@
 #CHANGELOG#
 
+Ver 8.0.38 [2025-07-17]:
+-------------------------------
+  - updated table cells with onHtml() method
+
+
 Ver 8.0.36 [2025-07-04]:
 -------------------------------
   - loads of minor updates
