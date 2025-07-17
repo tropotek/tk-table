@@ -7,10 +7,24 @@ use Tk\Uri;
 use Tk\Table\Action;
 
 /**
- * This action depends on \Tk\Table\Cell\RowSelect Cell
- * Use this to attach an action that can be triggered on selected rows
- *
- * NOTE: This Action does not call the onExecute() or onShow() callback queues
+ * Attach a table action that can trigger a dropdown list of actions
+ * Example:
+ * ```
+ *     $this->table->appendAction(Select::create('Active Status', 'fa fa-fw fa-times')
+ *         ->setActions(['Active' => 'active', 'Disable' => 'disable'])
+ *         ->setConfirmStr('Toggle active/disable on the selected rows?')
+ *         ->addOnExecute(function(Select $action) use ($rowSelect) {
+ *             if (isset($_POST[$action->getRequestKey()])) return;
+ *             $active = trim(strtolower($_POST[$action->getRequestKey()] ?? 'active')) == 'active';
+ *             $selected = $rowSelect->getSelected();
+ *             foreach ($selected as $id) {
+ *                 $obj = ProductCategory::find((int)$id);
+ *                 $obj->active = $active;
+ *                 $obj->save();
+ *             }
+ *         })
+ *     );
+ * ```
  */
 class Select extends Action
 {
@@ -113,6 +127,7 @@ HTML;
 
     /**
      * @callable function (\Tk\Table\Action\Select $action, array $selected, string $value): ?bool { }
+     * @deprecated use addOnExecute
      */
     public function addOnSelect(callable $callable, int $priority = CallbackCollection::DEFAULT_PRIORITY): static
     {
@@ -122,6 +137,7 @@ HTML;
 
     /**
      * @callable function (\Tk\Table\Action\Select $action, array $selected, string $value): ?bool { }
+     * @deprecated use addOnExecute
      */
     public function addOnGetSelected(callable $callable, int $priority = CallbackCollection::DEFAULT_PRIORITY): static
     {
@@ -129,6 +145,9 @@ HTML;
         return $this;
     }
 
+    /**
+     * @deprecated use addOnExecute
+     */
     public function getOnGetSelected(): CallbackCollection
     {
         return $this->onGetSelected;

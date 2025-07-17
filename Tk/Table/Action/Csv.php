@@ -9,8 +9,27 @@ use Tk\Table\Cell\OrderBy;
 use Tk\Table\Cell\RowSelect;
 
 /**
- *
- * NOTE: This Action does not call the onExecute() or onShow() callback queues
+ * Add a CSV export action.
+ * Example:
+ * ```
+ *     $this->appendAction(Csv::create()
+ *         ->addOnExecute(function(Csv $action) use ($rowSelect) {
+ *             $action->setExcluded(['actions', 'permissions']);
+ *             if (!$this->getCell(\App\Db\File::getPrimaryProperty())) {
+ *                 $this->prependCell(\App\Db\File::getPrimaryProperty())->setHeader('id');
+ *             }
+ *             $selected = $rowSelect->getSelected();
+ *             $filter = $this->getDbFilter();
+ *             if (count($selected)) {
+ *                 $filter['fileId'] = $selected;
+ *                 $rows = \App\Db\File::findFiltered($filter);
+ *             } else {
+ *                 $rows = \App\Db\File::findFiltered($filter->resetLimits());
+ *             }
+ *             return $rows;
+ *         })
+ *     );
+ * ```
  */
 class Csv extends Button
 {
@@ -29,6 +48,7 @@ class Csv extends Button
         $this->setAttr('title', 'Export Records');
         $this->addCss('btn btn-sm btn-light tk-action-csv');
         $this->removeAttr('disabled');
+        $this->addExcluded([OrderBy::class, RowSelect::class, 'actions']);
     }
 
     public static function create(string $name = 'export', string $icon = 'far fa-fw fa-list-alt'): self
@@ -89,6 +109,7 @@ class Csv extends Button
 
     /**
      * @callable function (\Tk\Table\Action\Delete $action, $obj): ?bool { }
+     * @deprecated use addOnExecute()
      */
     public function addOnCsv(callable $callable, int $priority = CallbackCollection::DEFAULT_PRIORITY): static
     {
@@ -107,6 +128,16 @@ class Csv extends Button
     public function setExcluded(array $excluded): static
     {
         $this->excluded = $excluded;
+        return $this;
+    }
+
+    /**
+     * Add to the cell exclude list
+     */
+    public function addExcluded(string|array $excluded): static
+    {
+        if (is_string($excluded)) $excluded = [$excluded];
+        $this->excluded = array_merge($this->excluded, $excluded);
         return $this;
     }
 

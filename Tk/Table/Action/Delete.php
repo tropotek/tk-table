@@ -4,8 +4,18 @@ namespace Tk\Table\Action;
 use Tk\CallbackCollection;
 
 /**
- *
- * NOTE: This Action does not call the onExecute() or onShow() callback queues
+ * Add a delete row action.
+ * Example:
+ * ```
+ *     $this->appendAction(Delete::create()
+ *         ->addOnExecute(function(Delete $action) use ($rowSelect) {
+ *             $selected = $rowSelect->getSelected();
+ *             foreach ($selected as $file_id) {
+ *                 Db::delete('file', compact('file_id'));
+ *             }
+ *         })
+ *     );
+ * ```
  */
 class Delete extends Select
 {
@@ -27,6 +37,7 @@ class Delete extends Select
 
     /**
      * @callable function (\Tk\Table\Action\Delete $action, $obj): ?bool { }
+     * @deprecated use addOnExecute()
      */
     public function addOnDelete(callable $callable, int $priority = CallbackCollection::DEFAULT_PRIORITY): static
     {

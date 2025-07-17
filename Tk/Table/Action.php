@@ -35,6 +35,11 @@ class Action extends Renderer
         return  implode("\n", $html);
     }
 
+    public function getRequestKey(): string
+    {
+        return $this->getTable()->makeRequestKey($this->getName());
+    }
+
     public function getName(): string
     {
         return $this->name;

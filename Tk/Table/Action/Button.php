@@ -6,7 +6,7 @@ use Tk\Uri;
 use Tk\Table\Action;
 
 /**
- * NOTE: This Action does not call the onExecute() or onShow() callback queues
+ * A Button table action element
  */
 class Button extends Action
 {
