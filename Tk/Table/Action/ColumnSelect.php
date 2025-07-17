@@ -13,9 +13,14 @@ use Tk\Table\Action;
 
 /**
  * Allow users to show/hide table columns
+ * Example:
+ * ```
+ *     $this->appendCell('created')
+ *         ->setAttr(ColumnSelect::ATTR_HIDE, true);    // hide the cell by default
+ *     ...
+ *     $this->table->appendAction(ColumnSelect::create());
  *
- * @note When using ColumnSelect, you must ensure the jQuery plugin `columnSelect` is installed
- * @depends /tk-table/templates/tkTable.js
+ * ```
  */
 class ColumnSelect extends Action
 {
