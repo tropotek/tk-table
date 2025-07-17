@@ -2,6 +2,7 @@
 namespace Tk\Table\Action;
 
 use Tk\CallbackCollection;
+use Tk\Db\Model;
 use Tk\Table\Exception;
 use Tk\Uri;
 use Tk\Table\Cell;
@@ -55,6 +56,31 @@ class Csv extends Button
     {
         $obj = new self($name);
         $obj->icon = $icon;
+        return $obj;
+    }
+
+    public static function createDefault(string $class, ?RowSelect $rowSelect = null, array $filterExtras = []): self
+    {
+        if (!in_array(Model::class, class_parents($class))) {
+            throw new Exception("class must be a Db Model");
+        }
+
+        $obj = new self('export');
+        $obj->addOnExecute(function(Csv $action) use ($class, $rowSelect, $filterExtras) {
+            if (!$action->table->getCell($class::getPrimaryProperty())) {
+                $action->table->prependCell($class::getPrimaryProperty())->setHeader('id');
+            }
+            $selected = $rowSelect->getSelected();
+            $filter = $action->table->getDbFilter()->resetLimits();
+            $filter->replace($filterExtras);
+            if (count($selected)) {
+                $filter->set($class::getPrimaryProperty(), $selected);
+                $rows = $class::findFiltered($filter);
+            } else {
+                $rows = $class::findFiltered($filter);
+            }
+            return $rows;
+        });
         return $obj;
     }
 

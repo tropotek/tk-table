@@ -2,6 +2,9 @@
 namespace Tk\Table\Action;
 
 use Tk\CallbackCollection;
+use Tk\Db\Model;
+use Tk\Table\Cell\RowSelect;
+use Tk\Table\Exception;
 use Tk\Ui\Traits\AttributesTrait;
 use Tk\Uri;
 use Tk\Table\Action;
@@ -50,6 +53,35 @@ class Select extends Action
     {
         $obj = new self($name);
         $obj->icon = $icon;
+        return $obj;
+    }
+
+    /**
+     * Creates a select action to toggle rows to active/disabled
+     */
+    public static function createActiveSelect(string $class, RowSelect $rowSelect): self
+    {
+        if (!in_array(Model::class, class_parents($class))) {
+            throw new Exception("class must be a Db Model");
+        }
+
+        $obj = new self('Active Status');
+        $obj->icon = 'fa fa-fw fa-times';
+
+        $obj->setActions(['Active' => 'active', 'Disable' => 'disable']);
+        $obj->setConfirmStr('Toggle active/disable on the selected rows?');
+
+        $obj->addOnExecute(function(Select $action) use ($class, $rowSelect) {
+            if (!isset($_POST[$action->getRequestKey()])) return;
+            $active = trim(strtolower($_POST[$action->getRequestKey()] ?? 'active')) == 'active';
+            $selected = $rowSelect->getSelected();
+            foreach ($selected as $id) {
+                $obj = $class::find((int)$id);
+                $obj->active = $active;
+                $obj->save();
+            }
+        });
+
         return $obj;
     }
 

@@ -2,6 +2,10 @@
 namespace Tk\Table\Action;
 
 use Tk\CallbackCollection;
+use Tk\Db;
+use Tk\Db\Model;
+use Tk\Table\Cell\RowSelect;
+use Tk\Table\Exception;
 
 /**
  * Add a delete row action.
@@ -32,6 +36,22 @@ class Delete extends Select
     {
         $obj = new self($name);
         $obj->icon = $icon;
+        return $obj;
+    }
+
+    public static function createDefault(string $class, ?RowSelect $rowSelect = null): self
+    {
+        if (!in_array(Model::class, class_parents($class))) {
+            throw new Exception("class must be a Db Model");
+        }
+
+        $obj = new self('delete');
+        $obj->addOnExecute(function(Delete $action) use ($class, $rowSelect) {
+            $selected = $rowSelect->getSelected();
+            foreach ($selected as $id) {
+                Db::delete($class::getDbTable(), [$class::getPrimaryColumn() => $id]);
+            }
+        });
         return $obj;
     }
 
