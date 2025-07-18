@@ -1,5 +1,12 @@
 #CHANGELOG#
 
+Ver 8.0.40 [2025-07-19]:
+-------------------------------
+  - Refactored table actions... (again...)
+  - Updated all tables
+  - Update all tables
+
+
 Ver 8.0.38 [2025-07-17]:
 -------------------------------
   - updated table cells with onHtml() method
