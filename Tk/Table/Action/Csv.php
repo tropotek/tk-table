@@ -70,10 +70,11 @@ class Csv extends Button
             if (!$action->table->getCell($class::getPrimaryProperty())) {
                 $action->table->prependCell($class::getPrimaryProperty())->setHeader('id');
             }
-            $selected = $rowSelect->getSelected();
+
             $filter = $action->table->getDbFilter()->resetLimits();
             $filter->replace($filterExtras);
-            if (count($selected)) {
+            if ($rowSelect instanceof RowSelect) {
+                $selected = $rowSelect->getSelected();
                 $filter->set($class::getPrimaryProperty(), $selected);
                 $rows = $class::findFiltered($filter);
             } else {
