@@ -1,7 +1,6 @@
 <?php
 namespace Tk;
 
-use Tk\Db\Session;
 use Tk\Ui\Attributes;
 use Tk\Ui\Traits\AttributesTrait;
 use Tk\Table\Action;
