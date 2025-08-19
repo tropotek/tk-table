@@ -243,6 +243,7 @@ class DomRenderer extends TableRenderer implements RendererInterface
     {
         $total = max(count($this->rows), $this->getTable()->getTotalRows());
         if (!$total) return;
+        if ($this->getTable()->getLimit() == 0 || $total < $this->getTable()->getLimit()) return;
 
         foreach(self::LIMIT_LIST as $k => $v) {
             $option = $template->getRepeat('limit-option');
