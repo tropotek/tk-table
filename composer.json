@@ -8,6 +8,7 @@
     ],
     "time": "2025-05-08",
     "license": "MIT",
+    "minimum-stability": "dev",
     "authors":  [
          {
             "name": "Michael Mifsud",
@@ -20,11 +21,19 @@
         }
     },
     "require":  {
-        "ttek/tk-framework": "~8.0.0"
+        "php": "^8.3",
+        "ext-dom": "*",
+        "ttek/tk-framework": "~8.0",
+        "ttek/tk-domtemplate": "~8.0"
     },
     "extra":  {
         "branch-alias":  {
-            "dev-master": "8.0.x-dev"
+            "dev-master": "8.1.x-dev"
+        }
+    },
+    "config": {
+        "preferred-install": {
+            "ttek/*": "source"
         }
     }
 }

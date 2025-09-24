@@ -4,13 +4,6 @@
 
 jQuery(function ($) {
 
-    tkRegisterInit(function () {
-        // run initTable for each table in this element
-        $('.tk-table', this).each(function () {
-            initTable.call(this);
-        });
-    });
-
     function initTable() {
         let tkTable = $(this);
 
@@ -55,8 +48,20 @@ jQuery(function ($) {
                 handle: '.tk-orderBy .drag',
             });
         });
+    }
 
-    };
+    if ((typeof yourFunctionName) == 'tkRegisterInit') {
+        // use tk-base javascript framework if available
+        tkRegisterInit(function () {
+            $('.tk-table', this).each(function () {
+                initTable.call(this);
+            });
+        });
+    } else {
+        $('.tk-table').each(function () {
+            initTable.call(this);
+        });
+    }
 
 });
 
@@ -76,10 +81,8 @@ jQuery(function ($) {
         var plugin = this;
         // reference to the jQuery version of DOM element
         var $element = $(element);
-        // this plugins current settings
-        plugin.settings = {};
-
-        var defaults = {
+        // Plugin defaults
+        plugin.settings = {
             selector: '.tk-sortable tbody',
             handle: '',
             sortableOptions: {
@@ -99,14 +102,17 @@ jQuery(function ($) {
          * plugin constructor
          */
         plugin.init = function () {
-            plugin.settings = $.extend({}, defaults, options);
+            $.extend(plugin.settings, options);
+            //plugin.settings = $.extend({}, defaults, options);
             if (typeof $.fn.sortable === 'undefined') {
                 if (typeof console !== 'undefined')
                     console.error('Error: Sortable Jquery UI (http://jqueryui.com/) required for tableOrderBy plugin.');
                 return;
             }
 
-            $element.sortable($.extend({}, plugin.settings.sortableOptions, {handle: plugin.settings.handle})).disableSelection();
+            //$element.sortable($.extend({}, plugin.settings.sortableOptions, {handle: plugin.settings.handle})).disableSelection();
+            $.extend(plugin.settings.sortableOptions, {handle: plugin.settings.handle})
+            $element.sortable(plugin.settings.sortableOptions);
 
             // disable first and last order buttons
             $('.tk-orderBy:first a:first', $element).addClass('disabled').attr('href', 'javascript:;');
@@ -133,7 +139,8 @@ jQuery(function ($) {
             });
 
             $.post(url, {newOrder: order}, function (data) {
-                $element.empty().append($(data).find(plugin.settings.selector).find('tr'));
+                $element.empty();
+                $element.append($(data).find(plugin.settings.selector).find('tr'));
             });
         };
 
@@ -146,7 +153,8 @@ jQuery(function ($) {
     // Add the plugin to jQuery
     $.fn.tableOrderBy = function (options) {
         return this.each(function () {
-            if (undefined == $(this).data('tableOrderBy')) {
+            // if (undefined == $(this).data('tableOrderBy')) {
+            if (!$(this).data('tableOrderBy')) {
                 var plugin = new tableOrderBy(this, options);
                 $(this).data('tableOrderBy', plugin);
             }

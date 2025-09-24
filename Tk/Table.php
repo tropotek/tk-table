@@ -53,6 +53,9 @@ class Table
 
     public function getTableSession(): Collection
     {
+        if (System::isRefreshCacheRequest()) {
+            $this->resetTableSession();
+        }
         $session = Session::get($this->getSessionId());
         if (is_null($session)) {
             $session = new Collection();
@@ -190,22 +193,115 @@ class Table
     }
 
     /**
-     * @param array<int|string, mixed> $rows
-     */
-    public function setRows(array $rows, ?int $totalRows = null): static
-    {
-        $this->rows = $rows;
-        $this->totalRows = is_null($totalRows) ? count($rows) : $totalRows;
-        return $this;
-    }
-
-    /**
      * return the total rows for this page
      */
     public function getRowCount(): int
     {
         return count($this->getRows());
     }
+
+    /**
+     * Set the table rows to display
+     * Pagination and sorting are assumed to be
+     *
+     * @param array<int|string, mixed> $rows
+     * @param int|null $totalRows Set when getting paginated results from a data store
+     */
+    public function setRows(array $rows, ?int $totalRows = null): static
+    {
+        $this->rows = $rows;
+        $this->totalRows = is_null($totalRows) ? count($rows) : $totalRows;
+
+        return $this;
+    }
+
+    /**
+     * Set the table rows and apply pagination and sorting with PHP
+     * Use this method when all the results are in the $rows array
+     * Set $sort to null to disable sorting
+     *
+     * @param array<int|string, mixed $rows
+     * @return array<int|string, mixed>
+     */
+    public function paginateRows(array $rows): array
+    {
+        $totalRows = count($rows);
+        if ($this->getLimit() > 0 && $this->getLimit() < $totalRows) {
+            return array_slice($rows, $this->getOffset(), $this->getLimit());
+        }
+        return $rows;
+    }
+
+    /**
+     * sort array of objects by primary and optional second and third columns
+     * $col1, $col2, and $col3 contain column names (properties) in the rows
+     * prefix column names with '-' for descending sort
+     * returns sorted array
+     *
+     * @template K of string|int
+     * @template T of object
+     * @param array<K, T> $rows
+     * @return array<K, T>
+     */
+    public static function sortRows(array $rows, string ...$columns): array
+    {
+        if (count($rows) < 2) return $rows;
+
+        // generalized comparison function for sorting two values
+        $compare = fn(mixed $a, mixed $b): int => match(true) {
+            is_null($a) && is_null($b) => 0,
+            // nulls always sort after non-nulls
+            is_null($a) => -1,
+            is_null($b) => 1,
+            is_numeric($a) && is_numeric($b) => $a <=> $b,
+            ($a instanceof \BackedEnum) && ($b instanceof \BackedEnum) => $a->value <=> $b->value,
+            // DateTime and DateTimeImmutable objects support comparison operators
+            // ($a instanceof \DateTimeInterface) && ($b instanceof \DateTimeInterface) => $a <=> $b,
+            // sortable objects must support string conversion (Stringable interface and __toString method)
+            // string sort case-insensitive
+            default => strcasecmp(strval($a), strval($b)),
+        };
+
+        // determine ascending/descending and eliminate redundant sorts
+        $cols = [];
+        foreach (array_reverse($columns) as $col) {
+            $desc = false;
+            if (empty($col)) continue;
+            if ($col[0] == '-') {
+                $desc = true;
+                $col = substr($col, 1);
+            } elseif ($col[0] == '+') {
+                $col = substr($col, 1);
+            }
+
+            $cols[$col] = $desc;
+        }
+
+        // sort rows from last-level sort to top-level sort
+        // relies on PHP 8 stable sorting
+        foreach ($cols as $col => $desc) {
+            if ($desc) {
+                usort($rows, fn($l, $r) => $compare($r->$col ?? null, $l->$col ?? null));
+            } else {
+                usort($rows, fn($l, $r) => $compare($l->$col ?? null, $r->$col ?? null));
+            }
+        }
+
+        return $rows;
+    }
+
+    private function getOrderVal(array|object $row, string $col): mixed
+    {
+        if (is_array($row)) {
+            return $row[$col] ?? null;
+        } elseif (isset($row->{$col})) {
+            return $row->{$col} ?? null;
+        } elseif (method_exists($row, $col)) {
+            return $row->$col() ?? null;
+        }
+        return null;
+    }
+
 
     public function getLimit(): int
     {

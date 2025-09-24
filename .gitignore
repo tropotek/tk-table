@@ -1,6 +1,8 @@
 [Tt]humbs.db
 *.DS_Store
 
+_notes/
+site/
 vendor/
 composer.lock
 /.idea

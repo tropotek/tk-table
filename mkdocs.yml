@@ -1,0 +1,26 @@
+site_name: PHP TkTable
+site_url: https://tktable.tropotek.com/
+repo_url: https://github.com/tropotek/tk-table/
+site_description: 'A Table lib for the Tk Framework'
+site_author: 'Michael Mifsud <http://www.tropotek.com/>'
+copyright: 'Copyright (c) 2008-present Tropotek'
+use_directory_urls: false
+theme: readthedocs
+
+nav:
+  - Home: index.md
+  - Form: Table.md
+
+markdown_extensions:
+  - toc:
+      permalink: true
+  - admonition
+  - attr_list
+  - def_list
+  - tables
+
+plugins:
+  - search
+
+exclude_docs: |
+  *.py
