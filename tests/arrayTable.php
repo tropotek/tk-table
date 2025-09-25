@@ -16,32 +16,31 @@ $table->setLimit(10);
 
 // Add required cells
 $table->appendCell('actions')
-    ->addHeaderCss('text-center text-nowrap')
-    ->addCss('text-center text-nowrap')
+    ->addHeaderCss('text-center')
+    ->addCss('text-center')
     ->addOnHtml(function(array $obj, Cell $cell) {
         return <<<HTML
-            <a class="btn btn-sm btn-outline-secondary" href="#" onclick="alert('Edit Row')" title="Edit"><i class="fa fa-fw fa-edit"></i></a>
+            <a class="btn btn-outline-secondary" href="#" onclick="alert('Edit Row')" title="Edit"><i class="fa fa-fw fa-edit"></i></a>
         HTML;
     });
 
 $table->appendCell('name')
     ->setSortable(true)
     ->addHeaderCss('max-width')
-    ->addCss('text-nowrap')
     ->addOnHtml(function(array $obj, Cell $cell) {
         return sprintf('<a href="#">%s</a>', $cell->getValue($obj));
     });
 
 $table->appendCell('rows')
     ->setSortable(true)
-    ->addCss('text-nowrap text-center')
-    ->addHeaderCss('text-center');
+    ->addHeaderCss('text-center')
+    ->addCss('text-center');
 
 $table->appendCell('size_b')
     ->setHeader('Size (bytes)')
     ->setSortable(true)
-    ->addHeaderCss('text-center text-nowrap')
-    ->addCss('text-nowrap text-center')
+    ->addHeaderCss('text-center')
+    ->addCss('text-center text-nowrap')
     ->addOnHtml(function(array $obj, Cell $cell) {
         return \Tk\FileUtil::bytes2String($obj['size_b']);
     });
