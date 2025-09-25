@@ -1,5 +1,7 @@
 /**
  * Tk table javascript
+ *
+ * @requires jQuery 3.71+
  */
 
 jQuery(function ($) {

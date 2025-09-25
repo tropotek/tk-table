@@ -86,7 +86,7 @@ $tableHtml = $renderer->getHtml();
 
 <div class="container my-5">
     <h1>Tk Table Examples</h1>
-    <div class="col-lg-8 px-0">
+    <div class="px-0">
         <p>
             This table uses the Dom Template table renderer.
         </p>

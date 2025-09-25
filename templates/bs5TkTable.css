@@ -1,0 +1,79 @@
+/**
+ * Tk Table CSS
+ * Base Tk Table styles for Bootstrap 5 templates
+ *
+ * @requires bootstrap 5+ <https://getbootstrap.com/>
+ * @requires fontawesome 5+ free <https://fontawesome.com/>
+ */
+.tk-form-inline {
+    margin-bottom: .5rem;
+}
+/* position submit buttons for filter form */
+.tk-form-inline .tk-inline-btn {
+    padding-bottom: 0.3rem;
+}
+.tk-table .tk-actions .btn,
+.tk-form-inline .tk-inline-btn .btn {
+    --bs-btn-padding-y: .2rem;
+    --bs-btn-padding-x: .4rem;
+    --bs-btn-font-size: .75rem;
+}
+.tk-table-sm {
+    font-size: 0.75rem;
+}
+.table > :not(caption) > * > * {
+    padding: .55rem;
+}
+.tk-table-sm.table > :not(caption) > * > * {
+    padding: 0.5rem;
+}
+.tk-table .tk-actions {
+    padding-bottom: 0.75rem;
+}
+.tk-table .tk-actions .btn {
+    margin-right: 0.5rem;
+}
+.tk-table table td .btn {
+    display: inline;
+    --bs-btn-padding-y: .2rem;
+    --bs-btn-padding-x: .4rem;
+    --bs-btn-font-size: .75rem;
+}
+.tk-table .max-width {
+    width: 100%;
+}
+.tk-sortable .drag {
+    cursor: ns-resize;
+}
+
+/* Table Header Sort Arrows */
+th {
+    white-space: nowrap;
+}
+.tk-table thead th {
+    padding-left: 0.5em;
+}
+.tk-table thead th a {
+    position: relative;          /* This is needed for the absolute positioning. */
+    padding-left: 0.8em;
+}
+.tk-table thead th a::before,
+.tk-table thead th a::after {
+    position: absolute;
+    left: -0.3em;
+    font-family: 'Font Awesome 5 Free';  /* Use FontAwesome's font so that you can set the content */
+    opacity: 0.3;                /* Set opacity to gray out icons by default */
+    font-size: 0.75em;
+}
+.tk-table thead th a::before {
+    content: '\f0de';            /* Font Awesome's up arrow */
+    top: calc(50% - 0.75em);     /* Tricky to calculate the top offset */
+}
+.tk-table thead th a::after {
+    content: '\f0dd';           /* Font Awesome's down arrow */
+    bottom: calc(50% - 0.75em);
+}
+.tk-table thead th a.asc::after,
+.tk-table thead th a.desc::before {
+    opacity: 1;                  /* When sorting, set full opacity on the direction */
+}
