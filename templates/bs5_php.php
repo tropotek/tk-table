@@ -7,11 +7,11 @@ use Tk\Uri;
 
 /** @var \Tk\Table\Cell $cell */
 
-/** @var array $rows */
-$rows = $this->rows;
-
 /** @var Table $table */
-$table = $this->table;
+$table = $this->getTable();
+
+/** @var array $rows */
+$rows = $table->getRows();
 
 /** @var PhpRenderer $renderer */
 $renderer = $this;
@@ -31,7 +31,7 @@ if ($to > $total || $to == 0) {
 // pager
 $limit = $table->getLimit();
 $page = $table->getPage();
-$numPages = ceil($total / $limit);
+$numPages = $limit == 0 ? 0 : ceil($total / $limit);
 
 if ($numPages >= 2) {
     $startPage = 1;
@@ -62,7 +62,6 @@ if ($numPages >= 2) {
 // Render table rows first to capture and events triggered in the getValue() method
 $tr = [];
 foreach ($rows as $row) {
-
     $td = [];
     foreach ($table->getCells() as $cell) {
         $cellAttrs = $cell->getAttrList();
@@ -74,6 +73,7 @@ foreach ($rows as $row) {
     $tr[] = sprintf('<tr %s>%s</tr>', $table->getRowAttrs()->getAttrString(true), implode("\n", $td));
     $table->setRowAttrs(clone $rowAttrs);
 }
+
 ?>
 <!-- TODO: Include this script in the master template -->
 <!--<script src="/vendor/ttek/tk-table/templates/tkTable.js" data-priority="1"></script>-->
@@ -103,7 +103,7 @@ foreach ($rows as $row) {
                                     $orderCss = '';
                                     $order = $this->getTable()->getOrderBy();
                                     $dir = '';
-                                    if ($order[0] == '-') {
+                                    if (($order[0] ?? '') == '-') {
                                         $order = substr($order, 1);
                                         $dir = '-';
                                     }
@@ -188,7 +188,6 @@ foreach ($rows as $row) {
                                 <?php $limitLabel = $this->getTable()->getLimit() == 0 ? 'All' : strval($this->getTable()->getLimit()); ?>
                                 <button type="button" class="btn btn-sm btn-light dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" title="Results per page"><span><?= $limitLabel ?></span> <i class="mdi mdi-chevron-up"></i></button>
                                 <div class="dropdown-menu">
-                                    <a class="limit-link dropdown-item" href="#" repeat="limit-option">10</a>
                                     <?php foreach (TableRenderer::LIMIT_LIST as $k => $v): ?>
                                         <?php $url = Uri::create()->set($this->getTable()->makeRequestKey(Table::PARAM_LIMIT), strval($k)); ?>
                                         <a class="limit-link dropdown-item" href="<?= $url->toString() ?>"><?= strval($k) ?></a>

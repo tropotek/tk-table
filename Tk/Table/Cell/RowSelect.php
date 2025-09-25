@@ -23,6 +23,9 @@ class RowSelect extends Cell
         return new self($name, $property);
     }
 
+    /**
+     * @param array<string,mixed>|object|null $row
+     */
     public function getValue(null|array|object $row = null): string
     {
         if (is_null($row)) return '';
@@ -30,6 +33,9 @@ class RowSelect extends Cell
         return $row->{$this->getProperty()} ?? '';
     }
 
+    /**
+     * @param array<string,mixed>|object|null $row
+     */
     public function getHtml(null|array|object $row = null): string
     {
         if (is_null($row)) return '';
@@ -43,6 +49,9 @@ class RowSelect extends Cell
         return $this->property;
     }
 
+    /**
+     * @return array<int,string>
+     */
     public function getSelected(): array
     {
         return $_POST[$this->getName()] ?? [];

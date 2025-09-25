@@ -156,7 +156,7 @@ class Table
 
     public function setOrderBy(string $orderBy): Table
     {
-        $this->orderBy = preg_replace("/(\r|\n)/", '', $orderBy);
+        $this->orderBy = strval(preg_replace("/(\r|\n)/", '', $orderBy));
         return $this;
     }
 
@@ -197,6 +197,7 @@ class Table
      */
     public function getRowCount(): int
     {
+        if (!$this->getRows()) return 0;
         return count($this->getRows());
     }
 
@@ -220,7 +221,7 @@ class Table
      * Use this method when all the results are in the $rows array
      * Set $sort to null to disable sorting
      *
-     * @param array<int|string, mixed $rows
+     * @param array<int|string, mixed> $rows
      * @return array<int|string, mixed>
      */
     public function paginateRows(array $rows): array
@@ -281,16 +282,19 @@ class Table
         // relies on PHP 8 stable sorting
         foreach ($cols as $col => $desc) {
             if ($desc) {
-                usort($rows, fn($l, $r) => $compare($r->$col ?? null, $l->$col ?? null));
+                usort($rows, fn($l, $r) => $compare(self::getOrderVal($r, $col) ?? null, self::getOrderVal($l, $col) ?? null));
             } else {
-                usort($rows, fn($l, $r) => $compare($l->$col ?? null, $r->$col ?? null));
+                usort($rows, fn($l, $r) => $compare(self::getOrderVal($l, $col) ?? null, self::getOrderVal($r, $col) ?? null));
             }
         }
 
         return $rows;
     }
 
-    private function getOrderVal(array|object $row, string $col): mixed
+    /**
+     * @param array<string,mixed>|object $row
+     */
+    private static function getOrderVal(array|object $row, string $col): mixed
     {
         if (is_array($row)) {
             return $row[$col] ?? null;
@@ -330,9 +334,6 @@ class Table
         return $this->getLimit() * ($this->getPage()-1);
     }
 
-    /**
-     * @return array<string,Cell>
-     */
     public function getCells(): Collection
     {
         return $this->cells;

@@ -18,8 +18,8 @@ class Action extends Renderer
     {
         $this->onExecute = CallbackCollection::create();
         $this->onShow    = CallbackCollection::create();
-        $this->name      = preg_replace('/[^a-z0-9_-]/i', '_', $name);
-        $this->label     = ucfirst(preg_replace('/[A-Z]/', ' $0', $name));
+        $this->name      = strval(preg_replace('/[^a-z0-9_-]/i', '_', $name));
+        $this->label     = ucfirst(strval(preg_replace('/[A-Z]/', ' $0', $name)));
     }
 
     public function execute(): void

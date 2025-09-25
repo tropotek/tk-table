@@ -11,6 +11,8 @@ pre {
 
 /* Table Styles */
 
-
+.tk-table .max-width {
+    width: 100%;
+}
 
 

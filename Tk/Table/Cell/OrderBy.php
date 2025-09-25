@@ -35,6 +35,8 @@ class OrderBy extends Cell
 
     public function execute(): void
     {
+        if (!$this->getTable()) return;
+
         $this->getTable()->setAttr('data-offset', $this->getTable()->getOffset());
         $orderSwapKey = $this->getTable()->makeRequestKey('orderSwap');
         if (!isset($_GET[$orderSwapKey])) return;
@@ -50,6 +52,8 @@ class OrderBy extends Cell
 
     public function doOrderSwap(): void
     {
+        if (!$this->getTable()) return;
+
         $orderSwapKey = $this->getTable()->makeRequestKey('orderSwap');
         $orderStr = $_GET[$orderSwapKey] ?? '';
 
@@ -104,9 +108,12 @@ class OrderBy extends Cell
         }
     }
 
+    /**
+     * @param array<string,mixed>|object|null $row
+     */
     public function getHtml(null|array|object $row = null): string
     {
-        if (is_null($row)) return '';
+        if (is_null($row) || is_null($this->getTable())) return '';
 
         /** @var Model $row */
         if (!$row instanceof Model) {
@@ -153,6 +160,7 @@ HTML;
 
     public function setTable(?Table $table): Cell
     {
+        if (!$table) return $this;
         $table->addCss('tk-sortable');
         parent::setTable($table);
         return $this;
@@ -162,8 +170,8 @@ HTML;
     {
         $map   = $curr->getDataMap();
         $table = $curr::getDbTable();
-        $col   = $map->getTypeByProperty($this->getName())->getColumn();
-        $prop  = $map->getTypeByProperty($this->getName())->getProperty();
+        $col   = $map->getTypeByProperty($this->getName())?->getColumn() ?? '';
+        $prop  = $map->getTypeByProperty($this->getName())?->getProperty() ?? '';
 
         $next = Db::queryOne("
             SELECT *
@@ -183,8 +191,8 @@ HTML;
     {
         $map   = $curr->getDataMap();
         $table = $curr::getDbTable();
-        $col   = $map->getTypeByProperty($this->getName())->getColumn();
-        $prop  = $map->getTypeByProperty($this->getName())->getProperty();
+        $col   = $map->getTypeByProperty($this->getName())?->getColumn() ?? '';
+        $prop  = $map->getTypeByProperty($this->getName())?->getProperty() ?? '';
 
         $next = Db::queryOne("
             SELECT *

@@ -36,9 +36,9 @@ class Cell
         $this->headerAttrs->addCss('mh'.ucfirst($name));
 
         if (!$header) {  // Set the default header label if none supplied
-            $header = preg_replace('/(Id|_id)$/', '', $name);
+            $header = strval(preg_replace('/(Id|_id)$/', '', $name));
             $header = str_replace(['_', '-'], ' ', $header);
-            $header = ucwords(preg_replace('/[A-Z]/', ' $0', $header));
+            $header = ucwords(strval(preg_replace('/[A-Z]/', ' $0', $header)));
         }
         $this->setHeader($header);
     }
@@ -55,6 +55,9 @@ class Cell
 
     public function getRowAttrs(): Attributes
     {
+        if (!$this->getTable()) {
+            throw new \Exception('Table not set for cell '.$this->getName());
+        }
         return $this->getTable()->getRowAttrs();
     }
 
@@ -79,6 +82,8 @@ class Cell
     /**
      * Return the value of a cell, not a HTML rendered value
      * This value should be valid for any table output, CSV, PDF, HTML, etc
+     *
+     * @param array<string,mixed>|object|null $row
      */
     public function getValue(null|array|object $row = null): mixed
     {
@@ -118,6 +123,8 @@ class Cell
     /**
      * Return a HTML representation of the value.
      * This will be called by the renderer for HTML rendered tables
+     *
+     * @param array<string,mixed>|object|null $row
      */
     public function getHtml(null|array|object $row = null): mixed
     {
@@ -155,6 +162,9 @@ class Cell
         return $this;
     }
 
+    /**
+     * @param array<string,string>|string $name
+     */
     public function setHeaderAttr(array|string $name, ?string $value = null): static
     {
         $this->headerAttrs->setAttr($name, $value);
@@ -201,6 +211,7 @@ class Cell
      */
     public function getOrderByUrl(): ?Uri
     {
+        if (!$this->getTable()) return null;
         if (!$this->isSortable()) return null;
 
         $key = $this->getTable()->makeRequestKey(Table::PARAM_ORDERBY);

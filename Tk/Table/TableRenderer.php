@@ -19,8 +19,8 @@ abstract class TableRenderer extends Renderer
     ];
 
     protected string  $templatePath  = '';
+    /** @var array<string,Renderer>  */
     protected array   $footer        = [];
-    protected array   $rows          = [];
     protected int     $maxPages      = 10;
     protected bool    $footerEnabled = true;
 
@@ -32,23 +32,6 @@ abstract class TableRenderer extends Renderer
         }
         $this->setTable($table);
         $this->templatePath = $templatePath;
-    }
-
-    /**
-     * @deprecated use Table::getRows())
-     */
-    public function getRows(): ?array
-    {
-        return $this->getTable()->getRows();
-    }
-
-    /**
-     * @deprecated use Table::setRows()
-     */
-    public function setRows(array $rows, ?int $totalRows = null): static
-    {
-        $this->getTable()->setRows($rows, $totalRows);
-        return $this;
     }
 
     public function getTemplatePath(): string
@@ -83,6 +66,9 @@ abstract class TableRenderer extends Renderer
         return $this;
     }
 
+    /**
+     * @return array<string,Renderer>
+     */
     public function getFooter(): array
     {
         return $this->footer;

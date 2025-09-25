@@ -40,6 +40,7 @@ class Csv extends Button
     ];
 
     protected string    $filename = '';
+    /** @var list<string> */
     protected array     $excluded = [];
 
 
@@ -59,19 +60,23 @@ class Csv extends Button
         return $obj;
     }
 
+    /**
+     * @param list<string> $filterExtras
+     */
     public static function createDefault(string $class, ?RowSelect $rowSelect = null, array $filterExtras = []): self
     {
-        if (!in_array(Model::class, class_parents($class))) {
+        $parents = class_parents($class);
+        if (!(is_array($parents) && in_array(Model::class, $parents))) {
             throw new Exception("class must be a Db Model");
         }
 
         $obj = new self('export');
         $obj->addOnExecute(function(Csv $action) use ($class, $rowSelect, $filterExtras) {
-            if (!$action->table->getCell($class::getPrimaryProperty())) {
-                $action->table->prependCell($class::getPrimaryProperty())->setHeader('id');
+            if (!$action->getTable()->getCell($class::getPrimaryProperty())) {
+                $action->getTable()->prependCell($class::getPrimaryProperty())->setHeader('id');
             }
-
-            $filter = $action->table->getDbFilter()->resetLimits();
+            // @phpstan-ignore-next-line
+            $filter = $action->getTable()->getDbFilter()->resetLimits();
             $filter->replace($filterExtras);
             if ($rowSelect instanceof RowSelect) {
                 $selected = $rowSelect->getSelected();
@@ -144,6 +149,9 @@ class Csv extends Button
         return $this;
     }
 
+    /**
+     * @return list<string>
+     */
     public function getExcluded(): array
     {
         return $this->excluded;
@@ -151,6 +159,8 @@ class Csv extends Button
 
     /**
      * An array of cell names to exclude from the CSV data
+     *
+     * @param list<string> $excluded
      */
     public function setExcluded(array $excluded): static
     {
@@ -160,6 +170,7 @@ class Csv extends Button
 
     /**
      * Add to the cell exclude list
+     * @param string|list<string> $excluded
      */
     public function addExcluded(string|array $excluded): static
     {

@@ -14,6 +14,7 @@ class DomRenderer extends TableRenderer implements RendererInterface
 {
     use RendererTrait;
 
+    /** @var array<string,mixed> */
     protected array $params = [];
     protected Builder $builder;
 
@@ -33,6 +34,10 @@ class DomRenderer extends TableRenderer implements RendererInterface
 
         // get any data-opt options from the template and remove them
         $tableEl = $this->builder->getDocument()->getElementById('tpl-table');
+        if (!$tableEl) {
+            throw new \Exception('Table template not found for options');
+        }
+
         $cssPre = 'data-opt-';
         /** @var \DOMAttr $attr */
         foreach ($tableEl->attributes as $attr) {
@@ -55,7 +60,11 @@ class DomRenderer extends TableRenderer implements RendererInterface
             }
         }
 
-        $this->setTemplate($this->buildTemplate('table'));
+        $tblTemplate = $this->buildTemplate('table');
+        if (!$tblTemplate) {
+            throw new \Exception('Table template not found');
+        }
+        $this->setTemplate($tblTemplate);
     }
 
     public function buildTemplate(string $type): ?Template
@@ -65,13 +74,14 @@ class DomRenderer extends TableRenderer implements RendererInterface
 
     public function getHtml(): string
     {
-        return $this->show()->toString();
+        return strval($this->show()?->toString());
     }
 
     function show(): ?Template
     {
         // This is the cell repeat
         $template = $this->getTemplate();
+        if (!$template) return null;
 
         /* @var Action $action */
         foreach ($this->getTable()->getActions() as $action) {
@@ -81,7 +91,7 @@ class DomRenderer extends TableRenderer implements RendererInterface
 
         // Render table rows first to capture and events triggered in the getValue() method
         $rowAttrs = clone $this->getTable()->getRowAttrs();
-        foreach ($this->getTable()->getRows() as $row) {
+        foreach ($this->getTable()->getRows() ?? [] as $row) {
             $tr = $template->getRepeat('tr');
             foreach ($this->getTable()->getCells() as $cell) {
                 $td = $tr->getRepeat('td');
@@ -107,7 +117,6 @@ class DomRenderer extends TableRenderer implements RendererInterface
         /** @var Cell $cell */
         foreach ($this->getTable()->getCells() as $cell) {
             $th = $template->getRepeat('th');
-
             if ($cell->isSortable()) {
                 // set header orderBy URL and css class
                 $orderUrl = $cell->getOrderByUrl();
@@ -122,7 +131,7 @@ class DomRenderer extends TableRenderer implements RendererInterface
                     $orderCss = ($dir == '-') ? 'desc' : 'asc';
                 }
                 $th->addCss('a', $orderCss);
-                $th->setAttr('a', 'href', $orderUrl->toString());
+                $th->setAttr('a', 'href', strval($orderUrl?->toString()));
                 $th->setHtml('a', $cell->getHeader());
             } else {
                 $th->setHtml('th', $cell->getHeader());
@@ -151,7 +160,8 @@ class DomRenderer extends TableRenderer implements RendererInterface
 
     protected function showResults(Template $template): void
     {
-        $total = max(count($this->rows), $this->getTable()->getTotalRows());
+        $rows = $this->getTable()->getRows() ?? [];
+        $total = max(count($rows), $this->getTable()->getTotalRows());
         if (!$total) return;
 
         $from = $this->getTable()->getOffset() + 1;
@@ -169,7 +179,8 @@ class DomRenderer extends TableRenderer implements RendererInterface
 
     protected function showPager(Template $template): void
     {
-        $total = max(count($this->rows), $this->getTable()->getTotalRows());
+        $rows = $this->getTable()->getRows() ?? [];
+        $total = max(count($rows), $this->getTable()->getTotalRows());
 
         if (!$total) return;
         if ($this->getTable()->getLimit() == 0 || $total < $this->getTable()->getLimit()) return;
@@ -241,7 +252,8 @@ class DomRenderer extends TableRenderer implements RendererInterface
 
     protected function showLimit(Template $template): void
     {
-        $total = max(count($this->rows), $this->getTable()->getTotalRows());
+        $rows = $this->getTable()->getRows() ?? [];
+        $total = max(count($rows), $this->getTable()->getTotalRows());
         if (!$total) return;
         if ($this->getTable()->getLimit() == 0 || $total < $this->getTable()->getLimit()) return;
 
@@ -253,7 +265,7 @@ class DomRenderer extends TableRenderer implements RendererInterface
             $option->appendRepeat();
         }
 
-        $limit = $this->getTable()->getLimit() == 0 ? 'All' : strval($this->getTable()->getLimit());
+        $limit = ($this->getTable()->getLimit() <= 0) ? 'All' : strval($this->getTable()->getLimit());
         $template->setText('limit-label', $limit);
 
         $template->setVisible('limit-wrap');

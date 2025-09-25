@@ -16,18 +16,18 @@ $table->setLimit(10);
 
 // Add required cells
 $table->appendCell('actions')
-    ->addHeaderCss('text-center')
+    ->addHeaderCss('text-center text-nowrap')
     ->addCss('text-center text-nowrap')
     ->addOnHtml(function(\stdClass $obj, Cell $cell) {
         return <<<HTML
-            <a class="btn btn-outline-success" href="#" title="Edit"><i class="fa fa-fw fa-edit"></i></a>
+            <a class="btn btn-sm btn-outline-secondary" href="#" title="Edit"><i class="fa fa-fw fa-edit"></i></a>
         HTML;
     });
 
 $table->appendCell('name')
     ->setSortable(true)
-    ->addCss('text-nowrap')
     ->addHeaderCss('max-width')
+    ->addCss('text-nowrap')
     ->addOnHtml(function(\stdClass $obj, Cell $cell) {
         return sprintf('<a href="#">%s</a>', $cell->getValue($obj));
     });
@@ -40,8 +40,8 @@ $table->appendCell('rows')
 $table->appendCell('size_b')
     ->setHeader('Size (bytes)')
     ->setSortable(true)
+    ->addHeaderCss('text-center text-nowrap')
     ->addCss('text-nowrap text-center')
-    ->addHeaderCss('text-center')
     ->addOnHtml(function(\stdClass $obj, Cell $cell) {
         return \Tk\FileUtil::bytes2String($obj->size_b);
     });
@@ -67,8 +67,8 @@ $rows = \Tk\Table::sortRows($rows, $table->getOrderBy());
 $table->setRows($table->paginateRows($rows), $totalRows);
 
 // Render the table
-$renderer = new \Tk\Table\PhpRenderer($table);
-//$renderer = new \Tk\Table\DomRenderer($table);
+$renderer = new \Tk\Table\DomRenderer($table);
+//$renderer = new \Tk\Table\PhpRenderer($table);
 $tableHtml = $renderer->getHtml();
 
 ?>

@@ -18,6 +18,7 @@ class PhpRenderer extends TableRenderer
     {
         ob_start();
         include($this->templatePath);
-        return strval(ob_get_clean());
+        $html = strval(ob_get_clean());
+        return $html;
     }
 }

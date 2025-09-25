@@ -126,7 +126,7 @@ HTML;
     protected function isIgnored(Cell $cell): bool
     {
         if ($cell instanceof RowSelect || $cell instanceof OrderBy) return true;
-        if (truefalse($cell->getAttr(self::ATTR_IGNORE, false))) return true;
+        if (truefalse($cell->getAttr(self::ATTR_IGNORE, '')) ?? false) return true;
         if (in_array($cell->getName(), ['actions'])) return true;
         return false;
     }
@@ -134,7 +134,7 @@ HTML;
     protected function isVisible(Cell $cell): bool
     {
         if ($this->isIgnored($cell)) return false;
-        if (truefalse($cell->getAttr(self::ATTR_HIDE, false))) return false;
+        if (truefalse($cell->getAttr(self::ATTR_HIDE, '')) ?? false) return false;
         return true;
     }
 

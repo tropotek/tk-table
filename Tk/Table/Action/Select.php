@@ -34,6 +34,7 @@ class Select extends Action
     use AttributesTrait;
 
     protected string             $icon       = '';
+    /** @var array<string,string>  */
     protected array              $actions    = [];
     protected CallbackCollection $onGetSelected;
 
@@ -61,7 +62,8 @@ class Select extends Action
      */
     public static function createActiveSelect(string $class, RowSelect $rowSelect): self
     {
-        if (!in_array(Model::class, class_parents($class))) {
+        $parents = class_parents($class);
+        if (!(is_array($parents) && in_array(Model::class, $parents))) {
             throw new Exception("class must be a Db Model");
         }
 
@@ -185,6 +187,9 @@ HTML;
         return $this->onGetSelected;
     }
 
+    /**
+     * @param array<string,string> $actions
+     */
     public function setActions(array $actions): static
     {
         $this->actions = $actions;

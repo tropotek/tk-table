@@ -41,13 +41,14 @@ class Delete extends Select
 
     public static function createDefault(string $class, ?RowSelect $rowSelect = null): self
     {
-        if (!in_array(Model::class, class_parents($class))) {
+        $parents = class_parents($class);
+        if (!(is_array($parents) && in_array(Model::class, $parents))) {
             throw new Exception("class must be a Db Model");
         }
 
         $obj = new self('delete');
         $obj->addOnExecute(function(Delete $action) use ($class, $rowSelect) {
-            $selected = $rowSelect->getSelected();
+            $selected = $rowSelect?->getSelected() ?? [];
             foreach ($selected as $id) {
                 Db::delete($class::getDbTable(), [$class::getPrimaryColumn() => $id]);
             }
