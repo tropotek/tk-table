@@ -6,9 +6,9 @@
         "tropotek",
         "Table"
     ],
-    "time": "2025-05-08",
+    "time": "2025-09-30",
     "license": "MIT",
-    "minimum-stability": "dev",
+    "minimum-stability": "stable",
     "authors":  [
          {
             "name": "Michael Mifsud",
@@ -31,8 +31,8 @@
             "dev-master": "8.0.x-dev"
         }
     },
-    "config": {
-        "preferred-install": {
+    "config":  {
+        "preferred-install":  {
             "ttek/*": "source"
         }
     }
