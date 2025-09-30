@@ -12,7 +12,7 @@
     "authors":  [
          {
             "name": "Michael Mifsud",
-            "homepage": "http://www.tropotek.com/"
+            "homepage": "https://www.tropotek.com/"
         }
     ],
     "autoload":  {
@@ -23,12 +23,12 @@
     "require":  {
         "php": "^8.3",
         "ext-dom": "*",
-        "ttek/tk-framework": "~8.0",
-        "ttek/tk-domtemplate": "~8.0"
+        "ttek/tk-framework": "^8.0",
+        "ttek/tk-domtemplate": "^8.0"
     },
     "extra":  {
         "branch-alias":  {
-            "dev-master": "8.1.x-dev"
+            "dev-master": "8.0.x-dev"
         }
     },
     "config": {
