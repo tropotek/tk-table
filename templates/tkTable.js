@@ -52,7 +52,7 @@ jQuery(function ($) {
         });
     }
 
-    if ((typeof yourFunctionName) == 'tkRegisterInit') {
+    if ((typeof tkRegisterInit) == 'tkRegisterInit') {
         // use tk-base javascript framework if available
         tkRegisterInit(function () {
             $('.tk-table', this).each(function () {
@@ -60,6 +60,7 @@ jQuery(function ($) {
             });
         });
     } else {
+        // init the tk table
         $('.tk-table').each(function () {
             initTable.call(this);
         });

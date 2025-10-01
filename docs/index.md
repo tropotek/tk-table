@@ -1,17 +1,17 @@
-# Welcome to Tk Form
+# Welcome to Tk Table
 
 ## Introduction
 
-The PHP \Tk\Form ... (TODO)
+The PHP \Tk\Table ... (TODO)
 
 
 ## Installation
 
-Available on Packagist ([ttek/tk-form](http://packagist.org/packages/ttek/tk-form))
-and as such installable via [Composer](http://getcomposer.org/).
+Available on Packagist ([ttek/tk-table](https://packagist.org/packages/ttek/tk-table))
+and as such installable via [Composer](https://getcomposer.org/).
 
 ```
-$ composer require ttek/tk-form
+$ composer require ttek/tk-table
 ```
 
 Or add the following to your composer.json file:
@@ -19,7 +19,7 @@ Or add the following to your composer.json file:
 ```
 {
   "require": {
-    "ttek/tk-form": "~8.0"
+    "ttek/tk-table": "^8.0"
   }
 }
 ```
