@@ -52,7 +52,7 @@ jQuery(function ($) {
         });
     }
 
-    if ((typeof tkRegisterInit) == 'tkRegisterInit') {
+    if ((typeof tkRegisterInit) == 'function') {
         // use tk-base javascript framework if available
         tkRegisterInit(function () {
             $('.tk-table', this).each(function () {
