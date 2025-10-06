@@ -6,13 +6,11 @@ require_once(__DIR__ . '/_prepend.php');
 
 
 // create a table
-$table = new Tk\Table('basic-table');
+// Tables have individual session stores for the current page,limit and sort values
+// Use this or <CTRL + SHIFT +R> to reset the table session
+$table = new Tk\Table('object-table');
 $table->setOrderBy('name');
 $table->setLimit(10);
-
-// Table session stores the table's current page,limit and sort values
-// Use this or <CTRL + SHIFT +R> to reset the table session
-//$table->resetTableSession();
 
 // Add required cells
 $table->appendCell('actions')
@@ -76,7 +74,7 @@ $tableHtml = $renderer->getHtml();
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Basic Table Example</title>
+    <title>Object Table Example</title>
     <?php include_once __DIR__ . '/inc/head.php'; ?>
 </head>
 <body>
@@ -85,10 +83,10 @@ $tableHtml = $renderer->getHtml();
 
 
 <div class="container my-5">
-    <h1>Tk Table Examples</h1>
+    <h1>Object Table Example</h1>
     <div class="px-0">
         <p>
-            This table uses the Dom Template table renderer.
+            This table renders an array of objects.
         </p>
 
         <?= $tableHtml ?>

@@ -18,6 +18,9 @@
                 <li class="nav-item">
                     <a class="nav-link" href="objectTable.php">Object Table</a>
                 </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="filterTable.php">Filter Table</a>
+                </li>
                 <!--                <li class="nav-item dropdown">-->
                 <!--                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">-->
                 <!--                        Dropdown-->
