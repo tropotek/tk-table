@@ -106,14 +106,13 @@ jQuery(function ($) {
          */
         plugin.init = function () {
             $.extend(plugin.settings, options);
-            //plugin.settings = $.extend({}, defaults, options);
+            
             if (typeof $.fn.sortable === 'undefined') {
                 if (typeof console !== 'undefined')
                     console.error('Error: Sortable Jquery UI (http://jqueryui.com/) required for tableOrderBy plugin.');
                 return;
             }
 
-            //$element.sortable($.extend({}, plugin.settings.sortableOptions, {handle: plugin.settings.handle})).disableSelection();
             $.extend(plugin.settings.sortableOptions, {handle: plugin.settings.handle})
             $element.sortable(plugin.settings.sortableOptions);
 
