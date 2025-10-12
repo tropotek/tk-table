@@ -106,7 +106,7 @@ jQuery(function ($) {
          */
         plugin.init = function () {
             $.extend(plugin.settings, options);
-            
+
             if (typeof $.fn.sortable === 'undefined') {
                 if (typeof console !== 'undefined')
                     console.error('Error: Sortable Jquery UI (http://jqueryui.com/) required for tableOrderBy plugin.');
