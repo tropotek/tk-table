@@ -240,7 +240,7 @@ class Table
      * returns sorted array
      *
      * @template K of string|int
-     * @template T of object
+     * @template T of mixed
      * @param array<K, T> $rows
      * @return array<K, T>
      */

@@ -61,7 +61,7 @@ class Csv extends Button
     }
 
     /**
-     * @param list<string> $filterExtras
+     * @param array<string, string> $filterExtras
      */
     public static function createDefault(string $class, ?RowSelect $rowSelect = null, array $filterExtras = []): self
     {

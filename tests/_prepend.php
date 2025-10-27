@@ -5,7 +5,7 @@ include_once $basepath . '/vendor/autoload.php';
 session_start();
 
 
-function vd(...$args)
+function vd(mixed ...$args): void
 {
     foreach ($args as $arg) {
         error_log(print_r($arg, true));

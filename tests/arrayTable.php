@@ -49,7 +49,7 @@ $table->execute();
 
 // get row data from a csv file
 $file = __DIR__ . '/data/sis_dbsize.csv';
-$rows = array_map('str_getcsv', file($file));
+$rows = array_map('str_getcsv', file($file) ?: []);
 array_walk($rows, function(&$a) use ($rows) {
   $a = array_combine($rows[0], $a);
 });
