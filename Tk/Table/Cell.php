@@ -18,6 +18,8 @@ class Cell
     protected string     $orderBy     = '';
     protected bool       $sortable    = false;
     protected ?Table     $table       = null;
+    // the current row to be rendered, null if not rendering
+    protected mixed      $row         = null;
 
     protected Attributes $headerAttrs;
     protected CallbackCollection $onValue;
@@ -47,6 +49,23 @@ class Cell
      * called by Table::execute()
      */
     public function execute(): void { }
+
+    public function setRow(mixed $row): static
+    {
+        $this->row = $row;
+        return $this;
+    }
+
+    public function getRow(): mixed
+    {
+        return $this->row;
+    }
+
+    public function clearRow(): static
+    {
+        $this->row = null;
+        return $this;
+    }
 
     public function getName(): string
     {
@@ -82,11 +101,10 @@ class Cell
     /**
      * Return the value of a cell, not a HTML rendered value
      * This value should be valid for any table output, CSV, PDF, HTML, etc
-     *
-     * @param array<string,mixed>|object|null $row
      */
-    public function getValue(null|array|object $row = null): mixed
+    public function getValue(): mixed
     {
+        $row = $this->getRow();
         if (!is_null($row)) {
             if (is_array($row)) $row = (object)$row;
             $value = $this->getOnValue()->execute($row, $this);
@@ -123,12 +141,11 @@ class Cell
     /**
      * Return a HTML representation of the value.
      * This will be called by the renderer for HTML rendered tables
-     *
-     * @param array<string,mixed>|object|null $row
      */
-    public function getHtml(null|array|object $row = null): mixed
+    public function getHtml(): mixed
     {
-        $value = $this->getValue($row);
+        $row = $this->getRow();
+        $value = $this->getValue();
         $html = $this->getOnHtml()->execute($row, $this);
         if (!is_null($html)) return $html;
         return $value;

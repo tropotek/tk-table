@@ -64,11 +64,12 @@ $tr = [];
 foreach ($rows as $row) {
     $td = [];
     foreach ($table->getCells() as $cell) {
+        $cell->setRow($row);
         $cellAttrs = $cell->getAttrList();
-        //$val = $cell->getValue($row);
-        $val = $cell->getHtml($row);
+        $val = $cell->getHtml() ?? '';
         $td[] = sprintf('<td %s>%s</td>', $cell->getAttrString(true), $val);
         $cell->setAttrList($cellAttrs);
+        $cell->clearRow();
     }
     $tr[] = sprintf('<tr %s>%s</tr>', $table->getRowAttrs()->getAttrString(true), implode("\n", $td));
     $table->setRowAttrs(clone $rowAttrs);

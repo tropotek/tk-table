@@ -26,7 +26,7 @@ $table->appendCell('name')
     ->setSortable(true)
     ->addHeaderCss('max-width')
     ->addOnHtml(function(array $obj, Cell $cell) {
-        return sprintf('<a href="#">%s</a>', $cell->getValue($obj));
+        return sprintf('<a href="#">%s</a>', $cell->getValue());
     });
 
 $table->appendCell('rows')

@@ -26,21 +26,20 @@ class RowSelect extends Cell
     /**
      * @param array<string,mixed>|object|null $row
      */
-    public function getValue(null|array|object $row = null): string
+    public function getValue(): string
     {
+        $row = $this->getRow();
         if (is_null($row)) return '';
         if (is_array($row)) $row = (object)$row;
         return $row->{$this->getProperty()} ?? '';
     }
 
-    /**
-     * @param array<string,mixed>|object|null $row
-     */
-    public function getHtml(null|array|object $row = null): string
+    public function getHtml(): string
     {
+        $row = $this->getRow();
         if (is_null($row)) return '';
         if (is_array($row)) $row = (object)$row;
-        $id = $this->getValue($row);
+        $id = $this->getValue();
         return sprintf('<input type="checkbox" name="%s[]" value="%s" class="tk-tcb"/>', $this->getName(), e($id));
     }
 

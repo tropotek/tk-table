@@ -130,7 +130,9 @@ class Csv extends Button
             /* @var $cell Cell */
             foreach ($this->getTable()->getCells() as $cell) {
                 if ($this->isExcluded($cell)) continue;
-                $csvData[$cell->getName()] = $cell->getValue($row);
+                $cell->setRow($row);
+                $csvData[$cell->getName()] = $cell->getValue();
+                $cell->clearRow();
             }
             fputcsv($out, $csvData);
         }
