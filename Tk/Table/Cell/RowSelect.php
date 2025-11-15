@@ -23,9 +23,6 @@ class RowSelect extends Cell
         return new self($name, $property);
     }
 
-    /**
-     * @param array<string,mixed>|object|null $row
-     */
     public function getValue(): string
     {
         $row = $this->getRow();
