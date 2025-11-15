@@ -1,5 +1,12 @@
 #CHANGELOG#
 
+Ver 8.0.52 [2025-11-15]:
+-------------------------------
+  - phpstan cleanup
+  - removed row prop from table Cell objects
+  - phpstan fixes
+
+
 Ver 8.0.50 [2025-10-19]:
 -------------------------------
 
