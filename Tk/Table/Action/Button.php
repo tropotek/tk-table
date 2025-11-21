@@ -19,6 +19,7 @@ class Button extends Action
         parent::__construct($name);
         $this->icon = $icon;
         $this->addCss('btn btn-sm btn-light');
+        $this->setAttr('type', 'submit');
     }
 
     public static function create(string $name, string $icon = ''): self
@@ -52,7 +53,7 @@ class Button extends Action
         }
 
         return <<<HTML
-<button type="submit" name="{$fieldName}" value="{$fieldName}" class="{$this->getCssString()}" {$this->getAttrString()}>
+<button name="{$fieldName}" value="{$fieldName}" class="{$this->getCssString()}" {$this->getAttrString()}>
     {$icon}{$this->getLabel()}
 </button>
 HTML;
