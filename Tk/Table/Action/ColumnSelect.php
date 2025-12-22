@@ -137,7 +137,7 @@ HTML;
     {
         if ($cell instanceof RowSelect || $cell instanceof OrderBy) return true;
         if (truefalse($cell->getAttr(self::ATTR_IGNORE, '')) ?? false) return true;
-        if (in_array($cell->getName(), ['actions', 'edit'])) return true;
+        if (in_array($cell->getName(), ['actions'])) return true;
         return false;
     }
 
