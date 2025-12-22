@@ -1,6 +1,8 @@
 <?php
 namespace Tk;
 
+use Tk\Table\Storage\StorageInterface;
+use Tk\Table\Storage\StorageSession;
 use Tk\Ui\Attributes;
 use Tk\Ui\Traits\AttributesTrait;
 use Tk\Table\Action;
@@ -29,6 +31,7 @@ class Table
     protected Collection $actions;
     protected Attributes $rowAttrs;
     protected Attributes $headerAttrs;
+    protected ?StorageInterface $sessionStorage = null;
 
 
     public function __construct(string $tableId = 'tbl')
@@ -40,6 +43,12 @@ class Table
         $this->setId($tableId);
     }
 
+    public function setSessionStorage(StorageInterface $storage): static
+    {
+        $this->sessionStorage = $storage;
+        return $this;
+    }
+
     public function getSessionId(): string
     {
         return "tbl_{$this->getId()}";
@@ -47,21 +56,16 @@ class Table
 
     public function resetTableSession(): static
     {
-        Session::remove($this->getSessionId());
+        $this->sessionStorage->reset();
         return $this;
     }
 
     public function getTableSession(): Collection
     {
-        if (System::isRefreshCacheRequest()) {
-            $this->resetTableSession();
+        if (is_null($this->sessionStorage)) {
+            $this->sessionStorage = new StorageSession($this->getSessionId());
         }
-        $session = Session::get($this->getSessionId());
-        if (is_null($session)) {
-            $session = new Collection();
-        }
-        Session::set($this->getSessionId(), $session, 60*10);
-        return $session;
+        return $this->sessionStorage->get();
     }
 
     /**

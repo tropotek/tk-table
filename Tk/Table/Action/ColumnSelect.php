@@ -1,9 +1,7 @@
 <?php
 namespace Tk\Table\Action;
 
-use Tk\CallbackCollection;
 use Tk\Collection;
-use Tk\System;
 use Tk\Table\Cell;
 use Tk\Table\Cell\OrderBy;
 use Tk\Table\Cell\RowSelect;
@@ -36,7 +34,7 @@ class ColumnSelect extends Action
     protected string $icon = '';
 
     /** @var list<string> */
-    protected array $visible = [];
+    protected array $selected = [];
 
     protected Collection $session;
 
@@ -45,7 +43,7 @@ class ColumnSelect extends Action
     {
         parent::__construct($name);
 
-        $this->addCss('btn btn-sm btn-light tk-column-select');
+        $this->addCss('btn btn-sm btn-light');
     }
 
     public static function create(string $name = 'columns', string $icon = 'fas fa-eye'): self
@@ -61,30 +59,38 @@ class ColumnSelect extends Action
         parent::execute();
         if (!$this->isActive()) return;
 
-        $actionId = $this->getTable()->makeRequestKey($this->getName());
-
-        // get lists
+        // get selected
         $this->session = $this->getTable()->getTableSession();
-        if (System::isRefreshCacheRequest()) {
-            $this->session->remove(self::SID);
-        }
 
         // create the default visible list
-        $defaultVisible = [];
+        $defaultSelected = [];
         foreach ($this->getTable()->getCells() as $cell) {
             if ($this->isVisible($cell)) {
-                $defaultVisible[] = $cell->getName();
+                $defaultSelected[] = $cell->getName();
             }
         }
-        $this->visible = $this->session->get(self::SID, $defaultVisible);
-        $this->session->set(self::SID, $this->visible);
+        // get selected
+        $this->selected = $this->session->get(self::SID, $defaultSelected);
+        // set selected
+        $this->session->set(self::SID, $this->selected);
 
         // get the submitted column list
         $action = trim($_POST['action'] ?? '');
-        if ($action !== $actionId) return;
-        $this->visible = $_POST[$this->getName()];
-        $this->session->set(self::SID, $this->visible);
-        Uri::create()->redirect();
+
+        // Save selected columns
+        if ($action == $this->getTable()->makeRequestKey($this->getName())) {
+            $this->selected = $_POST[$this->getName()];
+            // set selected
+            $this->session->set(self::SID, $this->selected);
+            Uri::create()->redirect();
+        }
+
+        // Reset columns to selected defaults
+        if ($action == $this->getTable()->makeRequestKey($this->getName().'_reset')) {
+            // reset selected
+            $this->session->remove(self::SID);
+            Uri::create()->redirect();
+        }
     }
 
     /**
@@ -97,7 +103,7 @@ class ColumnSelect extends Action
             if ($this->isIgnored($cell)) continue;
 
             $checked = '';
-            if (in_array($cell->getName(), $this->visible)) {
+            if (in_array($cell->getName(), $this->selected)) {
                 $checked = 'checked';
             } else {
                 $cell->setAttr('style', 'display:none;');
@@ -109,15 +115,19 @@ class ColumnSelect extends Action
         }
 
         $action = $this->getTable()->makeRequestKey($this->getName());
+        $actionReset = $this->getTable()->makeRequestKey($this->getName().'_reset');
         return <<<HTML
-<div class="btn-group dropstart float-end" role="group">
+<div class="btn-group dropstart float-end tk-column-select" role="group">
     <button class="{$this->getCssString()} dropdown-toggle" {$this->getAttrString()} data-bs-auto-close="outside" data-bs-toggle="dropdown" aria-expanded="false">
       <i class="{$this->icon}"></i> {$this->getLabel()}
       <i class="mdi mdi-chevron-down"></i>
     </button>
     <ul class="dropdown-menu">
+        <li class="dropdown-item border-bottom">
+            <button type="submit" name="action" value="{$action}" class="btn btn-sm btn-light btn-outline-field m-0 btn-save" disabled>Save Selected</button>
+            <button type="submit" name="action" value="{$actionReset}" class="btn btn-sm btn-light btn-outline-field m-0 float-end btn-reset" title="Reset Defaults"><i class="fas fa-sync"></i></button>
+        </li>
         {$buttonHtml}
-        <li class="dropdown-item"><button type="submit" name="action" value="{$action}" class="btn btn-sm btn-light btn-outline-field width-lg">Show</button></li>
     </ul>
 </div>
 HTML;

@@ -9,6 +9,19 @@ jQuery(function ($) {
     function initTable() {
         let tkTable = $(this);
 
+
+        // Class: \Tk\Table\Action\ColumnSelect
+        $('.tk-column-select', tkTable).each(function () {
+            let btnSave = $(this).find('.btn-save');
+            let btnReset = $(this).find('.btn-reset');
+
+            $('input[type=checkbox]', this).on('change', function () {
+                btnSave.prop('disabled', false);
+            })
+
+
+        });
+
         // Class: \Tk\Table\Cell\RowSelect
         $('.tk-tcb-head', tkTable).on('change', function (e) {
             let cbh = $(this);

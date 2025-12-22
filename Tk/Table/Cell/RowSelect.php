@@ -7,6 +7,7 @@ use Tk\Table\Cell;
 class RowSelect extends Cell
 {
     protected string $property = '';
+    protected bool $disabled = false;
 
     public function __construct(string $name, string $property = '')
     {
@@ -15,7 +16,6 @@ class RowSelect extends Cell
 
         $this->addCss('text-center');
         $this->addHeaderCss('text-center');
-        $this->setHeader(sprintf('<input type="checkbox" name="%s_all" title="Select All" class="tk-tcb-head" />', $name));
     }
 
     public static function create(string $name, string $property = ''): self
@@ -36,8 +36,12 @@ class RowSelect extends Cell
         $row = $this->getRow();
         if (is_null($row)) return '';
         if (is_array($row)) $row = (object)$row;
+
+        $disabled = $this->isDisabled() ? 'disabled' : '';
+        $this->setHeader(sprintf('<input type="checkbox" name="%s_all" title="Select All" class="tk-tcb-head" %s />', $this->getName(), $disabled));
+
         $id = $this->getValue();
-        return sprintf('<input type="checkbox" name="%s[]" value="%s" class="tk-tcb"/>', $this->getName(), e($id));
+        return sprintf('<input type="checkbox" name="%s[]" value="%s" class="tk-tcb" %s/>', $this->getName(), e($id), $disabled);
     }
 
     public function getProperty(): string
@@ -59,6 +63,17 @@ class RowSelect extends Cell
             $table->setAttr('data-row-select', $this->getName());
         }
         parent::setTable($table);
+        return $this;
+    }
+
+    public function isDisabled(): bool
+    {
+        return $this->disabled;
+    }
+
+    public function setDisabled(bool $disabled): self
+    {
+        $this->disabled = $disabled;
         return $this;
     }
 
