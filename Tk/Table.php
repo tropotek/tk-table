@@ -422,9 +422,9 @@ class Table
      * Create request key with prepended string
      * returns: `{id}_{$key}`
      */
-    public function makeRequestKey(string $key): string
+    public function makeRequestKey(string $key, string $dash = '_'): string
     {
-        return $this->getId() . '_' . $key;
+        return $this->getId() . $dash . $key;
     }
 
 }

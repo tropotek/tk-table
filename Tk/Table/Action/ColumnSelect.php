@@ -109,9 +109,11 @@ class ColumnSelect extends Action
                 $cell->setAttr('style', 'display:none;');
                 $cell->setHeaderAttr('style', 'display:none;');
             }
-            $cb = sprintf('<input type="checkbox" name="%s" value="%s" id="%s" %s>', $this->getName().'[]', $cell->getName(), 'oid-'.$cell->getName(), $checked);
+
+            $id = str_replace('_', '-', $this->getTable()->makeRequestKey('cs-'.$cell->getName()));
+            $cb = sprintf('<input type="checkbox" name="%s" value="%s" id="%s" %s>', $this->getName().'[]', $cell->getName(), $id, $checked);
             $buttonHtml .= sprintf('<li><label class="dropdown-item" type="submit" name="%s" value="%s" for="%s">%s %s</label></li>',
-                $cell->getName(), $cell->getName(), 'oid-'.$cell->getName(), $cb, $cell->getHeader());
+                $cell->getName(), $cell->getName(), $id, $cb, $cell->getHeader());
         }
 
         $action = $this->getTable()->makeRequestKey($this->getName());
