@@ -1,5 +1,10 @@
 #CHANGELOG#
 
+Ver 8.0.56 [2025-12-22]:
+-------------------------------
+  - Added all requests from client, ready for UA testing
+
+
 Ver 8.0.54 [2025-11-21]:
 -------------------------------
 
