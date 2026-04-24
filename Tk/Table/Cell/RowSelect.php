@@ -8,6 +8,7 @@ class RowSelect extends Cell
 {
     protected string $property = '';
     protected bool $disabled = false;
+    public string $html = '';
 
     public function __construct(string $name, string $property = '')
     {
@@ -46,7 +47,11 @@ class RowSelect extends Cell
 
         $id = $this->getValue();
         $disabled = $this->isDisabled() ? 'disabled' : '';
-        return sprintf('<input type="checkbox" name="%s[]" value="%s" class="tk-tcb" %s/>', $this->getName(), e($id), $disabled);
+        $this->html = sprintf('<input type="checkbox" name="%s[]" value="%s" class="tk-tcb" %s/>', $this->getName(), e($id), $disabled);
+
+        $r = $this->getOnHtml()->execute($row, $this);
+        if (!is_null($r) && is_string($r)) $this->html = $r;
+        return $this->html;
     }
 
     public function getProperty(): string
