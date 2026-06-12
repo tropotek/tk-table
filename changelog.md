@@ -1,5 +1,10 @@
 #CHANGELOG#
 
+Ver 8.0.68 [2026-06-12]:
+-------------------------------
+  - fixed invoice search added students and total row to invoice export
+
+
 Ver 8.0.66 [2026-04-24]:
 -------------------------------
   - added delete revision functionality
