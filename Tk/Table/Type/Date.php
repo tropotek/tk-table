@@ -99,4 +99,9 @@ class Date
         return self::formatDate($row->{$cell->getName()}, 'g:i A');
     }
 
+    public static function getRelativeString(array|object $row, Cell $cell): string
+    {
+        return \Tk\Date::toRelativeString($row->{$cell->getName()});
+    }
+
 }

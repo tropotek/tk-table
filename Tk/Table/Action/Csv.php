@@ -39,9 +39,14 @@ class Csv extends Button
         RowSelect::class,
     ];
 
-    protected string    $filename = '';
+    protected string     $filename = '';
     /** @var list<string> */
-    protected array     $excluded = [];
+    protected array      $excluded = [];
+
+    protected string     $class = '';
+    protected ?RowSelect $rowSelect = null;
+    protected array      $filterExtras = [];
+    protected array      $rows = [];
 
 
     public function __construct(string $name)
@@ -71,21 +76,14 @@ class Csv extends Button
         }
 
         $obj = new self('export');
+        $obj->class = $class;
+        $obj->rowSelect = $rowSelect;
+        $obj->filterExtras = $filterExtras;
+
         $obj->addOnExecute(function(Csv $action) use ($class, $rowSelect, $filterExtras) {
             if (!$action->getTable()->getCell($class::getPrimaryProperty())) {
                 $action->getTable()->prependCell($class::getPrimaryProperty())->setHeader('id');
             }
-            // @phpstan-ignore-next-line
-            $filter = $action->getTable()->getDbFilter()->resetLimits();
-            $filter->replace($filterExtras);
-            if ($rowSelect instanceof RowSelect) {
-                $selected = $rowSelect->getSelected();
-                $filter->set($class::getPrimaryProperty(), $selected);
-                $rows = $class::findFiltered($filter);
-            } else {
-                $rows = $class::findFiltered($filter);
-            }
-            return $rows;
         });
         return $obj;
     }
@@ -96,8 +94,19 @@ class Csv extends Button
         $this->setActive(isset($_POST[$selectName]));
         if (!$this->isActive()) return;
 
-        $rows = $this->getOnExecute()->execute($this);
-        if (!count($rows)) {
+        // @phpstan-ignore-next-line
+        $filter = $this->getTable()->getDbFilter()->resetLimits();
+        $filter->replace($this->filterExtras);
+        if ($this->rowSelect instanceof RowSelect) {
+            $selected = $this->rowSelect->getSelected();
+            $filter->set($this->class::getPrimaryProperty(), $selected);
+            $this->rows = $this->class::findFiltered($filter);
+        } else {
+            $this->rows = $this->class::findFiltered($filter);
+        }
+
+        $this->getOnExecute()->execute($this);
+        if (!count($this->rows)) {
             Uri::create()->redirect();
         }
 
@@ -123,9 +132,13 @@ class Csv extends Button
             if ($this->isExcluded($cell)) continue;
             $arr[] = $cell->getHeader();
         }
-        fputcsv($out, $arr);
+        fputcsv(
+            stream: $out,
+            fields: $arr,
+            escape: ''
+        );
 
-        foreach ($rows as $i => $row) {
+        foreach ($this->rows as $i => $row) {
             $csvData = [];
             /* @var $cell Cell */
             foreach ($this->getTable()->getCells() as $cell) {
@@ -134,7 +147,11 @@ class Csv extends Button
                 $csvData[$cell->getName()] = $cell->getValue();
                 $cell->clearRow();
             }
-            fputcsv($out, $csvData);
+            fputcsv(
+                stream: $out,
+                fields: $csvData,
+                escape: ''
+            );
         }
 
         fclose($out);
@@ -142,7 +159,7 @@ class Csv extends Button
     }
 
     /**
-     * @callable function (\Tk\Table\Action\Delete $action, $obj): ?bool { }
+     * @callable function (\Tk\Table\Action\Csv $action, $obj): ?bool { }
      * @deprecated use addOnExecute()
      */
     public function addOnCsv(callable $callable, int $priority = CallbackCollection::DEFAULT_PRIORITY): static
@@ -196,6 +213,16 @@ class Csv extends Button
     {
         $this->filename = $filename;
         return $this;
+    }
+
+    public function getRows(): array
+    {
+        return $this->rows;
+    }
+
+    public function setRows(array $rows): void
+    {
+        $this->rows = $rows;
     }
 
 }
