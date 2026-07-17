@@ -8,7 +8,6 @@
     ],
     "time": "2025-05-08",
     "license": "MIT",
-    "minimum-stability": "dev",
     "authors":  [
          {
             "name": "Michael Mifsud",
@@ -29,7 +28,7 @@
     },
     "extra":  {
         "branch-alias":  {
-            "dev-master": "8.1.x-dev"
+            "dev-main": "8.1.x-dev"
         }
     }
 }

@@ -26,7 +26,7 @@ Or add the following to your composer.json file:
 ```json
 {
   "require": {
-    "ttek/tk-table": "^8.0"
+    "ttek/tk-table": "^8.1"
   }
 }
 ```
