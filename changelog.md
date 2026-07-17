@@ -1,5 +1,10 @@
 #CHANGELOG#
 
+Ver 8.1.0 [2026-07-17]:
+-------------------------------
+  - updates
+
+
 Ver 8.0.68 [2026-06-12]:
 -------------------------------
   - fixed invoice search added students and total row to invoice export

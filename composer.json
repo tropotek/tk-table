@@ -6,9 +6,9 @@
         "tropotek",
         "Table"
     ],
-    "time": "2025-05-08",
+    "time": "2026-07-17",
     "license": "MIT",
-    "minimum-stability": "dev",
+    "minimum-stability": "stable",
     "authors":  [
          {
             "name": "Michael Mifsud",
