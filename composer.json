@@ -25,7 +25,7 @@
         "ext-dom": "*",
         "ttek/tk-framework": "^8.1",
         "ttek/tk-domtemplate": "^8.0",
-        "ttek/tk-form": "^8.0"
+        "ttek/tk-form": "^8.1"
     },
     "extra":  {
         "branch-alias":  {
